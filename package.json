@@ -1,0 +1,39 @@
+{
+  "name": "schedulenaut",
+  "version": "0.0.0",
+  "description": "A better collaborative scheduling tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jssolichin/schedulenaut.git"
+  },
+  "keywords": [
+    "collaborative",
+    "scheduling"
+  ],
+  "author": "Jonathan Solichin",
+  "license": "GPL v3.0",
+  "bugs": {
+    "url": "https://github.com/jssolichin/schedulenaut/issues"
+  },
+  "homepage": "https://github.com/jssolichin/schedulenaut",
+  "dependencies": {
+    "express": "~4.11.1"
+  },
+  "devDependencies": {
+    "browserify": "latest",
+    "grunt": "~0.4.0",
+    "grunt-browserify": "latest",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-jade": "^0.12.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^0.11.4",
+    "grunt-jade": "^0.5.1",
+    "jade": "^1.7.0",
+    "less": "^1.7.5",
+    "grunt-express-server": "~0.4.19"
+  }
+}
