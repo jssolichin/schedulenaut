@@ -9,11 +9,11 @@ module.exports = function(grunt) {
 				tasks: ['jade']
 			},
 			css: {
-				files: ['source/less/*.less'],
+				files: ['source/less/*.less', 'source/less/**/*.js'],
 				tasks: ['less']
 			},
 			js: {
-				files: ['source/js/*.js'],
+				files: ['source/js/*.js', 'source/js/**/*.js'],
 				tasks: ['jshint', 'browserify']
 			},
 			express: {
@@ -31,7 +31,7 @@ module.exports = function(grunt) {
 		less: {
 			development: {
 				files: {
-					"public/css/style.css": "source/less/style.less",
+					"public/css/style.css": "source/less/style.less"
 				}
 			}
 		},
@@ -43,7 +43,7 @@ module.exports = function(grunt) {
 				//src: '**/*.jade', // Actual pattern(s) to match.
 				//src: 'index.jade', // Actual pattern(s) to match.
 				dest: 'public/',
-				ext: '.html', // Dest filepaths will have this extension.
+				ext: '.html' // Dest filepaths will have this extension.
 			}
 		},
 		browserify: {
@@ -51,7 +51,8 @@ module.exports = function(grunt) {
 				options: {
 					browserifyOptions: {
 						debug: true
-					}
+					},
+					transform: ['debowerify']
 				},
 				src: 'source/js/main.js',
 				dest: 'public/js/main.js'
