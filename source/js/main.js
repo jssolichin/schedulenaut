@@ -1,7 +1,5 @@
 'use strict';
 
-require('angular');
-
 var schedulenaut = angular.module('schedulenaut', [
     require('./scheduler').name
 ]);

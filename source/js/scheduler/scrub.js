@@ -13,6 +13,62 @@ module.exports = function () {
         link: function (scope, element, attrs) {
             scope.el = d3.select(element[0]);
 
+            var brushes = [];
+
+            var newBrush = function (svg){
+                var brush = d3.svg.brush()
+                    .x(x)
+                    .on("brush", brushed)
+                    .on("brushend", brushend);
+
+                brushes.push(brush);
+
+                var gBrush = svg.insert("g", '.brush')
+                    .attr("class", "brush")
+                    .on("click", function() { d3.event.stopPropagation(); })
+                    .call(brush);
+
+                gBrush.selectAll("rect")
+                    .attr("height", height);
+
+
+                function brushed() {
+                    var extent0 = brush.extent(),
+                        extent1;
+
+                    // if dragging, preserve the width of the extent
+                    if (d3.event.mode === "move") {
+                        var d0 = d3.time.day.round(extent0[0]),
+                            d1 = d3.time.day.offset(d0, Math.round((extent0[1] - extent0[0]) / 864e5));
+                        extent1 = [d0, d1];
+                    }
+
+                    // otherwise, if resizing, round both dates
+                    else {
+                        extent1 = extent0.map(d3.time.day.round);
+
+                        // if empty when rounded, use floor & ceil instead
+                        if (extent1[0] >= extent1[1]) {
+                            extent1[0] = d3.time.day.floor(extent0[0]);
+                            extent1[1] = d3.time.day.ceil(extent0[1]);
+                        }
+                    }
+
+                    d3.select(this).call(brush.extent(extent1));
+
+                }
+
+                function brushend(){
+
+                    gBrush.select('.background')
+                        .style('pointer-events', 'none');
+
+                    newBrush(svg);
+
+                }
+                return brush;
+            };
+
             var margin = {top: 10, right: 10, bottom: 20, left: 10},
                 width = parseInt(attrs.width) - margin.left - margin.right,
                 height = parseInt(attrs.height) - margin.top - margin.bottom;
@@ -21,16 +77,14 @@ module.exports = function () {
                 .domain([new Date(2013, 2, 1), new Date(2013, 2, 15) - 1])
                 .range([0, width]);
 
-            var brush = d3.svg.brush()
-                .x(x)
-                .extent([new Date(2013, 2, 2), new Date(2013, 2, 3)])
-                .on("brush", brushed);
-
             var svg = scope.el.append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .on('click', function(){
+                    newBrush(svg);
+                });
 
             svg.append("rect")
                 .attr("class", "grid-background")
@@ -61,37 +115,12 @@ module.exports = function () {
                 .attr("x", 6)
                 .style("text-anchor", null);
 
-            var gBrush = svg.append("g")
-                .attr("class", "brush")
-                .call(brush);
+            var brushes = svg.append('g')
+                .attr('class', 'brushes');
 
-            gBrush.selectAll("rect")
-                .attr("height", height);
+            newBrush(brushes);
 
-            function brushed() {
-                var extent0 = brush.extent(),
-                    extent1;
 
-                // if dragging, preserve the width of the extent
-                if (d3.event.mode === "move") {
-                    var d0 = d3.time.day.round(extent0[0]),
-                        d1 = d3.time.day.offset(d0, Math.round((extent0[1] - extent0[0]) / 864e5));
-                    extent1 = [d0, d1];
-                }
-
-                // otherwise, if resizing, round both dates
-                else {
-                    extent1 = extent0.map(d3.time.day.round);
-
-                    // if empty when rounded, use floor & ceil instead
-                    if (extent1[0] >= extent1[1]) {
-                        extent1[0] = d3.time.day.floor(extent0[0]);
-                        extent1[1] = d3.time.day.ceil(extent0[1]);
-                    }
-                }
-
-                d3.select(this).call(brush.extent(extent1));
-            }
         }
     };
 };
