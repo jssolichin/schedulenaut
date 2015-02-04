@@ -8,7 +8,9 @@ module.exports = function () {
     return {
         restrict: 'A',
         scope: {
-            width: '@'
+            height: '@',
+            width: '@',
+            scrub: '='
         },
         link: function (scope, element, attrs) {
             scope.el = d3.select(element[0]);
@@ -38,8 +40,8 @@ module.exports = function () {
 
                     // if dragging, preserve the width of the extent
                     if (d3.event.mode === "move") {
-                        var d0 = d3.time.day.round(extent0[0]),
-                            d1 = d3.time.day.offset(d0, Math.round((extent0[1] - extent0[0]) / 864e5));
+                        var d0 = d3.time.hour.round(extent0[0]),
+                            d1 = d3.time.hour.offset(d0, Math.round((extent0[1] - extent0[0]) / 864e5));
                         extent1 = [d0, d1];
                     }
 
@@ -49,8 +51,8 @@ module.exports = function () {
 
                         // if empty when rounded, use floor & ceil instead
                         if (extent1[0] >= extent1[1]) {
-                            extent1[0] = d3.time.day.floor(extent0[0]);
-                            extent1[1] = d3.time.day.ceil(extent0[1]);
+                            extent1[0] = d3.time.hour.floor(extent0[0]);
+                            extent1[1] = d3.time.hour.ceil(extent0[1]);
                         }
                     }
 
@@ -70,12 +72,18 @@ module.exports = function () {
             };
 
             var margin = {top: 10, right: 10, bottom: 20, left: 10},
-                width = parseInt(attrs.width) - margin.left - margin.right,
-                height = parseInt(attrs.height) - margin.top - margin.bottom;
+                width = parseInt(scope.width) - margin.left - margin.right,
+                height = parseInt(scope.height) - margin.top - margin.bottom;
+
+            var endDate = new Date(scope.scrub.getTime());
+            endDate.setHours(endDate.getHours()+23);
 
             var x = d3.time.scale()
-                .domain([new Date(2013, 2, 1), new Date(2013, 2, 15) - 1])
+                .domain([scope.scrub, endDate])
                 .range([0, width]);
+
+            var header = scope.el.append('h2')
+                .html(scope.scrub);
 
             var svg = scope.el.append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -97,7 +105,7 @@ module.exports = function () {
                 .call(d3.svg.axis()
                     .scale(x)
                     .orient("bottom")
-                    .ticks(d3.time.hours, 12)
+                    .ticks(d3.time.minute, 30)
                     .tickSize(-height)
                     .tickFormat(""))
                 .selectAll(".tick")
@@ -109,7 +117,7 @@ module.exports = function () {
                 .call(d3.svg.axis()
                     .scale(x)
                     .orient("bottom")
-                    .ticks(d3.time.days)
+                    .ticks(d3.time.hours)
                     .tickPadding(0))
                 .selectAll("text")
                 .attr("x", 6)

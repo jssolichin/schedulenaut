@@ -3,4 +3,4 @@ extends templates/default
 block content
         .container(ng-controller="main")
             h1 hello {{who}}
-            .scrub(scrub width="{{width}}" height="50") {{test}}
+            .scrub(ng-repeat="date in dates" scrub="date" width="{{width}}" height="50") {{test}}
