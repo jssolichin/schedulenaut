@@ -1,6 +1,16 @@
 extends templates/default
 
 block content
-        .container(ng-controller="main")
-            h1 hello {{who}}
-            .scrub(ng-repeat="date in dates" scrub="date" width="{{width}}" height="50") {{test}}
+    nav
+        ul
+            li
+                a(ui-sref="index") Index
+            li
+                a(ui-sref="scheduler") Scheduler
+            li
+                a(ui-sref="about") About
+            li
+                a(href="http://jssolichin.com:1337") Developer Blog
+    hr
+    div(ui-view)
+

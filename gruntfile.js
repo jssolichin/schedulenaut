@@ -39,7 +39,7 @@ module.exports = function(grunt) {
 			files: {
 				expand: true, // Enable dynamic expansion.
 				cwd: 'source/jade', // Src matches are relative to this path.
-				src: '*.jade', // Actual pattern(s) to match.
+				src: ['*.jade', 'partials/*.jade'], // Actual pattern(s) to match.
 				//src: '**/*.jade', // Actual pattern(s) to match.
 				//src: 'index.jade', // Actual pattern(s) to match.
 				dest: 'public/',

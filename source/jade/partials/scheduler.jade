@@ -1,0 +1,3 @@
+h1 Scheduler
+select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
+.scrub(ng-repeat="date in dates" scrub="date" granularity="selectedGranularity" width="{{width}}" height="50")

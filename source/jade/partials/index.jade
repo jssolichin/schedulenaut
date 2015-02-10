@@ -1,0 +1,15 @@
+//Landing Page Demo
+form
+    ul
+        li
+            input(ng-model="title" placeholder="Create a new event...")
+        li
+            input(ng-model="description" placeholder="Event Description")
+
+multiple-date-picker(day-click="logInfos")
+
+//Event Scheduler Demo
+hr
+h1(ng-bind="title")
+p(ng-bind="description")
+.scrub(ng-repeat="date in dates" scrub="date" width="{{width}}" height="50")
