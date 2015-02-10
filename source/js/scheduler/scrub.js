@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function () {
+module.exports = function (helpers) {
     return {
         restrict: 'A',
         scope: {
@@ -28,43 +28,39 @@ module.exports = function () {
                         var d0, d1;
 
                         if(scope.granularity == 60){
-                            d0 = d3.time.hour.round(extent0[0]),
+                            d0 = d3.time.hour.round(extent0[0]);
                             d1 = d3.time.hour.offset(d0, Math.round((extent0[1] - extent0[0]) / 3600000) );
                         }
                         else {
-                            var minutes = extent0[0].getMinutes();
-                            var hours = extent0[0].getHours();
-                            var m,h;
-
-                            if(scope.granularity == 15){
-                                m = (((minutes + 7.5)/15 | 0) * 15) % 60;
-                                h = ((((minutes/105) + .5) | 0) + hours) % 24;
-                            }
-                            else if (scope.granularity == 30){
-                                m = (((minutes + 15)/30 | 0) * 30) % 60;
-                                h = ((((minutes/90) + .5) | 0) + hours) % 24;
-                            }
-
-                            d0 = new Date(extent0[0]);
-                            d0.setMinutes(m);
-                            d0.setHours(h);
-                            d0.setSeconds(0);
-
+                            d0 = helpers.round(extent0[0], scope.granularity);
                             d1 = d3.time.minute.offset(d0, Math.round((extent0[1] - extent0[0]) / 60000) );
                         }
 
                         extent1 = [d0, d1];
+
                     }
 
                     // otherwise, if resizing, round both dates
                     else {
-                        extent1 = extent0.map(d3.time.hour.round);
 
-                        // if empty when rounded, use floor & ceil instead
-                        if (extent1[0] >= extent1[1]) {
-                            extent1[0] = d3.time.hour.floor(extent0[0]);
-                            extent1[1] = d3.time.hour.ceil(extent0[1]);
+                        // if hour we can use built in d3 function to round use floor & ceil instead
+                        if(scope.granularity == 60){
+                            extent1 = extent0.map(d3.time.hour.round);
+                            if (extent1[0] >= extent1[1]) {
+                                extent1[0] = d3.time.hour.floor(extent0[0]);
+                                extent1[1] = d3.time.hour.ceil(extent0[1]);
+                            }
                         }
+
+                        // else we just add minutes manually
+                        else {
+                            extent1 = extent0.slice(0);
+                            extent1[1].setMinutes(extent1[1].getMinutes()+scope.granularity);
+
+                            extent1[0] = helpers.round(extent0[0], scope.granularity);
+                            extent1[1] = helpers.round(extent0[1], scope.granularity);
+                        }
+
                     }
 
                     d3.select(this).call(brush.extent(extent1));

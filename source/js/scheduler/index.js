@@ -4,6 +4,7 @@
 
 'use strict';
 
-module.exports = angular.module('schedulenaut.scheduler', [])
+module.exports = angular.module('schedulenaut.scheduler', [ ])
+    .factory('helpers', require('./helpers'))
     .directive('scrub', require('./scrub'));
     //.controller('ChartMgrCtrl', require('./ChartMgrCtrl'));
