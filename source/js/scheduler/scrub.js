@@ -63,15 +63,55 @@ module.exports = function (helpers) {
 
                     }
 
+                    //make sure that event blocks (brush) do not overlap
+                    //brush.extent.start is a property created that holds the original extent of the bar when brush start
+                    if(brush.extent.start) {
+                        //time where we can not go pass as to not overlap
+                        var edge = [];
+
+                        //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
+                        for (var i = 0; i < brushes.length; i++) {
+                            var otherBrush = brushes[i];
+
+                            if (otherBrush != brush) {
+                                if (otherBrush.extent()[1].getTime() <= brush.extent.start[0].getTime()) {
+                                    if (edge[0] != undefined && otherBrush.extent()[1].getTime() > edge[0].getTime() || edge[0] == undefined)
+                                        edge[0] = otherBrush.extent()[1]
+                                }
+                                else if (otherBrush.extent()[0].getTime() > brush.extent.start[0].getTime()) {
+                                    if (edge[1] != undefined && otherBrush.extent()[0].getTime() < edge[1].getTime() || edge[1] == undefined)
+                                        edge[1] = otherBrush.extent()[0]
+                                };
+                            }
+                        };
+
+                        //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
+                        if (edge[1] != undefined && extent1[1].getTime() > edge[1].getTime()) {
+                            extent1[1] = edge[1];
+                            //if we are moving, not only do we stop it from going past, but also keep the brush the same size
+                            if (d3.event.mode === "move")
+                                extent1[0] = d3.time.hour.offset(extent1[1], -Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
+                        } else if (edge[0] != undefined && extent1[0].getTime() < edge[0].getTime()) {
+                            extent1[0] = edge[0];
+                            if (d3.event.mode === "move")
+                                extent1[1] = d3.time.hour.offset(extent1[0], Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
+                        };
+                    }
+
                     d3.select(this).call(brush.extent(extent1));
                 };
 
                 var brushend = function(){
 
+
                     gBrush.select('.background')
                         .style('pointer-events', 'none');
 
-                    //figure out whether we need to add a new brush or not.
+                    //When we finish brushing, the extent will be the starting extent for next time
+                    //This is useful for determining what is surrounding the current block later
+                    brush.extent.start = brush.extent();
+
+                    //Figure out whether we need to add a new brush or not.
                     //If last brush has been modified, then it's been used and we need to add a new brush.
                     //Else it's still empty, and we don't need to do anything.
                     var lastBrushExtent = brushes[brushes.length-1].extent();
@@ -128,7 +168,7 @@ module.exports = function (helpers) {
                 .attr("transform", "translate(0," + height + ")")
                 .call(d3.svg.axis()
                     .scale(x)
-                   .orient("bottom")
+                    .orient("bottom")
                     .ticks(d3.time.minute, 30)
                     .tickSize(-height)
                     .tickFormat(""))
