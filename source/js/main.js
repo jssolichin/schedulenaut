@@ -1,5 +1,3 @@
-'use strict';
-
 var schedulenaut = angular.module('schedulenaut', [
     'multipleDatePicker',
     'ui.router',

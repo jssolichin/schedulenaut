@@ -13,12 +13,12 @@ module.exports = function ($scope){
             $scope.dates.push(date.toDate());
         else {
             var index= $scope.dates.indexOf(date.toDate());
-            $scope.dates.splice(index, 1)
+            $scope.dates.splice(index, 1);
         }
 
         //reproduce the standard behavior
         date.selected = !date.selected;
-    }
+    };
 
     //scheduler
     $scope.width = window.innerWidth-30;

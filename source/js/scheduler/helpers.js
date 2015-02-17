@@ -14,7 +14,7 @@ module.exports = function (){
             var m,h;
 
             m = (((minutes + (interval/2))/interval | 0) * interval) % 60;
-            h = ((((minutes/(120-interval)) + .5) | 0) + hours) % 24;
+            h = ((((minutes/(120-interval)) + 0.5) | 0) + hours) % 24;
 
             d0 = new Date(date);
             d0.setMinutes(m);
@@ -23,5 +23,5 @@ module.exports = function (){
 
             return d0;
         }
-    }
+    };
 };

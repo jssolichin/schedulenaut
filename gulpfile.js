@@ -15,7 +15,7 @@ var less = require('gulp-less');
 var server = require('gulp-express');
 
 gulp.task('watch', function() {
-    gulp.watch(['./source/less/*.less'], ['less'])
+    gulp.watch(['./source/less/*.less', './source/less/**/*.less'], ['less'])
     gulp.watch(['./source/jade/*.jade', './source/jade/**/*.jade'], ['jade']);
     gulp.watch(['./source/js/*.js', './source/js/**/*.js'], ['jshint', 'browserify']);
     gulp.watch(['./server/index.js'], ['server']);
