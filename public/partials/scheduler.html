@@ -1,1 +1,1 @@
-<h1>Scheduler</h1><select ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity"></select><div ng-repeat="date in dates" scrub="date" granularity="selectedGranularity" width="{{width}}" height="50" class="scrub"></div>
+<h1>Scheduler</h1><select ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity"></select><div calendar="calendar" dates="dates" granularity="selectedGranularity" width="width-30" height="50" class="calendar"></div>

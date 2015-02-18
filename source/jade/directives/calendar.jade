@@ -1,0 +1,12 @@
+// Created by Jonathan on 2/16/2015.
+
+table
+    thead
+        th(colspan="3") pst
+        th.timeline.hover-time
+    tr(ng-repeat="date in dates")
+        td(ng-if="$index == 0") {{date | date:'MMMM' }}
+        td(ng-if="$index != 0") {{date | firstOfMonth}}
+        td {{date | date:'EEEE'}}
+        td {{date | date:'dd'}}
+        td.scrub.hover-time(scrub="date" granularity="granularity" width="width" height="height")

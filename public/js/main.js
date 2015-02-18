@@ -5,7 +5,7 @@ var schedulenaut = angular.module('schedulenaut', [
     require('./scheduler').name
 ]).config(require('./common/routes'));
 
-},{"./common/routes":4,"./scheduler":8}],2:[function(require,module,exports){
+},{"./common/routes":5,"./scheduler":10}],2:[function(require,module,exports){
 'use strict';
 
 module.exports = angular.module('d3', [])
@@ -32,6 +32,18 @@ module.exports = angular.module('d3', [])
         }]);
 
 },{}],3:[function(require,module,exports){
+module.exports = angular.module('filters', [])
+    .filter('firstOfMonth', [function ($filter) {
+        return function (date) {
+            if (date.getDate() === 1)
+                return $filter('date')(date, 'MMMM');
+            else
+                return '';
+        };
+    }]);
+
+
+},{}],4:[function(require,module,exports){
 'use strict';
 
 module.exports = angular.module('moment', [])
@@ -57,7 +69,7 @@ module.exports = angular.module('moment', [])
             };
         }]);
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /**
  * Created by Jonathan on 2/3/2015.
  */
@@ -86,7 +98,7 @@ module.exports = function($stateProvider, $urlRouterProvider) {
         });
 };
 
-},{"../index/controller":5,"../scheduler/controller":6}],5:[function(require,module,exports){
+},{"../index/controller":6,"../scheduler/controller":8}],6:[function(require,module,exports){
 /**
  *
  * Created by Jonathan on 2/8/2015.
@@ -115,7 +127,125 @@ module.exports = function ($scope){
 
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+/**
+ * Created by Jonathan on 2/16/2015.
+ */
+
+'use strict';
+
+module.exports = function (d3Provider, momentProvider, $q) {
+    return {
+        restrict: 'C',
+        scope: {
+            height: '=',
+            width: '=',
+            granularity: '=',
+            dates: '='
+        },
+        templateUrl: 'public/directives/calendar.html',
+        link: function (scope, element, attrs) {
+
+
+            var promises = [d3Provider.d3(), momentProvider.moment()];
+            $q.all(promises).then(function (promise) {
+                var d3 = promise[0];
+                var moment = promise[1];
+
+                var el = d3.select(element[0]);
+                var hoverTime = d3.selectAll('.hover-time');
+                var rule = el.append('div')
+                    .attr('id', 'rule');
+                var tooltip = rule.append('div')
+                    .attr('id', 'tooltip');
+                var mouseX = 0;
+
+                var margin = {top: 10, right: 10, bottom: 20, left: 10};
+                var width = scope.width - margin.left - margin.right;
+                var height = scope.height - margin.top - margin.bottom;
+                var tooltipOffsetY = 0;
+
+                var beginTime = new Date();
+                beginTime.setHours(0);
+                beginTime.setMinutes(0);
+                beginTime.setSeconds(0);
+                var endTime = new Date(beginTime.getTime());
+                endTime.setHours(beginTime.getHours() + 23);
+
+                var x = d3.time.scale()
+                    .domain([beginTime, endTime])
+                    .clamp(true)
+                    .range([0, width]);
+
+                var mouseenter = function () {
+                    rule.style('display', 'block');
+                };
+                var mouseover = function ($event) {
+                    //mouseX = d3.mouse(this)[0];
+                    mouseX = d3.event.pageX - 9;
+                    var el = d3.select(this).node();
+                    var truePos = mouseX - margin.left - el.offsetLeft;
+                    var rawTime = x.invert(truePos);
+                    var momentTime= moment(rawTime);
+
+                    tooltip
+                        .style('top', (el.offsetTop + d3.event.offsetY + tooltipOffsetY) +'px')
+                        .html(momentTime.format('hh:mm a'));
+
+                    if(truePos < x.range()[0] || truePos > x.range()[1])
+                        rule.style('display', 'none');
+                    else
+                        rule.style('display', 'block');
+
+
+                };
+                var mouseleave = function () {
+                    rule.style('display', 'none');
+                };
+
+                var update = function (){
+                    rule.transition()
+                        .duration(5)
+                        .ease('cubic-in-out')
+                        .style('left', mouseX + 'px');
+                };
+
+                setInterval(update, 35);
+
+                hoverTime
+                    .on('mouseenter', mouseenter)
+                    .on('mousemove', mouseover)
+                    .on('mouseleave', mouseleave);
+
+                var svg = d3.select('.timeline').append('svg')
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                svg.append("rect")
+                    .attr("class", "grid-background")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(d3.svg.axis()
+                        .scale(x)
+                        .ticks(d3.time.hours, 6)
+                        .orient("top")
+                        .tickPadding(0))
+                    .selectAll("text")
+                    .attr("x", 6)
+                    .style("text-anchor", null);
+
+            });
+        }
+    };
+};
+
+},{}],8:[function(require,module,exports){
 /**
  * Created by Jonathan on 2/8/2015.
  */
@@ -156,7 +286,7 @@ module.exports = function ($scope){
     }
 };
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * Created by Jonathan on 2/9/2015.
  */
@@ -185,7 +315,7 @@ module.exports = function (){
     };
 };
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
  * Created by Jonathan on 1/25/2015.
  */
@@ -194,13 +324,15 @@ module.exports = function (){
 
 module.exports = angular.module('schedulenaut.scheduler', [
     require('../common/d3Provider').name,
-    require('../common/momentProvider').name
+   require('../common/momentProvider').name,
+    require('../common/filters').name
 ])
     .factory('helpers', require('./helpers'))
+    .directive('calendar', require('./calendar'))
     .directive('scrub', require('./scrub'));
     //.controller('ChartMgrCtrl', require('./ChartMgrCtrl'));
 
-},{"../common/d3Provider":2,"../common/momentProvider":3,"./helpers":7,"./scrub":9}],9:[function(require,module,exports){
+},{"../common/d3Provider":2,"../common/filters":3,"../common/momentProvider":4,"./calendar":7,"./helpers":9,"./scrub":11}],11:[function(require,module,exports){
 /**
  * Created by Jonathan on 1/25/2015.
  */
@@ -211,8 +343,8 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
     return {
         restrict: 'A',
         scope: {
-            height: '@',
-            width: '@',
+            height: '=',
+            width: '=',
             granularity: '=',
             scrub: '='
         },
@@ -359,11 +491,6 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                 var x = d3.time.scale()
                     .domain([scope.scrub, endDate])
                     .range([0, width]);
-
-                var header = scope.el.append('h3')
-                    .html(function () {
-                        return moment(scope.scrub).format('MMMM Do');
-                    });
 
                 var svg = scope.el.append("svg")
                     .attr("width", width + margin.left + margin.right)

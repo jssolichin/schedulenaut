@@ -8,8 +8,8 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
     return {
         restrict: 'A',
         scope: {
-            height: '@',
-            width: '@',
+            height: '=',
+            width: '=',
             granularity: '=',
             scrub: '='
         },
@@ -156,11 +156,6 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                 var x = d3.time.scale()
                     .domain([scope.scrub, endDate])
                     .range([0, width]);
-
-                var header = scope.el.append('h3')
-                    .html(function () {
-                        return moment(scope.scrub).format('MMMM Do');
-                    });
 
                 var svg = scope.el.append("svg")
                     .attr("width", width + margin.left + margin.right)
