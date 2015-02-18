@@ -44,12 +44,18 @@ gulp.task('less', function () {
         .pipe(gulp.dest('./public/css'));
 });
 
+var onError = function ( err ) {
+    gutil.log( gutil.colors.green( err.message ));
+    gutil.log.bind(gutil, 'Browserify Error');
+    this.emit( 'end' );
+};
+
 gulp.task('browserify', function () {
     var bundler = browserify(['./source/js/main.js']);
 
     return bundler.bundle()
         // log errors if they happen
-        .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+        .on('error', onError)
         .pipe(source('main.js'))
         // optional, remove if you dont want sourcemaps
         .pipe(buffer())
