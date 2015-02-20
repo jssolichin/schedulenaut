@@ -9,18 +9,17 @@ module.exports = function (d3Provider, momentProvider, $q) {
         restrict: 'C',
         scope: {
             height: '=',
-            width: '=',
             granularity: '=',
             dates: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
 
-
             var promises = [d3Provider.d3(), momentProvider.moment()];
             $q.all(promises).then(function (promise) {
                 var d3 = promise[0];
                 var moment = promise[1];
+
 
                 var el = d3.select(element[0]);
                 var hoverTime = d3.selectAll('.hover-time');
@@ -30,10 +29,10 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr('id', 'tooltip');
                 var mouseX = 0;
 
+
                 var margin = {top: 10, right: 10, bottom: 20, left: 10};
-                var width = scope.width - margin.left - margin.right;
                 var height = scope.height - margin.top - margin.bottom;
-                var tooltipOffsetY = 0;
+                var tooltipOffsetY = -100;
 
                 var beginTime = new Date();
                 beginTime.setHours(0);
@@ -44,8 +43,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
 
                 var x = d3.time.scale()
                     .domain([beginTime, endTime])
-                    .clamp(true)
-                    .range([0, width]);
+                    .clamp(true);
 
                 var mouseenter = function () {
                     rule.style('display', 'block');
@@ -73,14 +71,14 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     rule.style('display', 'none');
                 };
 
-                var update = function (){
+                var mouseUpdate = function (){
                     rule.transition()
                         .duration(5)
                         .ease('cubic-in-out')
                         .style('left', mouseX + 'px');
                 };
 
-                setInterval(update, 35);
+                setInterval(mouseUpdate, 35);
 
                 hoverTime
                     .on('mouseenter', mouseenter)
@@ -88,29 +86,49 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .on('mouseleave', mouseleave);
 
                 var svg = d3.select('.timeline').append('svg')
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
+                    .attr("height", height + margin.top + margin.bottom);
+
+                var g = svg.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                svg.append("rect")
+                var gridBackground = g.append("rect")
                     .attr("class", "grid-background")
-                    .attr("width", width)
                     .attr("height", height);
 
-                svg.append("g")
+                var xAxis = g.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.svg.axis()
-                        .scale(x)
-                        .ticks(d3.time.hours, 6)
-                        .orient("top")
-                        .tickPadding(0))
+                    .attr("transform", "translate(0," + height + ")");
+
+                xAxis
                     .selectAll("text")
                     .attr("x", 6)
                     .style("text-anchor", null);
 
+                var update = function (){
+                    scope.width = window.innerWidth - hoverTime.node().offsetLeft - 40;
+                    var width = scope.width - margin.left - margin.right;
+
+                    x.range([0, width]);
+
+                    svg.attr("width", width + margin.left + margin.right);
+
+                    gridBackground
+                        .transition()
+                        .attr("width", width);
+
+                    xAxis
+                        .transition()
+                        .call(d3.svg.axis()
+                            .scale(x)
+                            .ticks(d3.time.hours, 6)
+                            .orient("top")
+                            .tickPadding(0));
+                };
+
+                update();
+                scope.$on('resize', update);
             });
+
         }
     };
 };

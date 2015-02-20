@@ -2,9 +2,8 @@
  * Created by Jonathan on 2/8/2015.
  */
 'use strict';
-module.exports = function ($scope){
-    $scope.width = window.innerWidth;
-    $scope.height = window.innerHeight;
+module.exports = function ($scope, $rootScope){
+
     $scope.optionGranularity = [
         {
             name: '15 minutes',
@@ -36,4 +35,7 @@ module.exports = function ($scope){
 
         $scope.dates.push(nextDate);
     }
+
+    $scope.$emit('requestWindowSize', true);
+
 };

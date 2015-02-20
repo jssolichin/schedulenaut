@@ -22,6 +22,12 @@ module.exports = function ($scope){
 
     //scheduler
     $scope.width = window.innerWidth-30;
-    $scope.height = window.innerHeight;
+    $scope.height = 50;
+
+    var update = function (){
+        $scope.width = window.innerWidth-30;
+    };
+
+    $scope.$on('resize', update);
 
 };

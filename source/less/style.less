@@ -1,9 +1,16 @@
 @import (less) "scheduler/scrub.less";
 
+@radius: 3px;
+
 body {font-family: "Trebuchet MS", Verdana, sans-serif; color: #333; }
 .calendar { position: relative;
+  table {border-collapse: collapse;
+    td,th {border-bottom: 1px solid #333; position: relative;
+      }
+    }
+  }
   #rule { border-left: 1px dotted #333; display: none; position: absolute; top: 0; bottom: 0;  pointer-events: none;
-    #tooltip { position: absolute; border: 1px dotted #333; border-left: 0px; background: rgba(255,255,255,.4); border-radius: 0px 3px 3px 0px; padding: 5px; white-space: nowrap; font-size: .8em;}
+    #tooltip { position: absolute; border: 1px dotted #333; border-left: 0px; background: rgba(255,255,255,.4); border-radius: 0px @radius @radius 0px; padding: 5px; white-space: nowrap; font-size: .8em; pointer-events: none;}
   }
 }
 

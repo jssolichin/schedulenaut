@@ -154,49 +154,79 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                 endDate.setHours(endDate.getHours() + 23);
 
                 var x = d3.time.scale()
-                    .domain([scope.scrub, endDate])
-                    .range([0, width]);
+                    .domain([scope.scrub, endDate]);
 
-                var svg = scope.el.append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
+                var svg = scope.el.append("svg");
+
+                var g = svg
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                svg.append("rect")
-                    .attr("class", "grid-background")
-                    .attr("width", width)
-                    .attr("height", height);
+                var gridBackground = g.append("rect")
+                    .attr("class", "grid-background");
 
-                svg.append("g")
+                var xgrid = g.append("g")
                     .attr("class", "x grid")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.svg.axis()
-                        .scale(x)
-                        .orient("bottom")
-                        .ticks(d3.time.minute, 30)
-                        .tickSize(-height)
-                        .tickFormat(""))
+                    .attr("transform", "translate(0," + height + ")");
+
+                    xgrid
                     .selectAll(".tick")
                     .classed("minor", function (d) {
                         return d.getHours();
                     });
 
-                svg.append("g")
+                var xaxis = g.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.svg.axis()
-                        .scale(x)
-                        .orient("bottom")
-                        .tickPadding(0))
+                    .attr("transform", "translate(0," + height + ")");
+
+                    xaxis
                     .selectAll("text")
                     .attr("x", 6)
                     .style("text-anchor", null);
 
-                var brushesContainer = svg.append('g')
+                var brushesContainer = g.append('g')
                     .attr('class', 'brushes');
 
-                newBrush(brushesContainer);
+
+                var update = function(){
+                    margin = {top: 10, right: 10, bottom: 20, left: 10};
+                    width = parseInt(scope.width) - margin.left - margin.right;
+                    height = parseInt(scope.height) - margin.top - margin.bottom;
+
+                    x.range([0, width]);
+
+                    xgrid
+                        .transition()
+                        .call(d3.svg.axis()
+                            .scale(x)
+                            .orient("bottom")
+                            .ticks(d3.time.minute, 30)
+                            .tickSize(-height)
+                            .tickFormat(""));
+
+                    xaxis
+                        .transition()
+                        .call(d3.svg.axis()
+                            .scale(x)
+                            .orient("bottom")
+                            .tickPadding(0));
+
+                    svg
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom);
+
+                    gridBackground
+                        .transition()
+                        .attr("width", width)
+                        .attr("height", height);
+
+                    if (brushes.length < 1)
+                    newBrush(brushesContainer);
+
+                };
+
+                scope.$watch('width', update);
+                scope.$on('resize', update);
 
             }); //end promises
         } //end link function
