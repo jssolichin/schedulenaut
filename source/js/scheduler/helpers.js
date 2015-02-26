@@ -4,6 +4,26 @@
 
 module.exports = function (){
     return {
+        getEdge: function (brush, brushes){
+            var edge = [];
+
+            //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
+            for (var i = 0; i < brushes.length; i++) {
+                var otherBrush = brushes[i];
+
+                if (otherBrush !== brush) {
+                    if (otherBrush.extent()[1].getTime() <= brush.extent.start[0].getTime()) {
+                        if (edge[0] !== undefined && otherBrush.extent()[1].getTime() > edge[0].getTime() || edge[0] === undefined)
+                            edge[0] = otherBrush.extent()[1];
+                    }
+                    else if (otherBrush.extent()[0].getTime() > brush.extent.start[0].getTime()) {
+                        if (edge[1] !== undefined && otherBrush.extent()[0].getTime() < edge[1].getTime() || edge[1] === undefined)
+                            edge[1] = otherBrush.extent()[0];
+                    }
+                }
+            }
+            return edge;
+        },
         round: function (date, interval){
             //d3 does not have interval between minutes and hours.
             //this function is a shim to get arbitrary minutes interval (e.g. 15 minutes, 30 minutes (half-hour)).

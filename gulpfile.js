@@ -50,8 +50,9 @@ var onError = function ( err ) {
     this.emit( 'end' );
 };
 
+var bundler = browserify({debug: true}).add('./source/js/main.js');
+
 gulp.task('browserify', function () {
-    var bundler = browserify(['./source/js/main.js']);
 
     return bundler.bundle()
         // log errors if they happen

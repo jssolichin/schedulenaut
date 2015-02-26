@@ -1,0 +1,24 @@
+// Created by Jonathan on 2/20/2015.
+
+.popover
+    .time-picker.clearfix
+        input.left.time.start(type="text" id="start")
+        span.left(ng-class="{link: link == 'start'}" ng-click="changeLink()") -
+        input.left.time.end(type="text" id="end")
+
+    ul.clearfix
+        li.left
+            ul
+                li
+                    a(ng-click="deleteBrush()").button.subtle.delete delete
+        li.right
+            ul
+                li
+                    a(ng-click="preferred = false" ng-class="{'on': !preferred}").button
+                        span.symbol.free
+                        | available
+                li
+                    a(ng-click="preferred = true" ng-class="{'on': preferred}").button
+                        span.symbol.preferred
+                            //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
+                        | preferred

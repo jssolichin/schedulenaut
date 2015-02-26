@@ -29,10 +29,9 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr('id', 'tooltip');
                 var mouseX = 0;
 
-
                 var margin = {top: 10, right: 10, bottom: 20, left: 10};
                 var height = scope.height - margin.top - margin.bottom;
-                var tooltipOffsetY = -100;
+                var tooltipOffsetY = -60;
 
                 var beginTime = new Date();
                 beginTime.setHours(0);
@@ -57,7 +56,12 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     var momentTime= moment(rawTime);
 
                     tooltip
-                        .style('top', (el.offsetTop + d3.event.offsetY + tooltipOffsetY) +'px')
+                        .style('top', function(){
+                            var posY = el.offsetTop + d3.event.offsetY + tooltipOffsetY;
+
+                            //limit tooltip from going above
+                            return (posY < 30 ? 30 : posY ) +'px';
+                        })
                         .html(momentTime.format('hh:mm a'));
 
                     if(truePos < x.range()[0] || truePos > x.range()[1])
@@ -85,7 +89,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .on('mousemove', mouseover)
                     .on('mouseleave', mouseleave);
 
-                var svg = d3.select('.timeline').append('svg')
+                var svg = d3.select('.timeline').selectAll('svg').data([0]).enter().append('svg')
                     .attr("height", height + margin.top + margin.bottom);
 
                 var g = svg.append("g")

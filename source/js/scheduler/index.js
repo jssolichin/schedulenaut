@@ -11,4 +11,5 @@ module.exports = angular.module('schedulenaut.scheduler', [
 ])
     .factory('helpers', require('./helpers'))
     .directive('calendar', require('./calendar'))
-    .directive('scrub', require('./scrub'));
+    .directive('scrub', require('./scrub'))
+    .directive('popoverWrapper', require('./scrub-popoverWrapper'));

@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function (helpers, d3Provider, momentProvider, $q) {
+module.exports = function (helpers, d3Provider, $q, $compile) {
     return {
         restrict: 'A',
         scope: {
@@ -15,16 +15,17 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
         },
         link: function (scope, element, attrs) {
 
-            var promises = [d3Provider.d3(), momentProvider.moment()];
-            $q.all(promises).then(function (promise) {
-                var d3 = promise[0];
-                var moment = promise[1];
+            d3Provider.d3().then(function (d3) {
 
                 scope.el = d3.select(element[0]);
 
                 var brushes = [];
 
                 var newBrush = function (container) {
+                    var brushstart = function () {
+                        brush.mouseStart = d3.event.sourceEvent.x;
+                    };
+
                     var brushed = function () {
                         var extent0 = brush.extent(),
                             extent1;
@@ -72,24 +73,9 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                         //make sure that event blocks (brush) do not overlap
                         //brush.extent.start is a property created that holds the original extent of the bar when brush start
                         if (brush.extent.start) {
+
                             //time where we can not go pass as to not overlap
-                            var edge = [];
-
-                            //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
-                            for (var i = 0; i < brushes.length; i++) {
-                                var otherBrush = brushes[i];
-
-                                if (otherBrush !== brush) {
-                                    if (otherBrush.extent()[1].getTime() <= brush.extent.start[0].getTime()) {
-                                        if (edge[0] !== undefined && otherBrush.extent()[1].getTime() > edge[0].getTime() || edge[0] === undefined)
-                                            edge[0] = otherBrush.extent()[1];
-                                    }
-                                    else if (otherBrush.extent()[0].getTime() > brush.extent.start[0].getTime()) {
-                                        if (edge[1] !== undefined && otherBrush.extent()[0].getTime() < edge[1].getTime() || edge[1] === undefined)
-                                            edge[1] = otherBrush.extent()[0];
-                                    }
-                                }
-                            }
+                            var edge = helpers.getEdge(brush, brushes);
 
                             //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
                             if (edge[1] !== undefined && extent1[1].getTime() > edge[1].getTime()) {
@@ -109,6 +95,9 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
 
                     var brushend = function () {
 
+                        //if mouse hasn't moved since mouse down, it is a click (brush doesn't have a click event, so we fake one)
+                        if (brush.mouseStart == d3.event.sourceEvent.x)
+                            popoverHandler();
 
                         gBrush.select('.background')
                             .style('pointer-events', 'none');
@@ -125,30 +114,97 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                             newBrush(container);
                     };
 
+                    var popoverHandler = function () {
+                        var calculateMidpoint = function () {
+                            var brushOffsetX = parseInt(gBrush.select('.extent').attr('x'));
+                            var brushWidth = parseInt(gBrush.select('.extent').attr('width'));
+                            return parseInt(margin.left + brushOffsetX + (brushWidth / 2));
+                        };
+
+                        var getOtherBrushesExtent = function () {
+                            var otherExistingBrush = [];
+
+                            for (var i = 0; i < brushes.length - 1; i++) {
+                                var otherBrush = brushes[i];
+                                if (otherBrush !== brush)
+                                    otherExistingBrush.push(otherBrush.extent());
+                            }
+
+                            return otherExistingBrush;
+                        };
+
+                        var newScope = scope.$new(true);
+                        newScope.x = calculateMidpoint();
+                        newScope.start = brush.extent()[0];
+                        newScope.end = brush.extent()[1];
+                        newScope.preferred = brush.preferred;
+                        newScope.step = scope.granularity;
+                        newScope.disabled = getOtherBrushesExtent();
+                        newScope.edge = helpers.getEdge(brush, brushes);
+                        newScope.link = "start";
+
+                        var $el = $compile('<div class="popover-wrapper"></div>')(newScope);
+
+                        newScope.$watch("preferred", function () {
+                            brush.preferred = newScope.preferred;
+                            updatePreferred();
+                        });
+                        newScope.$watchGroup(['start', 'end'], function () {
+                            updateExtent([newScope.start, newScope.end]);
+                        });
+                        newScope.$on('deleteBrush', deleteBrush);
+
+                        angular.element(scope.el.node()).append($el);
+                    };
+
+                    var deleteBrush = function (){
+                        for(var i = 0; i < brushes.length; i++){
+                            if(brushes[i] == brush)
+                                brushes.splice(i,1);
+                        }
+                        gBrush.remove();
+                    };
+
+                    var updatePreferred = function () {
+                        gBrush
+                            .attr("class", function () {
+                                return brush.preferred ? 'brush preferred' : 'brush';
+                            });
+                    };
+
+                    var updateExtent = function (extent) {
+                        gBrush.call(brush.extent(extent));
+                        brush.extent.start = brush.extent();
+                    };
+
                     var brush = d3.svg.brush()
                         .x(x)
+                        .on("brushstart", brushstart)
                         .on("brush", brushed)
                         .on("brushend", brushend);
+
+                    brush.preferred = true;
 
                     brushes.push(brush);
 
                     var gBrush = container.insert("g", '.brush')
-                        .attr("class", "brush")
-                        .on("click", function () {
+                        .on('click', function () {
                             d3.event.stopPropagation();
+                        })
+                        .attr("class", function () {
+                            return brush.preferred ? 'brush preferred' : 'brush';
                         })
                         .call(brush);
 
-                    gBrush.selectAll("rect")
+                    gBrush.selectAll('rect')
                         .attr("height", height);
-
 
                     return brush;
                 };
 
-                var margin = {top: 10, right: 10, bottom: 20, left: 10},
-                    width = parseInt(scope.width) - margin.left - margin.right,
-                    height = parseInt(scope.height) - margin.top - margin.bottom;
+                var margin = {top: 10, right: 10, bottom: 10, left: 10};
+                var width;
+                var height = parseInt(scope.height) - margin.top - margin.bottom;
 
                 var endDate = new Date(scope.scrub.getTime());
                 endDate.setHours(endDate.getHours() + 23);
@@ -169,27 +225,28 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                     .attr("class", "x grid")
                     .attr("transform", "translate(0," + height + ")");
 
-                    xgrid
+                xgrid
                     .selectAll(".tick")
                     .classed("minor", function (d) {
                         return d.getHours();
                     });
 
-                var xaxis = g.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")");
+                /*
+                 var xaxis = g.append("g")
+                 .attr("class", "x axis")
+                 .attr("transform", "translate(0," + height + ")");
 
-                    xaxis
-                    .selectAll("text")
-                    .attr("x", 6)
-                    .style("text-anchor", null);
+                 xaxis
+                 .selectAll("text")
+                 .attr("x", 6)
+                 .style("text-anchor", null);
+                 */
 
                 var brushesContainer = g.append('g')
                     .attr('class', 'brushes');
 
 
-                var update = function(){
-                    margin = {top: 10, right: 10, bottom: 20, left: 10};
+                var update = function () {
                     width = parseInt(scope.width) - margin.left - margin.right;
                     height = parseInt(scope.height) - margin.top - margin.bottom;
 
@@ -200,16 +257,18 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                         .call(d3.svg.axis()
                             .scale(x)
                             .orient("bottom")
-                            .ticks(d3.time.minute, 30)
+                            .ticks(d3.time.hour)
                             .tickSize(-height)
                             .tickFormat(""));
 
-                    xaxis
-                        .transition()
-                        .call(d3.svg.axis()
-                            .scale(x)
-                            .orient("bottom")
-                            .tickPadding(0));
+                    /*
+                     xaxis
+                     .transition()
+                     .call(d3.svg.axis()
+                     .scale(x)
+                     .orient("bottom")
+                     .tickPadding(0));
+                     */
 
                     svg
                         .attr("width", width + margin.left + margin.right)
@@ -221,7 +280,7 @@ module.exports = function (helpers, d3Provider, momentProvider, $q) {
                         .attr("height", height);
 
                     if (brushes.length < 1)
-                    newBrush(brushesContainer);
+                        newBrush(brushesContainer);
 
                 };
 
