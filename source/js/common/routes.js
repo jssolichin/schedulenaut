@@ -20,6 +20,17 @@ module.exports = function($stateProvider, $urlRouterProvider) {
             templateUrl: "public/partials/scheduler.html",
             controller: require('../scheduler/controller')
         })
+        .state('event', {
+            url: "/event/:id",
+            resolve: {
+                event: ['$stateParams', 'eventsService',
+                    function($stateParams, eventsService) {
+                        return eventsService.getEvent($stateParams.id);
+                    }]
+            },
+            templateUrl: "public/partials/event.html",
+            controller: require('../event/controller')
+        })
         .state('about', {
             url: "/about",
             templateUrl: "public/partials/about.html"

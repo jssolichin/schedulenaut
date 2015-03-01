@@ -7,7 +7,8 @@
 module.exports = angular.module('schedulenaut.scheduler', [
     require('../common/d3Provider').name,
     require('../common/momentProvider').name,
-    require('../common/filters').name
+    require('../common/filters').name,
+    require('../scheduler/services').name
 ])
     .factory('helpers', require('./helpers'))
     .directive('calendar', require('./calendar'))
