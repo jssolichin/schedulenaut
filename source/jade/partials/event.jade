@@ -1,8 +1,8 @@
 //
    Created by Jonathan on 2/27/2015.
 
-h1 {{name}}
-p {{description}}
+h1(editable-text="event.name" onaftersave="updateEvent()") {{event.name || "Add an Event Name" }}
+p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
 select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
 .calendar( calendar dates="dates" granularity="selectedGranularity" height="50" )
 

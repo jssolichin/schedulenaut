@@ -25,7 +25,7 @@ module.exports = function($stateProvider, $urlRouterProvider) {
             resolve: {
                 event: ['$stateParams', 'eventsService',
                     function($stateParams, eventsService) {
-                        return eventsService.getEvent($stateParams.id);
+                        return eventsService.getEvent($stateParams);
                     }]
             },
             templateUrl: "public/partials/event.html",

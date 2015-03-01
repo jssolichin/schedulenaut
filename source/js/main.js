@@ -1,5 +1,6 @@
 var schedulenaut = angular.module('schedulenaut', [
         'ui.router',
+        'xeditable',
         require('./scheduler').name
     ],
     require('./common/http-request-transformer'))

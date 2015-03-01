@@ -21,6 +21,6 @@ module.exports = function ($scope, eventsService, $state) {
         var p = eventsService.createEvent(event);
         p.then(function (d) {
             $state.go('event', {id: d.id});
-        })
+        });
     };
 };

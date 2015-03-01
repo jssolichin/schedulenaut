@@ -15,8 +15,12 @@ module.exports = angular.module('events', [])
             return p.promise;
         };
 
+        this.updateEvent = function (event){
+            return $http.put('/api/event/' + event.id, JSON.stringify(event));
+        };
+
         this.getEvent = function(event) {
-            return $http.get('/api/event/' + event);
+            return $http.get('/api/event/' + event.id);
         };
 
     }]);

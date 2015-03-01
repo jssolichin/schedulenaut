@@ -15,9 +15,26 @@ router.get('/event/:id', function (req, res) {
     sqlTest = "SELECT * FROM events WHERE id = '" + id + "'";
 
     db.get(sqlTest, function (err, row) {
-        console.log(row)
         if (row === undefined)
             res.json({message: '404 not found'});
+        else
+            res.json(row);
+    });
+
+});
+router.put('/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    var updateQuery = '';
+    for (key in req.body){
+        updateQuery += key + " = '" + req.body[key] + "',";
+    }
+
+    sqlUpdate = "UPDATE events SET " + updateQuery.substring(0, updateQuery.length-1) + " WHERE id = '" + id + "'";
+
+    db.run(sqlUpdate, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
         else
             res.json(row);
     });

@@ -4,10 +4,14 @@
 
 'use strict';
 
-module.exports = function (event, $scope, $rootScope){
-    $scope.name = event.data.name;
-    $scope.description = event.data.description || "Add a Description";
-    $scope.dates = eval(event.data.dates).map(function(d){return new Date(d);});
+module.exports = function (event, eventsService, $scope, $rootScope){
+    $scope.event = event.data;
+
+    $scope.updateEvent = function (){
+        eventsService.updateEvent(event.data);
+    };
+
+    $scope.dates = JSON.parse(event.data.dates).map(function(d){return new Date(d);});
 
     $scope.optionGranularity = [
         {
