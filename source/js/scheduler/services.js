@@ -3,12 +3,15 @@
  */
 
 module.exports = angular.module('events', [])
-    .service('eventsService', ['$http', function($http) {
-        this.saveEvent = function(event) {
-            if(event.name)
-                return $http.post('/api/event/'+event.name, event);
-            else
-                return $http.post('/api/event', event);
+    .service('eventsService', ['$http', '$q', function($http, $q) {
+        this.createEvent = function(event) {
+            var p = $q.defer();
+
+            $http.post('/api/event', event).success(function(response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
         };
 
         this.getEvent = function(event) {

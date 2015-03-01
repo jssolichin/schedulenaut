@@ -1,10 +1,10 @@
 //Landing Page Demo
-form
-    ul
-        li
-            input(ng-model="title" placeholder="Create a new event...")
-        li
-            input(ng-model="description" placeholder="Event Description")
+form(name="eventForm" ng-submit="submitData(event)" novalidate)
+    label(for="Name")
+    input(type="input" name="name" ng-model="event.name" placeholder="Create a new event..." required)
+    label(for="Description")
+    input(type="input" name="description" ng-model="event.description" placeholder="Event Description")
+    button(type="submit" value="submit" ng-disabled="eventForm.$invalid" ) Create Event
 
 multiple-date-picker(day-click="logInfos")
 

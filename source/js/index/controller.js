@@ -4,7 +4,13 @@
  */
 'use strict';
 
-module.exports = function ($scope){
+module.exports = function ($scope, eventsService){
+    $scope.submitData = function (event)
+    {
+        var p = eventsService.createEvent(event);
+        p.then(function(d){console.log(d)})
+    };
+
     $scope.dates = [];
     $scope.logInfos = function (event, date){
         event.preventDefault(); // prevent the select to happen

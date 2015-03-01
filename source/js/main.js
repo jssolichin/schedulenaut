@@ -1,8 +1,9 @@
 var schedulenaut = angular.module('schedulenaut', [
-    'multipleDatePicker',
-    'ui.router',
-    require('./scheduler').name
-])
+        'multipleDatePicker',
+        'ui.router',
+        require('./scheduler').name
+    ],
+    require('./common/http-request-transformer'))
     .controller('mainController', function ($scope, $rootScope) {
         var resizeDelay = 250;
         window.resizeEvt = undefined;

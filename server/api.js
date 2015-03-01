@@ -41,7 +41,7 @@ router.post('/event', function (req, res) {
         });
     });
 
-    res.json({message: 'hooray! welcome to our api!'});
+    res.json({id: id});
 });
 
 router.use('/api', router);
