@@ -4,7 +4,7 @@ table
     thead
         th(colspan="3") pst
         th.timeline.hover-time
-    tr(ng-repeat="date in dates")
+    tr(ng-repeat="date in dates | orderBy: date")
         td(ng-if="$index == 0") {{date | date:'MMMM' }}
         td(ng-if="$index != 0") {{date | firstOfMonth}}
         td {{date | date:'EEEE'}}

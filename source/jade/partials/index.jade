@@ -4,12 +4,6 @@ form(name="eventForm" ng-submit="submitData(event)" novalidate)
     input(type="input" name="name" ng-model="event.name" placeholder="Create a new event..." required)
     label(for="Description")
     input(type="input" name="description" ng-model="event.description" placeholder="Event Description")
-    button(type="submit" value="submit" ng-disabled="eventForm.$invalid" ) Create Event
+    #calendar
+    button(type="submit" value="submit" ng-disabled="eventForm.$invalid || event.dates == undefined || event.dates.length < 1" ) Create Event
 
-multiple-date-picker(day-click="logInfos")
-
-//Event Scheduler Demo
-hr
-h1(ng-bind="title")
-p(ng-bind="description")
-.scrub(ng-repeat="date in dates" scrub="date" width="width" height="height")

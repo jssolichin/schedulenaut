@@ -31,7 +31,7 @@ router.post('/event', function (req, res) {
         if(rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('"+id+"', '"+req.body.name+"', 1, -1, null)"
+        sqlRequest = "INSERT INTO 'events' values ('"+id+"', '"+req.body.name+"', 1, -1, '"+req.body.dates+"',null)"
 
         db.run(sqlRequest, function (err){
             if(err !== null)
@@ -39,9 +39,9 @@ router.post('/event', function (req, res) {
             else
                 console.log(id + " Added");
         });
-    });
 
-    res.json({id: id});
+        res.json({id: id});
+    });
 });
 
 router.use('/api', router);

@@ -4,36 +4,23 @@
  */
 'use strict';
 
-module.exports = function ($scope, eventsService){
-    $scope.submitData = function (event)
-    {
+module.exports = function ($scope, eventsService, $state) {
+    $scope.event = {};
+
+    $('#calendar').datepicker({
+        startDate: new Date(),
+        multidate: true,
+        todayHighlight: true
+    })
+        .on('changeDate', function () {
+            $scope.event.dates = $(this).datepicker('getDates');
+            $scope.$apply();
+        });
+
+    $scope.submitData = function (event) {
         var p = eventsService.createEvent(event);
-        p.then(function(d){console.log(d)})
+        p.then(function (d) {
+            $state.go('event', {id: d.id});
+        })
     };
-
-    $scope.dates = [];
-    $scope.logInfos = function (event, date){
-        event.preventDefault(); // prevent the select to happen
-
-        if(!date.selected)
-            $scope.dates.push(date.toDate());
-        else {
-            var index= $scope.dates.indexOf(date.toDate());
-            $scope.dates.splice(index, 1);
-        }
-
-        //reproduce the standard behavior
-        date.selected = !date.selected;
-    };
-
-    //scheduler
-    $scope.width = window.innerWidth-30;
-    $scope.height = 50;
-
-    var update = function (){
-        $scope.width = window.innerWidth-30;
-    };
-
-    $scope.$on('resize', update);
-
 };

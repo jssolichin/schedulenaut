@@ -2,4 +2,7 @@
    Created by Jonathan on 2/27/2015.
 
 h1 {{name}}
+p {{description}}
+select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
+.calendar( calendar dates="dates" granularity="selectedGranularity" height="50" )
 

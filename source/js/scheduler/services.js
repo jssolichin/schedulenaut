@@ -5,6 +5,7 @@
 module.exports = angular.module('events', [])
     .service('eventsService', ['$http', '$q', function($http, $q) {
         this.createEvent = function(event) {
+            event.dates = JSON.stringify(event.dates);
             var p = $q.defer();
 
             $http.post('/api/event', event).success(function(response) {
