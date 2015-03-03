@@ -4,7 +4,7 @@
  */
 'use strict';
 
-module.exports = function ($scope, eventsService, $state) {
+module.exports = function ($scope, eventsService, brushesService, $state) {
     $scope.event = {};
 
     $('#calendar').datepicker({
@@ -18,8 +18,9 @@ module.exports = function ($scope, eventsService, $state) {
         });
 
     $scope.submitData = function (event) {
-        var p = eventsService.createEvent(event);
+        var p = eventsService.create(event);
         p.then(function (d) {
+            brushesService.create({event_id: d.id});
             $state.go('event', {id: d.id});
         });
     };

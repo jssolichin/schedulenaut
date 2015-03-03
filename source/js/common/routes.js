@@ -25,7 +25,26 @@ module.exports = function($stateProvider, $urlRouterProvider) {
             resolve: {
                 event: ['$stateParams', 'eventsService',
                     function($stateParams, eventsService) {
-                        return eventsService.getEvent($stateParams);
+                        return eventsService.get($stateParams);
+                    }],
+                previousExtents: ['$stateParams', 'brushesService', '$q',
+                    function ($stateParams, brushesService, $q) {
+                        var p = $q.defer();
+
+                        //Date objects are stored in string in sqlite, we need to convert it back to date objects
+                        var serverData = brushesService.get($stateParams);
+                        serverData.then(function (stringTime) {
+                            var convertedExtent = JSON.parse(stringTime.data.data).map(function (day) {
+                                return day.map(function (block) {
+                                    return block.map(function (extent) {
+                                        return new Date(extent);
+                                    });
+                                });
+                            });
+                            p.resolve(convertedExtent);
+                        });
+
+                        return p.promise;
                     }]
             },
             templateUrl: "public/partials/event.html",

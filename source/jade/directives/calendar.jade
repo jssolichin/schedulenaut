@@ -9,4 +9,4 @@ table
         td(ng-if="$index != 0") {{date | firstOfMonth}}
         td {{date | date:'EEEE'}}
         td {{date | date:'dd'}}
-        td.scrub.hover-time(scrub="date" granularity="granularity" width="width" height="height")
+        td.scrub.hover-time(scrub="date" granularity="granularity" width="width" height="height" brushes="brushes[$index]" on-end="onEnd" previous-extent ="previousExtents[$index]")

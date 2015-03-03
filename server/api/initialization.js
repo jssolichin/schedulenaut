@@ -18,7 +18,7 @@ module.exports = function(){
                 '(id varchar(255) NOT NULL PRIMARY KEY, ' +
                 'name varchar(255) NOT NULL,' +
                 'open boolean NOT NULL,' +
-                'creator integer NOT NULL,' +
+                'creator_id integer NOT NULL,' +
                 'dates varchar(255) NOT NULL,' +
                 'description varchar(255)' +
                 ')', function(err) {
@@ -35,5 +35,53 @@ module.exports = function(){
             }
         });
 
+    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='users'",
+        function(err, rows) {
+            if(err !== null) {
+                console.log(err);
+            }
+            else if(rows === undefined) {
+                db.run('CREATE TABLE "users" ' +
+                '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+                'name varchar(255) NOT NULL,' +
+                'brushes_id varchar(255)' +
+                ')', function(err) {
+                    if(err !== null) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("SQL Table 'users' initialized.");
+                    }
+                });
+            }
+            else {
+                console.log("SQL Table 'users' already initialized.");
+            }
+        });
+
+    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='brushes'",
+        function(err, rows) {
+            if(err !== null) {
+                console.log(err);
+            }
+            else if(rows === undefined) {
+                db.run('CREATE TABLE "brushes" ' +
+                '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+                'event_id varchar(255) NOT NULL, ' +
+                'user_id varchar(255) NOT NULL, ' +
+                'data varchar(255) NOT NULL' +
+                ')', function(err) {
+                    if(err !== null) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("SQL Table 'brushes' initialized.");
+                    }
+                });
+            }
+            else {
+                console.log("SQL Table 'brushes' already initialized.");
+            }
+        });
     return db;
 };

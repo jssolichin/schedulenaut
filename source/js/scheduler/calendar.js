@@ -10,7 +10,10 @@ module.exports = function (d3Provider, momentProvider, $q) {
         scope: {
             height: '=',
             granularity: '=',
-            dates: '='
+            dates: '=',
+            brushes: '=',
+            onEnd: '=',
+            previousExtents: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {

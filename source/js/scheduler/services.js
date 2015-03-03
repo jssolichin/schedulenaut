@@ -4,7 +4,7 @@
 
 module.exports = angular.module('events', [])
     .service('eventsService', ['$http', '$q', function($http, $q) {
-        this.createEvent = function(event) {
+        this.create = function(event) {
             event.dates = JSON.stringify(event.dates);
             var p = $q.defer();
 
@@ -15,12 +15,32 @@ module.exports = angular.module('events', [])
             return p.promise;
         };
 
-        this.updateEvent = function (event){
+        this.update = function (event){
             return $http.put('/api/event/' + event.id, JSON.stringify(event));
         };
 
-        this.getEvent = function(event) {
+        this.get = function(event) {
             return $http.get('/api/event/' + event.id);
+        };
+
+    }])
+    .service('brushesService', ['$http', '$q', function ($http, $q) {
+        this.create = function (brushes) {
+            var p = $q.defer();
+
+            $http.post('/api/brushes', brushes).success(function (response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
+        };
+
+        this.update = function (brushes) {
+            return $http.put('/api/brushes/' + brushes.event_id, JSON.stringify(brushes));
+        };
+
+        this.get = function (brushes) {
+            return $http.get('/api/brushes/' + brushes.id);
         };
 
     }]);

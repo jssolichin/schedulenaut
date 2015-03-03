@@ -4,14 +4,36 @@
 
 'use strict';
 
-module.exports = function (event, eventsService, $scope, $rootScope){
-    $scope.event = event.data;
+module.exports = function (event,previousExtents,  eventsService, brushesService, $scope, $rootScope) {
 
-    $scope.updateEvent = function (){
-        eventsService.updateEvent(event.data);
+    //options
+    $scope.selectedGranularity = 60;
+
+    $scope.brushes = {event_id: event.data.id, user_id: '-1', data: []};
+    $scope.event = event.data;
+    $scope.previousExtents = previousExtents;
+
+    //When we finish brushing, this callback will upload to server
+    $scope.endBrush = function () {
+
+        //We just need to store the brush extent, and not the who brush function
+        var x = $scope.brushes.data.map(function (d) {
+            return d.map(function(d){return d.extent();});
+        });
+
+        //send it to the server
+        brushesService.update({event_id: event.data.id, data: x});
     };
 
-    $scope.dates = JSON.parse(event.data.dates).map(function(d){return new Date(d);});
+    //When we edit an event properties, upload it to server
+    $scope.updateEvent = function () {
+        eventsService.update(event.data);
+    };
+
+    //convert date string stored on server into date objects
+    $scope.dates = JSON.parse(event.data.dates).map(function (d) {
+        return new Date(d);
+    });
 
     $scope.optionGranularity = [
         {
@@ -27,5 +49,5 @@ module.exports = function (event, eventsService, $scope, $rootScope){
             value: 60
         }
     ];
-    $scope.selectedGranularity = 60;
+
 };

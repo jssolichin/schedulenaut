@@ -11,19 +11,23 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
             height: '=',
             width: '=',
             granularity: '=',
-            scrub: '='
+            scrub: '=',
+            brushes: '=',
+            onEnd: '=',
+            previousExtent: '='
         },
         link: function (scope, element, attrs) {
+
+            scope.brushes = [];
 
             d3Provider.d3().then(function (d3) {
 
                 scope.el = d3.select(element[0]);
 
-                var brushes = [];
-
                 var newBrush = function (container) {
                     var brushstart = function () {
-                        brush.mouseStart = d3.event.sourceEvent.x;
+                        if(d3.event.sourceEvent)
+                            brush.mouseStart = d3.event.sourceEvent.x;
                     };
 
                     var brushed = function () {
@@ -75,7 +79,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         if (brush.extent.start) {
 
                             //time where we can not go pass as to not overlap
-                            var edge = helpers.getEdge(brush, brushes);
+                            var edge = helpers.getEdge(brush, scope.brushes);
 
                             //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
                             if (edge[1] !== undefined && extent1[1].getTime() > edge[1].getTime()) {
@@ -95,8 +99,11 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                     var brushend = function () {
 
+                        //Callback function
+                        scope.onEnd();
+
                         //if mouse hasn't moved since mouse down, it is a click (brush doesn't have a click event, so we fake one)
-                        if (brush.mouseStart == d3.event.sourceEvent.x)
+                        if (d3.event.sourceEvent && brush.mouseStart == d3.event.sourceEvent.x)
                             popoverHandler();
 
                         gBrush.select('.background')
@@ -109,9 +116,11 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         //Figure out whether we need to add a new brush or not.
                         //If last brush has been modified, then it's been used and we need to add a new brush.
                         //Else it's still empty, and we don't need to do anything.
-                        var lastBrushExtent = brushes[brushes.length - 1].extent();
-                        if (lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime())
+                        //Requires mouseStart to exist, otherwise is based on previous
+                        var lastBrushExtent = scope.brushes[scope.brushes.length - 1].extent();
+                        if (brush.mouseStart && lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()){
                             newBrush(container);
+                        }
                     };
 
                     var popoverHandler = function () {
@@ -124,8 +133,8 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         var getOtherBrushesExtent = function () {
                             var otherExistingBrush = [];
 
-                            for (var i = 0; i < brushes.length - 1; i++) {
-                                var otherBrush = brushes[i];
+                            for (var i = 0; i < scope.brushes.length - 1; i++) {
+                                var otherBrush = scope.brushes[i];
                                 if (otherBrush !== brush)
                                     otherExistingBrush.push(otherBrush.extent());
                             }
@@ -140,7 +149,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         newScope.preferred = brush.preferred;
                         newScope.step = scope.granularity;
                         newScope.disabled = getOtherBrushesExtent();
-                        newScope.edge = helpers.getEdge(brush, brushes);
+                        newScope.edge = helpers.getEdge(brush, scope.brushes);
                         newScope.link = "start";
 
                         var $el = $compile('<div class="popover-wrapper"></div>')(newScope);
@@ -158,9 +167,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     };
 
                     var deleteBrush = function (){
-                        for(var i = 0; i < brushes.length; i++){
-                            if(brushes[i] == brush)
-                                brushes.splice(i,1);
+                        for(var i = 0; i < scope.brushes.length; i++){
+                            if(scope.brushes[i] == brush)
+                                scope.brushes.splice(i,1);
                         }
                         gBrush.remove();
                     };
@@ -185,7 +194,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                     brush.preferred = true;
 
-                    brushes.push(brush);
+                    scope.brushes.push(brush);
 
                     var gBrush = container.insert("g", '.brush')
                         .on('click', function () {
@@ -279,8 +288,22 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .attr("width", width)
                         .attr("height", height);
 
-                    if (brushes.length < 1)
-                        newBrush(brushesContainer);
+                    if (scope.brushes.length < 1){
+                        if(scope.previousExtent !== undefined){
+                            //set up brushes using previous extents if exist
+                            scope.previousExtent.forEach(function(extent){
+                                var brush = newBrush(brushesContainer);
+                                brushesContainer.select('.brush')
+                                    .call(brush.extent(extent))
+                                    .call(brush.event);
+                            });
+                            newBrush(brushesContainer);
+                        }
+                        else{
+                            //else create a new brush
+                            newBrush(brushesContainer);
+                        }
+                    }
 
                 };
 
