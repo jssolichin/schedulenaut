@@ -54,7 +54,12 @@ module.exports = function (d3Provider, momentProvider, $q) {
 
             $('.time-picker input')
                 .on('changeTime timeRangeError', function (a) {
-                    var selectedTime = $(this).timepicker('getTime');
+                    var isEnd = $(this).hasClass('end');
+                    if(isEnd)
+                        var selectedTime = $(this).timepicker('getTime', scope.end);
+                    else
+                        var selectedTime = $(this).timepicker('getTime', scope.start);
+
                     var boundedTime = boundToEdge(selectedTime);
                     $(this).timepicker('setTime', boundedTime);
                 });
