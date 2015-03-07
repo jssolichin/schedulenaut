@@ -20,7 +20,6 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
     $scope.submitData = function (event) {
         var p = eventsService.create(event);
         p.then(function (d) {
-            brushesService.create({event_id: d.id});
             $state.go('event', {id: d.id});
         });
     };

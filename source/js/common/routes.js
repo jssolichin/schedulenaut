@@ -27,21 +27,23 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                     function($stateParams, eventsService) {
                         return eventsService.get($stateParams);
                     }],
-                previousExtents: ['$stateParams', 'brushesService', '$q',
+                allLayers: ['$stateParams', 'brushesService', '$q',
                     function ($stateParams, brushesService, $q) {
                         var p = $q.defer();
 
                         //Date objects are stored in string in sqlite, we need to convert it back to date objects
-                        var serverData = brushesService.get($stateParams);
-                        serverData.then(function (stringTime) {
-                            var convertedExtent = JSON.parse(stringTime.data.data).map(function (day) {
-                                return day.map(function (block) {
-                                    return block.map(function (extent) {
-                                        return new Date(extent);
+                        var serverData = brushesService.withEvent($stateParams.id);
+                        serverData.then(function (layersPromise) {
+                            layersPromise.data.forEach(function(layer){
+                                layer.data = JSON.parse(layer.data);
+                                layer.data.forEach(function(day){
+                                    day.forEach(function(brush){
+                                        brush[0] = new Date(brush[0]);
+                                        brush[1] = new Date(brush[1]);
                                     });
                                 });
                             });
-                            p.resolve(convertedExtent);
+                            p.resolve(layersPromise.data);
                         });
 
                         return p.promise;

@@ -36,11 +36,31 @@ module.exports = angular.module('events', [])
         };
 
         this.update = function (brushes) {
-            return $http.put('/api/brushes/' + brushes.event_id, JSON.stringify(brushes));
+            return $http.put('/api/brushes/' + brushes.id, JSON.stringify(brushes));
         };
 
         this.get = function (brushes) {
             return $http.get('/api/brushes/' + brushes.id);
+        };
+
+        this.withEvent = function (event_id) {
+            return $http.get('/api/brushes/event/' + event_id);
+        };
+
+    }])
+    .service('usersService', ['$http', '$q', function ($http, $q) {
+        this.create = function (user) {
+            var p = $q.defer();
+
+            $http.post('/api/user', user).success(function (response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
+        };
+
+        this.withEvent = function (event_id) {
+            return $http.get('/api/user/event/' + event_id);
         };
 
     }]);

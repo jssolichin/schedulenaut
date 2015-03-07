@@ -11,9 +11,9 @@ module.exports = function (d3Provider, momentProvider, $q) {
             height: '=',
             granularity: '=',
             dates: '=',
-            brushes: '=',
             onEnd: '=',
-            previousExtents: '='
+            allLayers: '=',
+            activeLayerId: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
@@ -23,6 +23,24 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 var d3 = promise[0];
                 var moment = promise[1];
 
+                //We store data in the server per user to make it relational to the user table than events.
+                //However, since each scrubber is seperate, we need to give each scrubber all users on that specific date.
+                //So we need to transpose our layers list
+                var transposeLayers = function () {
+                    //add "brushes" array for every date to store brushes extent
+                    scope.allLayers.forEach(function (layers) {
+                        while (layers.data.length < scope.dates.length)
+                            layers.data.push([]);
+                    });
+
+                    //transpose the layers so we group by date, than by users
+                    scope.transposed = d3.transpose(scope.allLayers.map(function (layers) {
+                        return layers.data;
+                    }));
+                };
+
+                //whenever there is a layer list change, we need to update our transposed layer list
+                scope.$watch('allLayers', transposeLayers);
 
                 var el = d3.select(element[0]);
                 var hoverTime = d3.selectAll('.hover-time');

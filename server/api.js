@@ -63,7 +63,6 @@ router.post('/event', function (req, res) {
 });
 
 router.post('/brushes', function (req, res) {
-    console.log('post-brush')
     var event_id = req.body.event_id;
     var user_id = req.body.user_id || null;
     var data = req.body.data || [];
@@ -74,18 +73,19 @@ router.post('/brushes', function (req, res) {
     db.run(sqlRequest, function (err) {
         if (err !== null)
             console.log(err);
-        else
+        else{
+            res.json(this.lastID);
             console.log('event_id' + " brush added");
+        }
     });
 
 });
 router.put('/brushes/:id', function (req, res) {
     var id = req.params.id;
-    var data = JSON.stringify(req.body.data);
+    var user_id = req.body.user_id;
+    var data = req.body.data;
 
-    console.log(data)
-    sqlUpdate = "UPDATE brushes SET data = '" + data + "' WHERE event_id = '" + id + "'";
-    console.log(sqlUpdate)
+    sqlUpdate = "UPDATE brushes SET user_id = " +user_id+ ", data = '" + data + "' WHERE id = " + id ;
 
     db.run(sqlUpdate, function (err, row) {
         if (row === undefined)
@@ -107,6 +107,66 @@ router.get('/brushes/:id', function (req, res) {
         }
     });
 
+});
+router.get('/brushes/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlTest = "SELECT * FROM brushes WHERE event_id = '" + id + "'";
+
+    db.all(sqlTest, function (err, rows) {
+        if (rows === undefined)
+            res.json({message: '404 not found'});
+        else{
+            res.json(rows);
+        }
+    });
+
+});
+
+router.post('/user', function (req, res) {
+    var name = req.body.name ? "'" + req.body.name + "'" : null;
+    var event_id = req.body.event_id ? "'" + req.body.event_id + "'" : null;
+    var brush_id = req.body.brushes_id || null;
+
+    sqlRequest = "INSERT INTO 'users' values (null, " + name + ", " + event_id + ", " + brush_id + ")";
+    console.log(sqlRequest)
+
+    db.run(sqlRequest, function (err, row) {
+        if (err !== null)
+            console.log(err);
+        else{
+            res.json(this.lastID);
+        }
+    });
+
+});
+
+router.get('/user/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlTest = "SELECT * FROM users WHERE id = '" + id + "'";
+
+    db.get(sqlTest, function (err, row) {
+        if (row === undefined)
+            res.json({message: '404 not found'});
+        else{
+            res.json(row);
+        }
+    });
+});
+
+router.get('/user/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlTest = "SELECT * FROM users WHERE event_id = '" + id + "'";
+
+    db.all(sqlTest, function (err, rows) {
+        if (rows === undefined)
+            res.json([]);
+        else{
+            res.json(rows);
+        }
+    });
 });
 
 router.use('/api', router);

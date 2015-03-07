@@ -12,13 +12,11 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
             width: '=',
             granularity: '=',
             scrub: '=',
-            brushes: '=',
             onEnd: '=',
-            previousExtent: '='
+            layers: '=',
+            activeLayerId: '='
         },
         link: function (scope, element, attrs) {
-
-            scope.brushes = [];
 
             d3Provider.d3().then(function (d3) {
 
@@ -79,7 +77,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         if (brush.extent.start) {
 
                             //time where we can not go pass as to not overlap
-                            var edge = helpers.getEdge(brush, scope.brushes);
+                            var edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId]);
 
                             //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
                             if (edge[1] !== undefined && extent1[1].getTime() > edge[1].getTime()) {
@@ -117,7 +115,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         //If last brush has been modified, then it's been used and we need to add a new brush.
                         //Else it's still empty, and we don't need to do anything.
                         //Requires mouseStart to exist, otherwise is based on previous
-                        var lastBrushExtent = scope.brushes[scope.brushes.length - 1].extent();
+                        var lastBrushExtent = scope.layers[scope.activeLayerId][scope.layers[scope.activeLayerId].length - 1].extent();
                         if (brush.mouseStart && lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()){
                             newBrush(container);
                         }
@@ -133,8 +131,8 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         var getOtherBrushesExtent = function () {
                             var otherExistingBrush = [];
 
-                            for (var i = 0; i < scope.brushes.length - 1; i++) {
-                                var otherBrush = scope.brushes[i];
+                            for (var i = 0; i < scope.layers[scope.activeLayerId].length - 1; i++) {
+                                var otherBrush = scope.layers[scope.activeLayerId][i];
                                 if (otherBrush !== brush)
                                     otherExistingBrush.push(otherBrush.extent());
                             }
@@ -149,7 +147,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         newScope.preferred = brush.preferred;
                         newScope.step = scope.granularity;
                         newScope.disabled = getOtherBrushesExtent();
-                        newScope.edge = helpers.getEdge(brush, scope.brushes);
+                        newScope.edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId]);
                         newScope.link = "start";
 
                         var $el = $compile('<div class="popover-wrapper"></div>')(newScope);
@@ -167,9 +165,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     };
 
                     var deleteBrush = function (){
-                        for(var i = 0; i < scope.brushes.length; i++){
-                            if(scope.brushes[i] == brush)
-                                scope.brushes.splice(i,1);
+                        for(var i = 0; i < scope.layers[scope.activeLayerId].length; i++){
+                            if(scope.layers[scope.activeLayerId][i] == brush)
+                                scope.layers[scope.activeLayerId].splice(i,1);
                         }
                         gBrush.remove();
                     };
@@ -194,7 +192,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                     brush.preferred = true;
 
-                    scope.brushes.push(brush);
+                    scope.layers[scope.activeLayerId].push(brush);
 
                     var gBrush = container.insert("g", '.brush')
                         .on('click', function () {
@@ -240,7 +238,10 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         return d.getHours();
                     });
 
-                /*
+                var layers = g.append('g')
+                    .attr('class', 'layers');
+
+                    /*
                  var xaxis = g.append("g")
                  .attr("class", "x axis")
                  .attr("transform", "translate(0," + height + ")");
@@ -288,25 +289,31 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .attr("width", width)
                         .attr("height", height);
 
-                    if (scope.brushes.length < 1){
-                        if(scope.previousExtent !== undefined){
-                            //set up brushes using previous extents if exist
-                            scope.previousExtent.forEach(function(extent){
-                                var brush = newBrush(brushesContainer);
-                                brushesContainer.select('.brush')
-                                    .call(brush.extent(extent))
-                                    .call(brush.event);
-                            });
-                            newBrush(brushesContainer);
-                        }
-                        else{
-                            //else create a new brush
-                            newBrush(brushesContainer);
-                        }
-                    }
+                    var layer = layers.selectAll('.layer')
+                        .data(scope.layers)
+                        .enter()
+                        .append('g')
+                        .attr('class', 'layer');
+
+                    layer.selectAll('rect')
+                        .data(function(layer){return layer;})
+                        .enter()
+                        .append('rect')
+                        .attr('x', function(d){
+                            return x(d[0]);
+                        })
+                        .attr('width', function(d){
+                            return x(d[1]) - x(d[0]);
+                        })
+                        .attr('height', height);
+
+                    if(scope.activeLayerId !== undefined)
+                        newBrush(brushesContainer);
 
                 };
 
+                scope.$watch('layers', update);
+                scope.$watch('activeLayerId', update);
                 scope.$watch('width', update);
                 scope.$on('resize', update);
 

@@ -44,6 +44,7 @@ module.exports = function(){
                 db.run('CREATE TABLE "users" ' +
                 '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
                 'name varchar(255) NOT NULL,' +
+                'event_id varchar(255), ' +
                 'brushes_id varchar(255)' +
                 ')', function(err) {
                     if(err !== null) {
