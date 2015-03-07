@@ -290,7 +290,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .attr("height", height);
 
                     var layer = layers.selectAll('.layer')
-                        .data(scope.layers)
+                        .data(scope.layers || [])
                         .enter()
                         .append('g')
                         .attr('class', 'layer');
