@@ -74,18 +74,18 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     var el = d3.select(this).node();
                     var truePos = mouseX - margin.left - el.offsetLeft;
                     var rawTime = x.invert(truePos);
-                    var momentTime= moment(rawTime);
+                    var momentTime = moment(rawTime);
 
                     tooltip
-                        .style('top', function(){
+                        .style('top', function () {
                             var posY = el.offsetTop + d3.event.offsetY + tooltipOffsetY;
 
                             //limit tooltip from going above
-                            return (posY < 30 ? 30 : posY ) +'px';
+                            return (posY < 30 ? 30 : posY ) + 'px';
                         })
                         .html(momentTime.format('hh:mm a'));
 
-                    if(truePos < x.range()[0] || truePos > x.range()[1])
+                    if (truePos < x.range()[0] || truePos > x.range()[1])
                         rule.style('display', 'none');
                     else
                         rule.style('display', 'block');
@@ -96,7 +96,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     rule.style('display', 'none');
                 };
 
-                var mouseUpdate = function (){
+                var mouseUpdate = function () {
                     rule.transition()
                         .duration(5)
                         .ease('cubic-in-out')
@@ -129,7 +129,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr("x", 6)
                     .style("text-anchor", null);
 
-                var update = function (){
+                var update = function () {
                     scope.width = window.innerWidth - hoverTime.node().offsetLeft - 40;
                     var width = scope.width - margin.left - margin.right;
 

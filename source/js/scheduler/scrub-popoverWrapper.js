@@ -36,7 +36,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 return finalTime;
             };
 
-            var removePopover = function(){
+            var removePopover = function () {
                 $(document).off('mousedown.popoverCloser');
                 element.remove();
             };
@@ -57,7 +57,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     var isEnd = $(this).hasClass('end');
 
                     var selectedTime;
-                    if(isEnd)
+                    if (isEnd)
                         selectedTime = $(this).timepicker('getTime', scope.end);
                     else
                         selectedTime = $(this).timepicker('getTime', scope.start);
@@ -86,7 +86,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 datepair.option('anchor', scope.link);
             };
 
-            scope.deleteBrush = function (){
+            scope.deleteBrush = function () {
                 scope.$emit('deleteBrush', true);
                 removePopover();
             };

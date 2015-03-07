@@ -24,7 +24,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                 var newBrush = function (container) {
                     var brushstart = function () {
-                        if(d3.event.sourceEvent)
+                        if (d3.event.sourceEvent)
                             brush.mouseStart = d3.event.sourceEvent.x;
                     };
 
@@ -116,7 +116,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         //Else it's still empty, and we don't need to do anything.
                         //Requires mouseStart to exist, otherwise is based on previous
                         var lastBrushExtent = scope.layers[scope.activeLayerId][scope.layers[scope.activeLayerId].length - 1].extent();
-                        if (brush.mouseStart && lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()){
+                        if (brush.mouseStart && lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()) {
                             newBrush(container);
                         }
                     };
@@ -164,10 +164,10 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         angular.element(scope.el.node()).append($el);
                     };
 
-                    var deleteBrush = function (){
-                        for(var i = 0; i < scope.layers[scope.activeLayerId].length; i++){
-                            if(scope.layers[scope.activeLayerId][i] == brush)
-                                scope.layers[scope.activeLayerId].splice(i,1);
+                    var deleteBrush = function () {
+                        for (var i = 0; i < scope.layers[scope.activeLayerId].length; i++) {
+                            if (scope.layers[scope.activeLayerId][i] == brush)
+                                scope.layers[scope.activeLayerId].splice(i, 1);
                         }
                         gBrush.remove();
                     };
@@ -241,7 +241,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 var layers = g.append('g')
                     .attr('class', 'layers');
 
-                    /*
+                /*
                  var xaxis = g.append("g")
                  .attr("class", "x axis")
                  .attr("transform", "translate(0," + height + ")");
@@ -296,18 +296,20 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .attr('class', 'layer');
 
                     layer.selectAll('rect')
-                        .data(function(layer){return layer;})
+                        .data(function (layer) {
+                            return layer;
+                        })
                         .enter()
                         .append('rect')
-                        .attr('x', function(d){
+                        .attr('x', function (d) {
                             return x(d[0]);
                         })
-                        .attr('width', function(d){
+                        .attr('width', function (d) {
                             return x(d[1]) - x(d[0]);
                         })
                         .attr('height', height);
 
-                    if(scope.activeLayerId !== undefined)
+                    if (scope.activeLayerId !== undefined)
                         newBrush(brushesContainer);
 
                 };

@@ -3,7 +3,7 @@
  */
 'use strict';
 
-module.exports = function($stateProvider, $urlRouterProvider) {
+module.exports = function ($stateProvider, $urlRouterProvider) {
     //
     // For any unmatched url, redirect to /state1
     $urlRouterProvider.otherwise("/index");
@@ -24,7 +24,7 @@ module.exports = function($stateProvider, $urlRouterProvider) {
             url: "/event/:id",
             resolve: {
                 event: ['$stateParams', 'eventsService',
-                    function($stateParams, eventsService) {
+                    function ($stateParams, eventsService) {
                         return eventsService.get($stateParams);
                     }],
                 allLayers: ['$stateParams', 'brushesService', '$q',
@@ -34,10 +34,10 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                         //Date objects are stored in string in sqlite, we need to convert it back to date objects
                         var serverData = brushesService.withEvent($stateParams.id);
                         serverData.then(function (layersPromise) {
-                            layersPromise.data.forEach(function(layer){
+                            layersPromise.data.forEach(function (layer) {
                                 layer.data = JSON.parse(layer.data);
-                                layer.data.forEach(function(day){
-                                    day.forEach(function(brush){
+                                layer.data.forEach(function (day) {
+                                    day.forEach(function (brush) {
                                         brush[0] = new Date(brush[0]);
                                         brush[1] = new Date(brush[1]);
                                     });

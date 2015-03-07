@@ -26,7 +26,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
     var refreshAllLayers = function (callback) {
         brushesService.withEvent(event.data.id).then(function (d) {
-            d.data.forEach(function (layer){
+            d.data.forEach(function (layer) {
                 layer.data = JSON.parse(layer.data);
             });
             $scope.allLayers = d.data;
@@ -66,7 +66,9 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
         //We just need to store the brush extent, and not the who brush function
         var x = $scope.allLayers[$scope.activeLayerId].data.map(function (d) {
-            return d.map(function(d){return d.extent();});
+            return d.map(function (d) {
+                return d.extent();
+            });
         });
 
         activeLayer.data = JSON.stringify(x);

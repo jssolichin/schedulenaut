@@ -26,11 +26,11 @@ router.put('/event/:id', function (req, res) {
     var id = req.params.id;
 
     var updateQuery = '';
-    for (key in req.body){
+    for (key in req.body) {
         updateQuery += key + " = '" + req.body[key] + "',";
     }
 
-    sqlUpdate = "UPDATE events SET " + updateQuery.substring(0, updateQuery.length-1) + " WHERE id = '" + id + "'";
+    sqlUpdate = "UPDATE events SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE id = '" + id + "'";
 
     db.run(sqlUpdate, function (err, row) {
         if (row === undefined)
@@ -41,18 +41,18 @@ router.put('/event/:id', function (req, res) {
 
 });
 router.post('/event', function (req, res) {
-    var id = req.body.name.replace(/[^a-z0-9]+/g,'-');
+    var id = req.body.name.replace(/[^a-z0-9]+/g, '-');
     var description = req.body.description ? "'" + req.body.description + "'" : null;
 
     sqlTest = "select count(0) AS 'length' from (SELECT id FROM events WHERE id LIKE '" + id + "%')";
-    db.each(sqlTest, function (err, rows){
-        if(rows !== undefined && rows.length != 0)
+    db.each(sqlTest, function (err, rows) {
+        if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
         sqlRequest = "INSERT INTO 'events' values ('" + id + "', '" + req.body.name + "', 1, -1, '" + req.body.dates + "'," + description + ")";
 
-        db.run(sqlRequest, function (err){
-            if(err !== null)
+        db.run(sqlRequest, function (err) {
+            if (err !== null)
                 console.log(err);
             else
                 console.log(id + " Added");
@@ -73,7 +73,7 @@ router.post('/brushes', function (req, res) {
     db.run(sqlRequest, function (err) {
         if (err !== null)
             console.log(err);
-        else{
+        else {
             res.json(this.lastID);
             console.log('event_id' + " brush added");
         }
@@ -85,7 +85,7 @@ router.put('/brushes/:id', function (req, res) {
     var user_id = req.body.user_id;
     var data = req.body.data;
 
-    sqlUpdate = "UPDATE brushes SET user_id = " +user_id+ ", data = '" + data + "' WHERE id = " + id ;
+    sqlUpdate = "UPDATE brushes SET user_id = " + user_id + ", data = '" + data + "' WHERE id = " + id;
 
     db.run(sqlUpdate, function (err, row) {
         if (row === undefined)
@@ -102,7 +102,7 @@ router.get('/brushes/:id', function (req, res) {
     db.get(sqlTest, function (err, row) {
         if (row === undefined)
             res.json({message: '404 not found'});
-        else{
+        else {
             res.json(row);
         }
     });
@@ -116,7 +116,7 @@ router.get('/brushes/event/:id', function (req, res) {
     db.all(sqlTest, function (err, rows) {
         if (rows === undefined)
             res.json({message: '404 not found'});
-        else{
+        else {
             res.json(rows);
         }
     });
@@ -134,7 +134,7 @@ router.post('/user', function (req, res) {
     db.run(sqlRequest, function (err, row) {
         if (err !== null)
             console.log(err);
-        else{
+        else {
             res.json(this.lastID);
         }
     });
@@ -149,7 +149,7 @@ router.get('/user/:id', function (req, res) {
     db.get(sqlTest, function (err, row) {
         if (row === undefined)
             res.json({message: '404 not found'});
-        else{
+        else {
             res.json(row);
         }
     });
@@ -163,7 +163,7 @@ router.get('/user/event/:id', function (req, res) {
     db.all(sqlTest, function (err, rows) {
         if (rows === undefined)
             res.json([]);
-        else{
+        else {
             res.json(rows);
         }
     });

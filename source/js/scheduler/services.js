@@ -3,23 +3,23 @@
  */
 
 module.exports = angular.module('events', [])
-    .service('eventsService', ['$http', '$q', function($http, $q) {
-        this.create = function(event) {
+    .service('eventsService', ['$http', '$q', function ($http, $q) {
+        this.create = function (event) {
             event.dates = JSON.stringify(event.dates);
             var p = $q.defer();
 
-            $http.post('/api/event', event).success(function(response) {
+            $http.post('/api/event', event).success(function (response) {
                 p.resolve(response);
             });
 
             return p.promise;
         };
 
-        this.update = function (event){
+        this.update = function (event) {
             return $http.put('/api/event/' + event.id, JSON.stringify(event));
         };
 
-        this.get = function(event) {
+        this.get = function (event) {
             return $http.get('/api/event/' + event.id);
         };
 
