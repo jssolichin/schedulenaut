@@ -9,6 +9,7 @@ p(editable-text="event.description" onaftersave="updateEvent()") {{event.descrip
             a(editable-text="user.name" onaftersave="createUser()")
                 | {{ user.name || "+ Add user" }}
         li(ng-repeat="user in users") {{user.name}}
+            a.button(ng-click="deleteBrush()") delete
 select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
 .calendar( calendar dates="dates" granularity="selectedGranularity" height="50" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
 

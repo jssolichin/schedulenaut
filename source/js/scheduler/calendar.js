@@ -40,7 +40,9 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 };
 
                 //whenever there is a layer list change, we need to update our transposed layer list
-                scope.$watch('allLayers', transposeLayers);
+                scope.$watch(function () {
+                    return scope.allLayers.length;
+                }, transposeLayers);
 
                 var el = d3.select(element[0]);
                 var hoverTime = d3.selectAll('.hover-time');

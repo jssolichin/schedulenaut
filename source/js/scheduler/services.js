@@ -47,6 +47,22 @@ module.exports = angular.module('events', [])
             return $http.get('/api/brushes/event/' + event_id);
         };
 
+        this.delete = function (brushes) {
+            $http.delete('/api/brushes/' + brushes.id);
+        };
+
+        this.parse = function (layersPromise) {
+            layersPromise.data.forEach(function (layer) {
+                layer.data = JSON.parse(layer.data);
+                layer.data.forEach(function (day) {
+                    day.forEach(function (brush) {
+                        brush[0] = new Date(brush[0]);
+                        brush[1] = new Date(brush[1]);
+                    });
+                });
+            });
+        };
+
     }])
     .service('usersService', ['$http', '$q', function ($http, $q) {
         this.create = function (user) {
@@ -57,6 +73,16 @@ module.exports = angular.module('events', [])
             });
 
             return p.promise;
+        };
+
+        this.update = function (user) {
+            $http.put('/api/user/' + user.id, JSON.stringify(user)).success(function (response) {
+                console.log('user updated');
+            });
+        };
+
+        this.delete = function (user) {
+            $http.delete('/api/user/' + user.id);
         };
 
         this.withEvent = function (event_id) {

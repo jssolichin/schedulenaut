@@ -34,15 +34,7 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                         //Date objects are stored in string in sqlite, we need to convert it back to date objects
                         var serverData = brushesService.withEvent($stateParams.id);
                         serverData.then(function (layersPromise) {
-                            layersPromise.data.forEach(function (layer) {
-                                layer.data = JSON.parse(layer.data);
-                                layer.data.forEach(function (day) {
-                                    day.forEach(function (brush) {
-                                        brush[0] = new Date(brush[0]);
-                                        brush[1] = new Date(brush[1]);
-                                    });
-                                });
-                            });
+                            brushesService.parse(layersPromise);
                             p.resolve(layersPromise.data);
                         });
 

@@ -2,18 +2,18 @@
  * Created by Jonathan on 2/27/2015.
  */
 
-module.exports = function(){
+module.exports = function () {
 
     var sqlite3 = require('sqlite3').verbose();
     var db = new sqlite3.Database('server/database.db');
 
     // Database initialization
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='events'",
-        function(err, rows) {
-            if(err !== null) {
+        function (err, rows) {
+            if (err !== null) {
                 console.log(err);
             }
-            else if(rows === undefined) {
+            else if (rows === undefined) {
                 db.run('CREATE TABLE "events" ' +
                 '(id varchar(255) NOT NULL PRIMARY KEY, ' +
                 'name varchar(255) NOT NULL,' +
@@ -21,8 +21,8 @@ module.exports = function(){
                 'creator_id integer NOT NULL,' +
                 'dates varchar(255) NOT NULL,' +
                 'description varchar(255)' +
-                ')', function(err) {
-                    if(err !== null) {
+                ')', function (err) {
+                    if (err !== null) {
                         console.log(err);
                     }
                     else {
@@ -36,18 +36,18 @@ module.exports = function(){
         });
 
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='users'",
-        function(err, rows) {
-            if(err !== null) {
+        function (err, rows) {
+            if (err !== null) {
                 console.log(err);
             }
-            else if(rows === undefined) {
+            else if (rows === undefined) {
                 db.run('CREATE TABLE "users" ' +
                 '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
                 'name varchar(255) NOT NULL,' +
                 'event_id varchar(255), ' +
                 'brushes_id varchar(255)' +
-                ')', function(err) {
-                    if(err !== null) {
+                ')', function (err) {
+                    if (err !== null) {
                         console.log(err);
                     }
                     else {
@@ -61,18 +61,18 @@ module.exports = function(){
         });
 
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='brushes'",
-        function(err, rows) {
-            if(err !== null) {
+        function (err, rows) {
+            if (err !== null) {
                 console.log(err);
             }
-            else if(rows === undefined) {
+            else if (rows === undefined) {
                 db.run('CREATE TABLE "brushes" ' +
                 '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
                 'event_id varchar(255) NOT NULL, ' +
                 'user_id varchar(255) NOT NULL, ' +
                 'data varchar(255) NOT NULL' +
-                ')', function(err) {
-                    if(err !== null) {
+                ')', function (err) {
+                    if (err !== null) {
                         console.log(err);
                     }
                     else {

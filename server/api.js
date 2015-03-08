@@ -108,6 +108,18 @@ router.get('/brushes/:id', function (req, res) {
     });
 
 });
+router.delete('/brushes/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlDelete = "DELETE FROM brushes WHERE id=" + id;
+    console.log(sqlDelete);
+
+    db.run(sqlDelete, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
+    });
+
+});
 router.get('/brushes/event/:id', function (req, res) {
     var id = req.params.id;
 
@@ -153,6 +165,41 @@ router.get('/user/:id', function (req, res) {
             res.json(row);
         }
     });
+});
+
+router.put('/user/:id', function (req, res) {
+    var id = req.params.id;
+
+    var updateQuery = '';
+    for (key in req.body) {
+        var value = isNaN(req.body[key]) ? "'" + req.body[key] + "'" : req.body[key];
+        if (key != 'id')
+            updateQuery += key + " = " + value + ",";
+    }
+
+    sqlUpdate = "UPDATE users SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE id = '" + id + "'";
+    console.log(sqlUpdate);
+
+    db.run(sqlUpdate, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
+        else
+            res.json(row);
+    });
+
+});
+
+router.delete('/user/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlDelete = "DELETE FROM users WHERE id=" + id;
+    console.log(sqlDelete);
+
+    db.run(sqlDelete, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
+    });
+
 });
 
 router.get('/user/event/:id', function (req, res) {

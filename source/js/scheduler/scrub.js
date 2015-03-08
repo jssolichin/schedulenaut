@@ -290,10 +290,24 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .attr("height", height);
 
                     var layer = layers.selectAll('.layer')
-                        .data(scope.layers || [])
+                        .data(function () {
+                            if (scope.activeLayerId && scope.activeLayerId < scope.layers.length)
+                                return scope.layers.slice(0, scope.activeLayerId).concat(scope.layers.slice(scope.activeLayerId + 1));
+                            else if (scope.activeLayerId)
+                                return scope.layers.slice(0, scope.activeLayerId);
+                            else if (scope.layers)
+                                return scope.layers;
+                            else
+                                return [];
+                        });
+
+                    layer
                         .enter()
                         .append('g')
                         .attr('class', 'layer');
+
+                    layer.exit()
+                        .remove();
 
                     layer.selectAll('rect')
                         .data(function (layer) {
@@ -309,7 +323,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         })
                         .attr('height', height);
 
-                    if (scope.activeLayerId !== undefined)
+                    if (scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined)
                         newBrush(brushesContainer);
 
                 };
