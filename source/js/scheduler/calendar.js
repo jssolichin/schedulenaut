@@ -37,6 +37,17 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     scope.transposed = d3.transpose(scope.allLayers.map(function (layers) {
                         return layers.data;
                     }));
+
+                    //Add again relevant data to the transposed data
+                    var temp = [];
+                    scope.transposed.forEach(function (day, i) {
+                        temp[i] = [];
+                        day.forEach(function (layer, j) {
+                            temp[i][j] = {id: scope.allLayers[j].id, data: layer};
+                        });
+                    });
+                    scope.transposed = temp;
+
                 };
 
                 //whenever there is a layer list change, we need to update our transposed layer list

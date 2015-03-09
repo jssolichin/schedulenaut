@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function (event, allLayers, usersService, eventsService, brushesService, $scope, $rootScope, $q) {
+module.exports = function (event, allLayers, usersService, eventsService, brushesService, helpers, $scope, $rootScope, $q) {
 
     //options
     $scope.selectedGranularity = 60;
@@ -90,6 +90,20 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         refreshAllLayers();
         refreshUsers();
 
+        $scope.activeLayerId = undefined;
+
+    };
+
+    $scope.editBrush = function () {
+
+        var brushes_id = parseInt(this.user.brushes_id);
+        activeLayer.id = brushes_id;
+        activeLayer.user_id = this.user.id;
+
+        $scope.activeLayerId = $scope.allLayers.map(function (d) {
+            return d.id;
+        }).indexOf(brushes_id);
+
     };
 
     //When we finish brushing, this callback will upload to server
@@ -98,7 +112,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         //We just need to store the brush extent, and not the who brush function
         var x = $scope.allLayers[$scope.activeLayerId].data.map(function (d) {
             return d.map(function (d) {
-                return d.extent();
+                return helpers.getExtent(d);
             });
         });
 

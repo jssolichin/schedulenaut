@@ -4,6 +4,19 @@
 
 module.exports = function () {
     return {
+        //getExtent is useful to get brush extent when we are not sure whether we are passing function or extent, since they get converted through the app
+        getExtent: function (brushOrBrushExtent) {
+            if (brushOrBrushExtent !== undefined) {
+                if (Object.prototype.toString.call(brushOrBrushExtent) == '[object Function]')
+                    return brushOrBrushExtent.extent();
+                if (Object.prototype.toString.call(brushOrBrushExtent) == '[object Array]')
+                    return brushOrBrushExtent;
+                else
+                    return 'unknown';
+            }
+            else
+                return undefined;
+        },
         getEdge: function (brush, brushes) {
             var edge = [];
 
