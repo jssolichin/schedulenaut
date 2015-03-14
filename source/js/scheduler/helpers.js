@@ -22,7 +22,7 @@ module.exports = function () {
 
             //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
             for (var i = 0; i < brushes.length; i++) {
-                var otherBrush = brushes[i];
+                var otherBrush = brushes[i].brush;
 
                 if (otherBrush !== brush) {
                     if (otherBrush.extent()[1].getTime() <= brush.extent.start[0].getTime()) {

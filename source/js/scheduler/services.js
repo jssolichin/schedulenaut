@@ -55,9 +55,9 @@ module.exports = angular.module('events', [])
             layersPromise.data.forEach(function (layer) {
                 layer.data = JSON.parse(layer.data);
                 layer.data.forEach(function (day) {
-                    day.forEach(function (brush) {
-                        brush[0] = new Date(brush[0]);
-                        brush[1] = new Date(brush[1]);
+                    day.forEach(function (brushWrapper) {
+                        brushWrapper.brush[0] = new Date(brushWrapper.brush[0]);
+                        brushWrapper.brush[1] = new Date(brushWrapper.brush[1]);
                     });
                 });
             });

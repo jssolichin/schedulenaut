@@ -110,9 +110,9 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
     $scope.endBrush = function () {
 
         //We just need to store the brush extent, and not the who brush function
-        var x = $scope.allLayers[$scope.activeLayerId].data.map(function (d) {
-            return d.map(function (d) {
-                return helpers.getExtent(d);
+        var x = $scope.allLayers[$scope.activeLayerId].data.map(function (brushWrappers) {
+            return brushWrappers.map(function (brushWrapper,i) {
+                return {id: brushWrapper.id, preferred: brushWrapper.preferred, brush: helpers.getExtent(brushWrapper.brush)};
             });
         });
 
