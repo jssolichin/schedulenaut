@@ -20,12 +20,15 @@
                 header Guests
                 article
                     ul
-                        li
-                            a(editable-text="user.name" onaftersave="createUser()")
-                                | {{ user.name || "+ Add user" }}
                         li.clearfix(ng-repeat="user in users")
                             .name.left {{user.name}}
                             .tools.right
-                                a.button(ng-click="editUser()") edit
-                                a.button(ng-click="deleteUser()") delete
-
+                                a(ng-click="hideUser()")
+                                    i.icon.ion-eye
+                                a(ng-click="editUser()")
+                                    i.icon.ion-edit
+                                a(ng-click="deleteUser()")
+                                    i.icon.ion-close
+                        li.addGuest
+                            a(editable-text="user.name" onaftersave="createUser()")
+                                | {{ user.name || "+ Add Guest" }}
