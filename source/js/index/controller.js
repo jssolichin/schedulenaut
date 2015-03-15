@@ -5,7 +5,38 @@
 'use strict';
 
 module.exports = function ($scope, eventsService, brushesService, $state) {
-    $scope.event = {};
+
+    var placeholders = ['Create a new event...', 'Name your event...'];
+
+    var removeExtendedForm = function () {
+        $(document).off('mousedown.hideExtendedForm');
+        $scope.placeholder = placeholders[0];
+        $scope.formExpanded = false;
+
+        $scope.$apply();
+    };
+
+    $scope.event = {public: true};
+
+    $scope.formExpanded = false;
+
+    $scope.placeholder = placeholders[0];
+
+    $scope.addFormHider = function () {
+        $(document).on('mousedown.hideExtendedForm', function (event) {
+            if (!$(event.target).closest('form').length) {
+                removeExtendedForm();
+            }
+        });
+        $scope.placeholder = placeholders[1];
+    };
+
+    $scope.submitData = function (event) {
+        var p = eventsService.create(event);
+        p.then(function (d) {
+            $state.go('event', {id: d.id});
+        });
+    };
 
     $('#calendar').datepicker({
         startDate: new Date(),
@@ -17,10 +48,5 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
             $scope.$apply();
         });
 
-    $scope.submitData = function (event) {
-        var p = eventsService.create(event);
-        p.then(function (d) {
-            $state.go('event', {id: d.id});
-        });
-    };
+
 };

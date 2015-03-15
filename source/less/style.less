@@ -1,12 +1,14 @@
-@import (less) "scheduler/scrub.less";
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
 
 @radius: 3px;
 @green: #4CD964;
+@accent: #5856D6;
 
-body {font-family: 'Open Sans', sans-serif; color: #333; }
+body {color: #333; padding: 0px; margin: 0px;}
+body, textarea {font-family: 'Open Sans', sans-serif; }
 
 //global
+.middle {max-width: 960px; margin: 0 auto;} //page middle
 .left {float: left;}
 .right {float: right;}
 .button {padding: 5px 10px; background: #eee; color: #333; border-radius: @radius; text-decoration: none;
@@ -15,70 +17,32 @@ body {font-family: 'Open Sans', sans-serif; color: #333; }
   &:hover {background: #ddd;}
   &:active {background: #ccc; }
 }
+textarea, input {padding: 5px; border-radius: @radius; border: 1px solid #ccc; }
 .clearfix:after {content:""; display:table; clear:both;}
 
+//state specific style
+body.state-index {background: url(../images/index-background.png) no-repeat center center fixed; background-size: cover; }
+
+
+//media queries
+@media only screen and (max-width: 960px) {
+  .middle {margin: 0 20px;}
+}
+
+//header
+@import (less) "header.less";
+
+//pages
+@import (less) "event/page.less";
+@import (less) "index/page.less";
+
+//calendar
+@import (less) "scheduler/calendar.less";
+@import (less) "scheduler/scrub.less";
+@import (less) "scheduler/tooltip.less";
+
+//misc
 .symbol { width: .7em; height: .7em; display: inline-block; border: 1px solid @green; border-radius: @radius; margin: 0 .5em -.1em 0;
   &.free {}
   &.preferred { background: @green;}
-}
-
-//components
-.calendar { position: relative;
-  table {border-collapse: collapse;
-    td,th {border-bottom: 1px solid #ddd; position: relative;
-      .popover-wrapper{ position: absolute; z-index: 99;
-        .popover {padding: 20px; width: 300px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
-          .time-picker { margin: 0 0 20px 0;
-            span {margin: 0 10px;}
-            .link:after {content: "&-"}
-            input {width: 30%; border-radius: @radius; border: 1px solid #ddd; padding: 5px;}
-          }
-          ul { margin: 0px; padding: 0px; list-style-type: none;
-            ul > li{ float: left; margin-right: 5px;
-              .delete {color: #F44336;
-                &:hover {background: #FFEBEE; color: #D32F2F}
-              }
-              &:last-child {margin-right: 0px;}
-            }
-          }
-        }
-        .popover:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(50% - 5px); }
-      }
-    }
-  }
-  #rule { border-left: 1px dotted #333; display: none; position: absolute; top: 0; bottom: 0;  pointer-events: none;
-    #tooltip { position: absolute; border: 1px dotted #333; border-left: 0px; background: rgba(255,255,255,.4); border-radius: 0px @radius @radius 0px; padding: 5px; white-space: nowrap; font-size: .8em; pointer-events: none;}
-  }
-  .brush {
-    &.preferred rect {fill-opacity: .7;}
-    rect { stroke: @green; fill: @green;
-    }
-  }
-}
-span.tooltip {
-  position: absolute;
-  width: 100px;
-  height: 20px;
-  line-height: 20px;
-  padding: 10px;
-  font-size: 14px;
-  text-align: center;
-  color: rgb(113, 157, 171);
-  background: rgb(255, 255, 255);
-  border: 4px solid rgb(255, 255, 255);
-  border-radius: 5px;
-  text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
-  box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
-}
-
-span.tooltip:after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-width: 10px;
-  border-style: solid;
-  border-color: #FFFFFF transparent transparent transparent;
-  top: 44px;
-  left: 50px;
 }

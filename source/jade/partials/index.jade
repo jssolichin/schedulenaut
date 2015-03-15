@@ -1,9 +1,23 @@
 //Landing Page Demo
-form(name="eventForm" ng-submit="submitData(event)" novalidate)
-    label(for="Name")
-    input(type="input" name="name" ng-model="event.name" placeholder="Create a new event..." required)
-    label(for="Description")
-    input(type="input" name="description" ng-model="event.description" placeholder="Event Description")
-    #calendar
-    button(type="submit" value="submit" ng-disabled="eventForm.$invalid || event.dates == undefined || event.dates.length < 1" ) Create Event
+#index
+    article.middle
+        form#create-form(name="eventForm" ng-submit="submitData(event)" ng-class="{expanded: formExpanded}" novalidate)
+            input#event-name(type="input" name="name" ng-model="event.name" ng-click="formExpanded = true; addFormHider()" placeholder="{{placeholder}}" required)
+            button(type="submit" value="submit" ng-disabled="eventForm.$invalid || event.dates == undefined || event.dates.length < 1" ) Schedule It!
+            .hidden-form.clearfix.fx-fade-down(ng-show="formExpanded")
+                .left
+                    label(for="calendar") Possible Dates
+                    #calendar
+                .right
+                    label(for="privacy") Privacy
+                    input(type="radio" name="privacy" ng-value="true" ng-model="event.public")
+                    | Public
+                    input(type="radio" name="privacy" ng-value="false" ng-model="event.public")
+                    | Password Protected
+                    label(for="location") Location (optional)
+                    input(type="text" name="location" ng-model="event.location" placeholder="Event Location")
+                    label(for="description") Event Description (optional)
+                    textarea(name="description" ng-model="event.description" placeholder="Event Description" )
+            #hint(ng-class="{hidden: formExpanded}") Schedulenaut helps figure out when everyone is available for your next meeting!
+
 

@@ -1,16 +1,31 @@
 //
    Created by Jonathan on 2/27/2015.
 
-h1(editable-text="event.name" onaftersave="updateEvent()") {{event.name || "Add an Event Name" }}
-p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
-.users
-    ul
-        li
-            a(editable-text="user.name" onaftersave="createUser()")
-                | {{ user.name || "+ Add user" }}
-        li(ng-repeat="user in users") {{user.name}}
-            a.button(ng-click="editBrush()") edit
-            a.button(ng-click="deleteBrush()") delete
-select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
-.calendar( calendar dates="dates" granularity="selectedGranularity" height="50" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
+#event
+    header
+        .middle
+            h1(editable-text="event.name" onaftersave="updateEvent()") {{event.name || "Add an Event Name" }}
+            p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
+    article.middle.clearfix
+        section#toolbar
+            ul.clearfix
+                li
+                    a.button + Timezone
+                li
+                    select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
+        section#main.left
+            .calendar( calendar dates="dates" granularity="selectedGranularity" height="40" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
+        section#sidebar.right
+            aside#users
+                header Guests
+                article
+                    ul
+                        li
+                            a(editable-text="user.name" onaftersave="createUser()")
+                                | {{ user.name || "+ Add user" }}
+                        li.clearfix(ng-repeat="user in users")
+                            .name.left {{user.name}}
+                            .tools.right
+                                a.button(ng-click="editBrush()") edit
+                                a.button(ng-click="deleteBrush()") delete
 

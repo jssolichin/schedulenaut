@@ -1,17 +1,17 @@
 extends components/templates/default
 
 block content
-    h1 Schedulenaut
-    nav
-        ul
-            li
-                a(ui-sref="index") Index
-            li
-                a(ui-sref="scheduler") Scheduler
-            li
-                a(ui-sref="about") About
-            li
-                a(href="http://blog.schedulenaut.com") Developer Blog
-    hr
-    div(ui-view)
+    header.top.clearfix.middle
+        a.left.rotate(ui-sref="index")
+            img(src="public/images/logo.png" alt="Schedulenaut Logo")
+            h1 Schedulenaut
+        nav#main.right
+            ul
+                li
+                    a(ui-sref="scheduler") Scheduler
+                li
+                    a(ui-sref="about") About
+                li
+                    a(href="http://blog.schedulenaut.com") Blog
+    main(ui-view)
 

@@ -1,6 +1,6 @@
 doctype html
 html(lang='en' ng-app="schedulenaut" ng-controller="mainController")
   include ../includes/head
-  body
+  body(class="state-{{$state.current.name}}")
     block content
     include ../includes/footer

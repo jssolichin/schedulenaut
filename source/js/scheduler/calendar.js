@@ -65,7 +65,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
 
                 var margin = {top: 10, right: 10, bottom: 20, left: 10};
                 var height = scope.height - margin.top - margin.bottom;
-                var tooltipOffsetY = -60;
+                var tooltipOffsetY = -30;
 
                 var beginTime = new Date();
                 beginTime.setHours(0);
@@ -82,9 +82,8 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     rule.style('display', 'block');
                 };
                 var mouseover = function ($event) {
-                    //mouseX = d3.mouse(this)[0];
-                    mouseX = d3.event.pageX - 9;
                     var el = d3.select(this).node();
+                    mouseX = d3.mouse(this)[0] + el.offsetLeft;
                     var truePos = mouseX - margin.left - el.offsetLeft;
                     var rawTime = x.invert(truePos);
                     var momentTime = moment(rawTime);
@@ -94,7 +93,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                             var posY = el.offsetTop + d3.event.offsetY + tooltipOffsetY;
 
                             //limit tooltip from going above
-                            return (posY < 30 ? 30 : posY ) + 'px';
+                            return (posY < 20 ? 20 : posY ) + 'px';
                         })
                         .html(momentTime.format('hh:mm a'));
 
@@ -143,7 +142,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .style("text-anchor", null);
 
                 var update = function () {
-                    scope.width = window.innerWidth - hoverTime.node().offsetLeft - 40;
+                    scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
                     var width = scope.width - margin.left - margin.right;
 
                     x.range([0, width]);
@@ -164,6 +163,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 };
 
                 update();
+                scope.$watch('width', update);
                 scope.$on('resize', update);
             });
 

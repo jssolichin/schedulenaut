@@ -254,7 +254,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     .attr('class', 'layers');
 
                 var brushContainer = g.append('g')
-                    .attr('class', 'brushes')
+                    .attr('class', 'brushes');
 
                 //Update the view
                 var update = function () {
@@ -376,7 +376,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             .selectAll('.background')
                             .style('pointer-events', function (d, i) {
                                 var brushWrapper = d3.select(this.parentNode).datum();
-                                return i == 0 && brushWrapper.brush && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
+                                return i === 0 && brushWrapper.brush && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
                             });
 
                         gBrush.selectAll('rect')

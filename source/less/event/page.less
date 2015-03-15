@@ -1,0 +1,30 @@
+#event {
+  & > header {background: #eee; padding: 20px 0;
+    h1, p {background: #fff; padding: 0 5px; margin: 0px; display: table; margin-bottom: 10px;
+      &:last-child {margin-bottom: 0px;}
+    }
+  }
+  #toolbar {margin: 20px 0;
+    ul { padding: 0px;
+      li {list-style-type: none;margin-right: 10px; .left;
+        &:last-child {margin-right: 0px}
+      }
+    }
+  }
+  #main {width: calc(~"70% - 10px");}
+  #sidebar {width: 30%;
+    aside{ border: 1px solid #eee; border-radius: @radius;
+      header {background: #eee; padding: 5px 10px;}
+      article { padding: 5px 10px;
+        ul { margin: 0px; padding: 0px;
+          li {line-height: 2.5em; list-style-type: none;
+            a.button {margin-right: 10px;
+              &:last-child {margin-right: 0px}
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
