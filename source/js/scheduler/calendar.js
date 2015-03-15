@@ -63,7 +63,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr('id', 'tooltip');
                 var mouseX = 0;
 
-                var margin = {top: 10, right: 10, bottom: 20, left: 10};
+                var margin = {top: 0, right: 10, bottom: 0, left: 10};
                 var height = scope.height - margin.top - margin.bottom;
                 var tooltipOffsetY = -30;
 
@@ -132,14 +132,16 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr("class", "grid-background")
                     .attr("height", height);
 
+                var xAxisGen = d3.svg.axis()
+                    .scale(x)
+                    .ticks(d3.time.hours, 6)
+                    .orient("bottom")
+                    .tickSize(height, 0)
+                    .tickPadding(0);
+
                 var xAxis = g.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")");
-
-                xAxis
-                    .selectAll("text")
-                    .attr("x", 6)
-                    .style("text-anchor", null);
+                    .attr("transform", "translate(0," + 0 + ")");
 
                 var update = function () {
                     scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
@@ -155,11 +157,12 @@ module.exports = function (d3Provider, momentProvider, $q) {
 
                     xAxis
                         .transition()
-                        .call(d3.svg.axis()
-                            .scale(x)
-                            .ticks(d3.time.hours, 6)
-                            .orient("top")
-                            .tickPadding(0));
+                        .call(xAxisGen)
+                        .selectAll(".tick text")
+                        .attr("y", 6)
+                        .attr("x", 3)
+                        .style("text-anchor", 'start');
+
                 };
 
                 update();

@@ -1,5 +1,6 @@
 .axis text {
   font: 11px sans-serif;
+  fill: #ccc;
 }
 
 .axis path {
@@ -8,20 +9,22 @@
 
 .axis line {
   fill: none;
-  stroke: #000;
+  stroke: #ccc;
   shape-rendering: crispEdges;
 }
 
 .grid-background {
-  fill: #ddd;
+  fill: #fff;
 }
 
 .grid line,
 .grid path {
   fill: none;
-  stroke: #fff;
+  stroke: #ccc;
   shape-rendering: crispEdges;
 }
+.grid .domain {
+  display: none;}
 
 .grid .minor.tick line {
   stroke-opacity: .5;

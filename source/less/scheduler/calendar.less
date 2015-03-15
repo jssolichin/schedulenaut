@@ -26,6 +26,7 @@
       &:first-child {border-bottom: 0px}
     }
   }
+
   #rule { border-left: 1px dotted #333; display: none; position: absolute; top: 0; bottom: 0;  pointer-events: none;
     #tooltip { left: -30px;position: absolute; background: #333; border-radius: @radius; padding: 2px 5px;
       white-space: nowrap; font-size: .7em; text-transform: uppercase; color: #fff; pointer-events: none;}
@@ -33,11 +34,13 @@
       border-style: solid; position: absolute; content: ""; width: 0; height: 0;
     }
   }
+
+  .brush, .brush-passive {shape-rendering: geometricPrecision;}
   .brush {
     rect { stroke: @accent; fill: @accent; fill-opacity: .2;}
     &.preferred rect {fill-opacity: 1;}
   }
-  .brush-passive { stroke: @green; fill: @green; fill-opacity: .2;
-    &.preferred {fill-opacity: 1;}
+  .brush-passive { stroke: @green; stroke-opacity: 1; fill: none;
+    &.preferred {fill-opacity: 1; fill: @green; }
   }
 }

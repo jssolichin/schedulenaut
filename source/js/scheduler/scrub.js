@@ -17,6 +17,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
             activeLayerId: '='
         },
         link: function (scope, element, attrs) {
+            var radius = 5;
 
             d3Provider.d3().then(function (d3) {
                 scope.el = d3.select(element[0]);
@@ -323,17 +324,26 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         })
                         .enter()
                         .append('rect')
+                        .attr('rx', radius)
+                        .attr('ry', radius)
+                        .attr('y', 1)
                         .attr('x', function (brushWrapper) {
+                            var xPos;
                             if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                return x(brushWrapper.brush.extent()[0]);
+                                xPos = x(brushWrapper.brush.extent()[0]);
                             else
-                                return x(brushWrapper.brush[0]);
+                                xPos = x(brushWrapper.brush[0]);
+
+                            return xPos + 3; //offset required, since brush has a resize rect
                         })
                         .attr('width', function (brushWrapper) {
+                            var width;
                             if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                return x(brushWrapper.brush.extent()[1]) - x(brushWrapper.brush.extent()[0]);
+                                width = x(brushWrapper.brush.extent()[1]) - x(brushWrapper.brush.extent()[0]);
                             else
-                                return x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
+                                width = x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
+
+                            return width === 0 ? 0 : width + 3; //offset required, since brush has a resize rect;
                         })
                         .attr('height', height)
                         .attr("class", function (brushWrapper) {
@@ -393,6 +403,14 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                                 var brushWrapper = d3.select(this.parentNode).datum();
                                 return i === 0 && brushWrapper.brush && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
                             });
+
+                        gBrush.selectAll('.extent')
+                            .attr('rx', radius)
+                            .attr('ry', radius);
+
+                        gBrush.selectAll('.resize').selectAll('rect')
+                            .attr('rx', radius)
+                            .attr('ry', radius);
 
                         gBrush.selectAll('rect')
                             .attr("height", height);
