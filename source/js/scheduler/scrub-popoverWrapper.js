@@ -9,7 +9,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
         restrict: 'C',
         templateUrl: 'public/directives/scrub-popoverWrapper.html',
         link: function (scope, element, attrs) {
-            scope.y = -1 * (parseInt(element[0].offsetHeight)) + 13 + 'px';
+            scope.y = -1 * (parseInt(element[0].offsetHeight)) + 7 + 'px';
 
             scope.$watch("x", function () {
 

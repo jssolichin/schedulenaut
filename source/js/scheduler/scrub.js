@@ -104,7 +104,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                         //if mouse hasn't moved since mouse down, it is a click (brush doesn't have a click event, so we fake one)
                         //if (d3.event.sourceEvent && brush.mouseStart == d3.event.sourceEvent.x)
-                            popoverHandler(d3.select(this));
+                        popoverHandler(d3.select(this));
 
                         //When we finish brushing, the extent will be the starting extent for next time
                         //This is useful for determining what is surrounding the current block later (i.e. to know which blocks bound the brush)
@@ -166,7 +166,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         newScope.$watchGroup(['start', 'end'], function () {
                             updateExtent(gBrush, [newScope.start, newScope.end]);
                         });
-                        newScope.$on('deleteBrush', function(){
+                        newScope.$on('deleteBrush', function () {
                             deleteBrush(gBrush);
                         });
 
@@ -220,8 +220,8 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     }
                     else {
                         var id = currentLayer.data.length;
-                        if(currentLayer.data.length > 0)
-                            id = currentLayer.data[0].id+1;
+                        if (currentLayer.data.length > 0)
+                            id = currentLayer.data[0].id + 1;
 
                         brushWrapper.id = id;
 
@@ -233,7 +233,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 };
 
                 //Set up
-                var margin = {top: 10, right: 10, bottom: 10, left: 10};
+                var margin = {top: 6, right: 10, bottom: 7, left: 10};
                 var width;
                 var height = parseInt(scope.height) - margin.top - margin.bottom;
 
@@ -247,26 +247,29 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                 var g = svg
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    .attr("transform", "translate(" + margin.left + ",0)");
 
                 var gridBackground = g.append("rect")
                     .attr("class", "grid-background");
 
                 var xgrid = g.append("g")
                     .attr("class", "x grid")
-                    .attr("transform", "translate(0," + height + ")");
-
-                xgrid
-                    .selectAll(".tick")
-                    .classed("minor", function (d) {
-                        return d.getHours();
-                    });
+                    .attr("transform", "translate(0,0)");
 
                 var layers = g.append('g')
-                    .attr('class', 'layers');
+                    .attr('class', 'layers')
+                    .attr("transform", "translate(0," + margin.top + ")");
 
                 var brushContainer = g.append('g')
-                    .attr('class', 'brushes');
+                    .attr('class', 'brushes')
+                    .attr("transform", "translate(0," + margin.top + ")");
+
+                var axisGen = d3.svg.axis()
+                    .scale(x)
+                    .orient("bottom")
+                    .ticks(d3.time.hour)
+                    .tickSize(height + margin.top + margin.bottom)
+                    .tickFormat("");
 
                 //Update the view
                 var update = function () {
@@ -277,12 +280,12 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                     xgrid
                         .transition()
-                        .call(d3.svg.axis()
-                            .scale(x)
-                            .orient("bottom")
-                            .ticks(d3.time.hour)
-                            .tickSize(-height)
-                            .tickFormat(""));
+                        .call(axisGen);
+
+                    xgrid.selectAll('.tick')
+                        .classed('major', function (d) {
+                            return d.getHours() % 6 === 0;
+                        });
 
                     svg
                         .attr("width", width + margin.left + margin.right)
@@ -324,6 +327,12 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         })
                         .enter()
                         .append('rect')
+                        .attr("class", function (brushWrapper) {
+                            return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
+                        });
+
+                    layer.selectAll('rect')
+                        .transition()
                         .attr('rx', radius)
                         .attr('ry', radius)
                         .attr('y', 1)
@@ -343,12 +352,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             else
                                 width = x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
 
-                            return width === 0 ? 0 : width + 3; //offset required, since brush has a resize rect;
+                            return width <= 0 ? 0 : width + 3; //offset required, since brush has a resize rect;
                         })
-                        .attr('height', height)
-                        .attr("class", function (brushWrapper) {
-                            return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
-                        });
+                        .attr('height', height);
 
                     layer.exit()
                         .remove();

@@ -159,8 +159,8 @@ module.exports = function (d3Provider, momentProvider, $q) {
                         .transition()
                         .call(xAxisGen)
                         .selectAll(".tick text")
-                        .attr("y", 6)
-                        .attr("x", 3)
+                        .attr("y", 10)
+                        .attr("x", 5)
                         .style("text-anchor", 'start');
 
                 };

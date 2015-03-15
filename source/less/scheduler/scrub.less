@@ -1,37 +1,10 @@
-.axis text {
-  font: 11px sans-serif;
-  fill: #ccc;
-}
+.axis text { font: 11px sans-serif; fill: #ccc; }
+.axis path { display: none; }
+.axis line { fill: none; stroke: #ccc; shape-rendering: crispEdges; }
 
-.axis path {
-  display: none;
-}
+.grid-background { fill: #fff; }
+.grid line, .grid path { fill: none; stroke: #eee; shape-rendering: crispEdges; }
+.grid .major line { stroke: #ccc; }
+.grid .domain { display: none;}
 
-.axis line {
-  fill: none;
-  stroke: #ccc;
-  shape-rendering: crispEdges;
-}
-
-.grid-background {
-  fill: #fff;
-}
-
-.grid line,
-.grid path {
-  fill: none;
-  stroke: #ccc;
-  shape-rendering: crispEdges;
-}
-.grid .domain {
-  display: none;}
-
-.grid .minor.tick line {
-  stroke-opacity: .5;
-}
-
-.brush .extent {
-  stroke: #000;
-  fill-opacity: .125;
-  shape-rendering: crispEdges;
-}
+.brush .extent { stroke: #000; fill-opacity: .125; shape-rendering: crispEdges; }
