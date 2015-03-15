@@ -216,7 +216,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         previousBrushWrapper.brush = brush;
 
                         //So later we can know which block surround this block at the start
-                        storeStartingPosition();
+                        var extent = helpers.getExtent(brush);
+                        if (extent[0].getTime() !== extent[1].getTime())
+                            storeStartingPosition();
                     }
                     else {
                         var id = currentLayer.data.length;
@@ -321,18 +323,27 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .append('g')
                         .attr('class', 'layer');
 
+                    layer
+                        .transition()
+                        .duration(function (d) {
+                            return d.visible === false ? 170 : 0;
+                        })
+                        .style('opacity', function (d) {
+                            return d.visible === false ? 0 : 1;
+                        });
+
                     layer.selectAll('rect')
                         .data(function (layer) {
                             return layer.data;
                         })
                         .enter()
                         .append('rect')
-                        .attr("class", function (brushWrapper) {
-                            return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
-                        });
 
                     layer.selectAll('rect')
                         .transition()
+                        .attr("class", function (brushWrapper) {
+                            return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
+                        })
                         .attr('rx', radius)
                         .attr('ry', radius)
                         .attr('y', 1)
@@ -343,7 +354,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             else
                                 xPos = x(brushWrapper.brush[0]);
 
-                            return xPos + 3; //offset required, since brush has a resize rect
+                            return xPos;
                         })
                         .attr('width', function (brushWrapper) {
                             var width;
@@ -352,7 +363,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             else
                                 width = x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
 
-                            return width <= 0 ? 0 : width + 3; //offset required, since brush has a resize rect;
+                            return width;
                         })
                         .attr('height', height);
 
@@ -424,6 +435,12 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         gBrush.exit()
                             .remove();
 
+                    } else {
+                        var gBrush = brushContainer.selectAll('.brush')
+                            .data([]);
+
+                        gBrush.exit()
+                            .remove();
                     }
 
                 };

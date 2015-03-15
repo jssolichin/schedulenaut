@@ -100,10 +100,26 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         activeLayer.id = brushes_id;
         activeLayer.user_id = this.user.id;
 
-        $scope.activeLayerId = $scope.allLayers.map(function (d) {
+        var indexInallLayers = $scope.allLayers.map(function (d) {
             return d.id;
         }).indexOf(brushes_id);
 
+        if ($scope.activeLayerId == indexInallLayers)
+            $scope.activeLayerId = undefined;
+        else
+            $scope.activeLayerId = indexInallLayers;
+
+    };
+
+    $scope.hideUser = function ($index) {
+
+        //first time we toggle, we turn it off
+        if ($scope.allLayers[$index].visible === undefined)
+            $scope.allLayers[$index].visible = false;
+        else
+            $scope.allLayers[$index].visible = !$scope.allLayers[$index].visible;
+
+        $scope.$broadcast('updateLayers')
     };
 
     //When we finish brushing, this callback will upload to server

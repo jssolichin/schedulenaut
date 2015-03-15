@@ -23,9 +23,9 @@
                         li.clearfix(ng-repeat="user in users")
                             .name.left {{user.name}}
                             .tools.right
-                                a(ng-click="hideUser()")
-                                    i.icon.ion-eye
-                                a(ng-click="editUser()")
+                                a(ng-click="hideUser($index)" )
+                                    i.icon.ion-eye(ng-class="{'ion-eye-disabled': allLayers[$index].visible == false}")
+                                a(ng-click="editUser()" ng-class="{'active': activeLayerId == $index }")
                                     i.icon.ion-edit
                                 a(ng-click="deleteUser()")
                                     i.icon.ion-close

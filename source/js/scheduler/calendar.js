@@ -43,7 +43,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     scope.transposed.forEach(function (day, i) {
                         temp[i] = [];
                         day.forEach(function (layer, j) {
-                            temp[i][j] = {id: scope.allLayers[j].id, data: layer};
+                            temp[i][j] = {id: scope.allLayers[j].id, data: layer, visible: scope.allLayers[j].visible};
                         });
                     });
                     scope.transposed = temp;
@@ -54,6 +54,10 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 scope.$watch(function () {
                     return scope.allLayers.length;
                 }, transposeLayers);
+
+                scope.$on('updateLayers', function () {
+                    transposeLayers();
+                });
 
                 var el = d3.select(element[0]);
                 var hoverTime = d3.selectAll('.hover-time');
