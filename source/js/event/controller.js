@@ -80,7 +80,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         });
     };
 
-    $scope.deleteBrush = function () {
+    $scope.deleteUser = function () {
         var user_id = parseInt(this.user.id);
         var brushes_id = parseInt(this.user.brushes_id);
 
@@ -94,7 +94,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
     };
 
-    $scope.editBrush = function () {
+    $scope.editUser = function () {
 
         var brushes_id = parseInt(this.user.brushes_id);
         activeLayer.id = brushes_id;
@@ -111,8 +111,12 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
         //We just need to store the brush extent, and not the who brush function
         var x = $scope.allLayers[$scope.activeLayerId].data.map(function (brushWrappers) {
-            return brushWrappers.map(function (brushWrapper,i) {
-                return {id: brushWrapper.id, preferred: brushWrapper.preferred, brush: helpers.getExtent(brushWrapper.brush)};
+            return brushWrappers.map(function (brushWrapper, i) {
+                return {
+                    id: brushWrapper.id,
+                    preferred: brushWrapper.preferred,
+                    brush: helpers.getExtent(brushWrapper.brush)
+                };
             });
         });
 

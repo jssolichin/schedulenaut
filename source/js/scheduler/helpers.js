@@ -17,24 +17,26 @@ module.exports = function () {
             else
                 return undefined;
         },
-        getEdge: function (brush, brushes) {
+        getEdge: function (brush, brushWrappers) {
+            var helpers = this;
             var edge = [];
 
             //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
-            for (var i = 0; i < brushes.length; i++) {
-                var otherBrush = brushes[i].brush;
+            brushWrappers.forEach(function (brushWrapper) {
+                var otherBrush = brushWrapper.brush;
+                var otherBrush_extent = helpers.getExtent(otherBrush);
 
                 if (otherBrush !== brush) {
-                    if (otherBrush.extent()[1].getTime() <= brush.extent.start[0].getTime()) {
-                        if (edge[0] !== undefined && otherBrush.extent()[1].getTime() > edge[0].getTime() || edge[0] === undefined)
-                            edge[0] = otherBrush.extent()[1];
+                    if (brush.extent.start !== undefined && otherBrush_extent[1].getTime() <= brush.extent.start[0].getTime()) {
+                        if (edge[0] !== undefined && otherBrush_extent[1].getTime() > edge[0].getTime() || edge[0] === undefined)
+                            edge[0] = otherBrush_extent[1];
                     }
-                    else if (otherBrush.extent()[0].getTime() > brush.extent.start[0].getTime()) {
-                        if (edge[1] !== undefined && otherBrush.extent()[0].getTime() < edge[1].getTime() || edge[1] === undefined)
-                            edge[1] = otherBrush.extent()[0];
+                    else if (brush.extent.start !== undefined && otherBrush_extent[0].getTime() > brush.extent.start[0].getTime()) {
+                        if (edge[1] !== undefined && otherBrush_extent[0].getTime() < edge[1].getTime() || edge[1] === undefined)
+                            edge[1] = otherBrush_extent[0];
                     }
                 }
-            }
+            });
             return edge;
         },
         round: function (date, interval) {

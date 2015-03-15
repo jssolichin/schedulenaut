@@ -34,8 +34,10 @@
     }
   }
   .brush {
-    &.preferred rect {fill-opacity: .7;}
-    rect { stroke: @green; fill: @green;
-    }
+    rect { stroke: @accent; fill: @accent; fill-opacity: .2;}
+    &.preferred rect {fill-opacity: 1;}
+  }
+  .brush-passive { stroke: @green; fill: @green; fill-opacity: .2;
+    &.preferred {fill-opacity: 1;}
   }
 }
