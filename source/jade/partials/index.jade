@@ -3,7 +3,7 @@
     article.middle
         form#create-form(name="eventForm" ng-submit="submitData(event)" ng-class="{expanded: formExpanded}" novalidate)
             input#event-name(type="input" name="name" ng-model="event.name" ng-click="formExpanded = true; addFormHider()" placeholder="{{placeholder}}" required)
-            button(type="submit" value="submit" ng-disabled="eventForm.$invalid || event.dates == undefined || event.dates.length < 1" ) Schedule It!
+            button(type="submit" value="submit" ) Schedule It!
             .hidden-form.clearfix.fx-fade-down(ng-show="formExpanded")
                 .left
                     label(for="calendar") Possible Dates

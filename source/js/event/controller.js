@@ -10,7 +10,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
     $scope.selectedGranularity = 60;
 
     //list of users on this event
-    usersService.withEvent(event.data.id).then(function (users) {
+    usersService.withEvent(event.id).then(function (users) {
         $scope.users = users.data;
     });
 
@@ -20,12 +20,12 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
     //index of layer to be modified from allLayers
     $scope.activeLayerId = undefined;
 
-    $scope.event = event.data;
+    $scope.event = event;
 
-    var activeLayer = {event_id: event.data.id};
+    var activeLayer = {event_id: event.id};
 
     var refreshUsers = function (callback) {
-        usersService.withEvent(event.data.id).then(function (users) {
+        usersService.withEvent(event.id).then(function (users) {
             $scope.users = users.data;
 
             if (callback)
@@ -33,7 +33,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         });
     };
     var refreshAllLayers = function (callback) {
-        brushesService.withEvent(event.data.id).then(function (layersPromise) {
+        brushesService.withEvent(event.id).then(function (layersPromise) {
             brushesService.parse(layersPromise);
             $scope.allLayers = layersPromise.data;
 
@@ -66,7 +66,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
     };
 
     $scope.createUser = function () {
-        var user = {name: $scope.user.name, event_id: event.data.id, brushes_id: -1};
+        var user = {name: $scope.user.name, event_id: event.id, brushes_id: -1};
         var user_id_promise = usersService.create(user);
 
         user_id_promise.then(function (user_id) {
@@ -144,13 +144,11 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
     //When we edit an event properties, upload it to server
     $scope.updateEvent = function () {
-        eventsService.update(event.data);
+        eventsService.update(event);
     };
 
-    //convert date string stored on server into date objects
-    $scope.dates = JSON.parse(event.data.dates).map(function (d) {
-        return new Date(d);
-    });
+    //make available the list of dates
+    $scope.dates = event.dates;
 
     $scope.optionGranularity = [
         {
@@ -167,7 +165,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         }
     ];
 
-    $scope.runDatepicker = function (){
+    $scope.runDatepicker = function () {
         var $datepickerEl = $('#datepicker');
 
         $datepickerEl.datepicker({
@@ -177,9 +175,15 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         });
 
         //only need to do once, after the first time, it has been populated and event listener set
-        if($datepickerEl.datepicker('getDates').length === 0) {
+        if ($datepickerEl.datepicker('getDates').length === 0) {
+
+            //if current list of dates not empty, show that on the datepicker
+            if ($scope.dates.length != 0)
+                $datepickerEl
+                    .datepicker('setDates', $scope.dates);
+
+            //set event listener to updates list of dates if datepicker is changed
             $datepickerEl
-                .datepicker('setDates', $scope.dates)
                 .on('changeDate', function () {
                     $scope.dates = $(this).datepicker('getDates');
 
@@ -189,10 +193,15 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
                     $scope.$broadcast('updateLayers');
 
                     //send new dates to server
-                    event.data.dates = $scope.dates;
+                    event.dates = $scope.dates;
                     $scope.updateEvent();
                 });
         }
+        ;
 
-    }
+        $datepickerEl.on('$destroy', function () {
+            $(this).datepicker('remove');
+        });
+
+    };
 };

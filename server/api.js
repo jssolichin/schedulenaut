@@ -3,8 +3,23 @@
  */
 var express = require('express');
 var router = express.Router();
+var crypto = require('crypto');
 
 var db = require('./api/initialization.js')();
+
+//http://blog.tompawlak.org/how-to-generate-random-values-nodejs-javascript
+var randomValueBase64 = function (len) {
+    return crypto.randomBytes(Math.ceil(len * 3 / 4))
+        .toString('base64')   // convert to base64 format
+        .slice(0, len)        // return required number of characters
+        .replace(/\+/g, '0')  // replace '+' with '0'
+        .replace(/\//g, '0'); // replace '/' with '0'
+};
+
+//encapsulate string for sqlite3
+var encapsulate = function (string) {
+    return string ? "'" + string + "'" : null;
+};
 
 router.get('/', function (req, res) {
     res.json({message: 'hooray! welcome to our api!'});
@@ -41,15 +56,27 @@ router.put('/event/:id', function (req, res) {
 
 });
 router.post('/event', function (req, res) {
-    var id = req.body.name.replace(/[^a-z0-9]+/g, '-');
-    var description = req.body.description ? "'" + req.body.description + "'" : null;
+    var id;
+    if (req.body.name === undefined) {
+        id = randomValueBase64(7);
+    }
+    else
+        id = req.body.name.replace(/[^a-z0-9]+/g, '-');
+
+    var name = encapsulate(req.body.name);
+    var open = 1;
+    var creator_id = -1;
+    var dates = encapsulate(req.body.dates);
+    var description = encapsulate(req.body.description);
+    var location = encapsulate(req.body.location);
+    var password = encapsulate(req.body.password);
 
     sqlTest = "select count(0) AS 'length' from (SELECT id FROM events WHERE id LIKE '" + id + "%')";
     db.each(sqlTest, function (err, rows) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "', '" + req.body.name + "', 1, -1, '" + req.body.dates + "'," + description + ")";
+        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + creator_id + "," + dates + "," + description + "," + location + ", " + password + ")";
 
         db.run(sqlRequest, function (err) {
             if (err !== null)

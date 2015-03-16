@@ -23,9 +23,23 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
         .state('event', {
             url: "/event/:id",
             resolve: {
-                event: ['$stateParams', 'eventsService',
-                    function ($stateParams, eventsService) {
-                        return eventsService.get($stateParams);
+                event: ['$stateParams', 'eventsService', '$q',
+                    function ($stateParams, eventsService, $q) {
+                        var p = $q.defer();
+                        var serverData = eventsService.get($stateParams);
+
+                        serverData.then(function (event) {
+                            if (event.data.dates === null)
+                                event.data.dates = [];
+                            else
+                                event.data.dates = JSON.parse(event.data.dates).map(function (d) {
+                                    return new Date(d);
+                                });
+
+                            p.resolve(event.data);
+                        });
+
+                        return p.promise;
                     }],
                 allLayers: ['$stateParams', 'brushesService', '$q',
                     function ($stateParams, brushesService, $q) {

@@ -16,11 +16,13 @@ module.exports = function () {
             else if (rows === undefined) {
                 db.run('CREATE TABLE "events" ' +
                 '(id varchar(255) NOT NULL PRIMARY KEY, ' +
-                'name varchar(255) NOT NULL,' +
+                'name varchar(255),' +
                 'open boolean NOT NULL,' +
                 'creator_id integer NOT NULL,' +
-                'dates varchar(255) NOT NULL,' +
-                'description varchar(255)' +
+                'dates varchar(255),' +
+                'description varchar(255),' +
+                'location varchar(255),' +
+                'password varchar(255)' +
                 ')', function (err) {
                     if (err !== null) {
                         console.log(err);
