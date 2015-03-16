@@ -167,4 +167,32 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         }
     ];
 
+    $scope.runDatepicker = function (){
+        var $datepickerEl = $('#datepicker');
+
+        $datepickerEl.datepicker({
+            startDate: new Date(),
+            multidate: true,
+            todayHighlight: true
+        });
+
+        //only need to do once, after the first time, it has been populated and event listener set
+        if($datepickerEl.datepicker('getDates').length === 0) {
+            $datepickerEl
+                .datepicker('setDates', $scope.dates)
+                .on('changeDate', function () {
+                    $scope.dates = $(this).datepicker('getDates');
+
+                    $scope.$apply();
+
+                    //retranspose layers to include new dates
+                    $scope.$broadcast('updateLayers');
+
+                    //send new dates to server
+                    event.data.dates = $scope.dates;
+                    $scope.updateEvent();
+                });
+        }
+
+    }
 };

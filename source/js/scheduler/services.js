@@ -16,6 +16,7 @@ module.exports = angular.module('events', [])
         };
 
         this.update = function (event) {
+            event.dates = JSON.stringify(event.dates);
             return $http.put('/api/event/' + event.id, JSON.stringify(event));
         };
 

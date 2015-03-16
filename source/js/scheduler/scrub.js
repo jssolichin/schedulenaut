@@ -157,7 +157,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         newScope.edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId].data);
                         newScope.link = "start";
 
-                        var $el = $compile('<div class="popover-wrapper"></div>')(newScope);
+                        var $el = $compile('<div class="scheduler-popover-wrapper"></div>')(newScope);
 
                         newScope.$watch("preferred", function () {
                             brushWrapper.preferred = newScope.preferred;

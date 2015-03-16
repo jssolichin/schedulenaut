@@ -1,9 +1,9 @@
-.calendar { position: relative;
+.calendar { position: relative; margin-bottom: 5px;
   table {border-collapse: collapse; width: 100%;
     th {font-weight: bold;}
     td,th {border-bottom: 1px solid #ddd; position: relative; font-size: .8em; ; text-transform: uppercase; padding: 0 5px;
       &:last-child {text-align: center; padding: 0px;}
-      .popover-wrapper{ position: absolute; z-index: 99;
+      .scheduler-popover-wrapper{ position: absolute; z-index: 99;
         .popover {padding: 20px; width: 300px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
           .time-picker { margin: 0 0 20px 0;
             span {margin: 0 10px;}
@@ -24,6 +24,7 @@
     }
     td {
       &:first-child {border-bottom: 0px}
+      &:first-child:not(:empty) {border-top: 1px solid #ddd;}
     }
   }
 
