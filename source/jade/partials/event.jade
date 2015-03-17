@@ -15,8 +15,10 @@
                     select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
         section#main.left
             .calendar( calendar dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
-            a#addDate.center.button + Add Dates
-            .popover-wrapper(attach-to="#addDate" point-to="top" callback="runDatepicker")
+            a#edit-dates-button.center.button
+                i.icon.ion-ios-settings
+                | Edit Dates
+            .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
                 #datepicker
         section#sidebar.right
             aside#users
@@ -32,14 +34,14 @@
                                     i.icon.ion-edit
                                 a(ng-click="deleteUser()")
                                     i.icon.ion-close
-                            .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" width=" 200" ng-attr-id="{{'popover-user-'+$index}}")
+                            .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" width=" 200" ng-attr-id="{{'popover-user-'+$index}}" padding="10")
                                 form(name="user_password" )
                                     label(for="secret") Secret Word
                                     input(type="password" name="secret" ng-model="secretWord")
                                     button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''") Submit
                         li.addGuest#addGuest
                             a.button.center + Add Guests
-                            .popover-wrapper(point-to="top" callback="" offset-y="10")
+                            .popover-wrapper(point-to="top" callback="")
                                 form(name="new_user" )
                                     label(for="user") Name
                                         span *

@@ -11,7 +11,11 @@
       }
     }
   }
-  #main {width: calc(~"75% - 20px");}
+  #main {width: calc(~"75% - 20px");
+    #edit-dates {margin-bottom: 20px;
+       .popover {padding: 10px 20px 10px 10px;}
+    }
+  }
   #sidebar {width: 25%;
     aside{ border: 1px solid #eee; border-radius: @radius; font-size: .9em;
       header {text-transform: uppercase; font-size: .7em; font-weight: bold; background: #eee; padding: 5px 10px;}
@@ -29,6 +33,7 @@
             }
             &.addGuest {cursor: pointer; padding: 5px;
               a.button {padding: 3px 10px;}
+              &.active .button {.button.active;}
             }
           }
         }
