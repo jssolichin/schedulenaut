@@ -2,11 +2,14 @@
 
 table
     thead
-        th(colspan="3") pst
-        th.timeline.hover-time
-    tr(ng-repeat="date in dates | orderBy: date")
-        td(ng-if="$index == 0") {{date | date:'MMMM' }}
-        td(ng-if="$index != 0") {{date | labelNewMonth:dates[$index-1] }}
-        td {{date | date:'EEEE'}}
-        td {{date | date:'dd'}}
-        td.scrub.hover-time(scrub="date" granularity="granularity" width="width" height="height" on-end="onEnd" layers="transposed[$index]" active-layer-id="activeLayerId")
+        tr(ng-repeat="timezone in timezones")
+            th(colspan="3") {{timezone}}
+            th.hover-time(timezone-axis scale='x' height="height" width="width" timezone='timezone')
+            //th.timeline.hover-time
+    tbody
+        tr(ng-repeat="date in dates | orderBy: date")
+            td(ng-if="$index == 0") {{date | date:'MMMM' }}
+            td(ng-if="$index != 0") {{date | labelNewMonth:dates[$index-1] }}
+            td {{date | date:'EEEE'}}
+            td {{date | date:'dd'}}
+            td.scrub.hover-time(scrub="date" granularity="granularity" width="width" height="height" on-end="onEnd" layers="transposed[$index]" active-layer-id="activeLayerId")

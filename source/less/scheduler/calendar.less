@@ -1,7 +1,8 @@
 .calendar { position: relative; margin-bottom: 5px;
+  background: #eee; border-radius: @radius;
+  tbody {background: #fff}
   table {border-collapse: collapse; width: 100%;
-    th {font-weight: bold;}
-    td,th {border-bottom: 1px solid #ddd; position: relative; font-size: .8em; ; text-transform: uppercase; padding: 0 5px;
+    td,th {border-bottom: 1px solid #ccc; position: relative; font-size: .8em; ; text-transform: uppercase; padding: 0 5px;
       &:last-child {text-align: center; padding: 0px;}
       .scheduler-popover-wrapper{ position: absolute; z-index: 99;
         .popover {padding: 20px; width: 300px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
@@ -22,6 +23,13 @@
         .popover:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
       }
     }
+    thead {
+      @headerStrokes: #888;
+      th {border-bottom: 1px solid @headerStrokes;}
+      text {fill: @headerStrokes; }
+      line {stroke: @headerStrokes;}
+    }
+    th {font-weight: bold; }
     td {
       &:first-child {border-bottom: 0px}
       &:first-child:not(:empty) {border-top: 1px solid #ddd;}
@@ -38,7 +46,7 @@
 
   .brush, .brush-passive {shape-rendering: geometricPrecision;}
   .brush {
-    rect { stroke-opacity: 0; fill: @accent; fill-opacity: .2;}
+    rect { stroke : @accent; fill: @accent; fill-opacity: .33;}
     &.preferred rect {fill-opacity: 1;}
   }
   .brush-passive {fill-opacity:.33; fill: @green;

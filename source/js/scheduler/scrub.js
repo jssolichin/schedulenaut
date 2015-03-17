@@ -235,14 +235,14 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 };
 
                 //Set up
-                var margin = {top: 5, right: 10, bottom: 5, left: 10};
+                var margin = {top: 5, right: 0, bottom: 5, left: 0};
                 var width;
                 var height = parseInt(scope.height) - margin.top - margin.bottom;
 
                 var endDate = new Date(scope.scrub.getTime());
                 endDate.setHours(endDate.getHours() + 23);
 
-                var x = d3.time.scale()
+                var x = d3.time.scale.utc()
                     .domain([scope.scrub, endDate]);
 
                 var svg = scope.el.append("svg");
@@ -296,7 +296,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     gridBackground
                         .transition()
                         .attr("width", width)
-                        .attr("height", height);
+                        .attr("height", height+margin.top +margin.bottom);
 
                     //render passive brushes
                     var layer = layers.selectAll('.layer')

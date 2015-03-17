@@ -80,6 +80,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
             $scope.activeLayerId = undefined;
         else {
             $scope.$broadcast('open-' + this.$index);
+            document.getElementById('secret').focus();
         }
     };
 
