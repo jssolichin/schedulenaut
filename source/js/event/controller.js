@@ -6,6 +6,9 @@
 
 module.exports = function (event, allLayers, usersService, eventsService, brushesService, helpers, $scope, $rootScope, $q) {
 
+    //template for newUser
+    $scope.newUser = {event_id: event.id, brushes_id: -1};
+
     //options
     $scope.selectedGranularity = 60;
 
@@ -65,19 +68,65 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         return promise.promise;
     };
 
+    //Deals with exit editing, or opening popover
+    $scope.editHandler = function () {
+
+        var brushes_id = parseInt(this.user.brushes_id);
+        var indexInallLayers = $scope.allLayers.map(function (d) {
+            return d.id;
+        }).indexOf(brushes_id);
+
+        if ($scope.activeLayerId == indexInallLayers)
+            $scope.activeLayerId = undefined;
+        else {
+            $scope.$broadcast('open-' + this.$index);
+        }
+    };
+
+    //Authenticate user and activate layer if authorized
+    $scope.editUser = function (user, secretWord, $index) {
+
+        var wrapper = $('#popover-user-' + $index);
+        var serverResponse = usersService.checkSecret(user.id, secretWord);
+        serverResponse.then(function (d) {
+            if (d.authenticated) {
+                var indexInallLayers = $scope.allLayers.map(function (d) {
+                    return d.id;
+                }).indexOf(parseInt(user.brushes_id));
+
+                activeLayer.id = user.brushes_id;
+                activeLayer.user_id = user.id;
+                $scope.activeLayerId = indexInallLayers;
+
+                $scope.$broadcast('close-' + $index);
+            }
+            else {
+                wrapper.addClass('animated shake');
+                wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                    wrapper.removeClass('animated shake');
+                });
+            }
+        });
+
+    };
+
     $scope.createUser = function () {
-        var user = {name: $scope.user.name, event_id: event.id, brushes_id: -1};
-        var user_id_promise = usersService.create(user);
+        var user_id_promise = usersService.create($scope.newUser);
 
         user_id_promise.then(function (user_id) {
             var brushes_id_promise = createLayer(user_id);
             brushes_id_promise.then(function (d) {
-
+                var user = {};
                 user.id = user_id;
                 user.brushes_id = d;
                 usersService.update(user);
+
+                refreshUsers();
             });
         });
+
+        //reset the form
+        $scope.newUser = {name: undefined, secret: undefined, email: undefined};
     };
 
     $scope.deleteUser = function () {
@@ -94,22 +143,6 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
 
     };
 
-    $scope.editUser = function () {
-
-        var brushes_id = parseInt(this.user.brushes_id);
-        activeLayer.id = brushes_id;
-        activeLayer.user_id = this.user.id;
-
-        var indexInallLayers = $scope.allLayers.map(function (d) {
-            return d.id;
-        }).indexOf(brushes_id);
-
-        if ($scope.activeLayerId == indexInallLayers)
-            $scope.activeLayerId = undefined;
-        else
-            $scope.activeLayerId = indexInallLayers;
-
-    };
 
     $scope.hideUser = function ($index) {
 
@@ -119,7 +152,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         else
             $scope.allLayers[$index].visible = !$scope.allLayers[$index].visible;
 
-        $scope.$broadcast('updateLayers')
+        $scope.$broadcast('updateLayers');
     };
 
     //When we finish brushing, this callback will upload to server
@@ -178,7 +211,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
         if ($datepickerEl.datepicker('getDates').length === 0) {
 
             //if current list of dates not empty, show that on the datepicker
-            if ($scope.dates.length != 0)
+            if ($scope.dates.length !== 0)
                 $datepickerEl
                     .datepicker('setDates', $scope.dates);
 
@@ -197,7 +230,6 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
                     $scope.updateEvent();
                 });
         }
-        ;
 
         $datepickerEl.on('$destroy', function () {
             $(this).datepicker('remove');

@@ -235,7 +235,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 };
 
                 //Set up
-                var margin = {top: 6, right: 10, bottom: 7, left: 10};
+                var margin = {top: 5, right: 10, bottom: 5, left: 10};
                 var width;
                 var height = parseInt(scope.height) - margin.top - margin.bottom;
 
@@ -337,7 +337,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             return layer.data;
                         })
                         .enter()
-                        .append('rect')
+                        .append('rect');
 
                     layer.selectAll('rect')
                         .transition()
@@ -346,7 +346,6 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         })
                         .attr('rx', radius)
                         .attr('ry', radius)
-                        .attr('y', 1)
                         .attr('x', function (brushWrapper) {
                             var xPos;
                             if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
@@ -436,10 +435,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             .remove();
 
                     } else {
-                        var gBrush = brushContainer.selectAll('.brush')
-                            .data([]);
-
-                        gBrush.exit()
+                        brushContainer.selectAll('.brush')
+                            .data([])
+                            .exit()
                             .remove();
                     }
 

@@ -38,10 +38,10 @@
 
   .brush, .brush-passive {shape-rendering: geometricPrecision;}
   .brush {
-    rect { stroke: @accent; fill: @accent; fill-opacity: .2;}
+    rect { stroke-opacity: 0; fill: @accent; fill-opacity: .2;}
     &.preferred rect {fill-opacity: 1;}
   }
-  .brush-passive { stroke: @green; stroke-opacity: 1; fill: none;
+  .brush-passive {fill-opacity:.33; fill: @green;
     &.preferred {fill-opacity: 1; fill: @green; }
   }
 }

@@ -9,38 +9,76 @@ module.exports = angular.module('filters', [])
     }])
     .directive('popoverWrapper', [function () {
         var link = function (scope, el, attrs) {
-            var attachTo = $(attrs.attachTo);
+
+            var id = Math.floor(Math.random() * 16777215).toString(16);
+            var attachTo, clickOn;
             var popover = $(el[0].children[0]);
 
-            el
-                .css('display', 'none')
-                .css('left', attachTo[0].offsetLeft + attachTo[0].offsetWidth / 2)
-                .css('top', attachTo[0].offsetTop + attachTo[0].offsetHeight);
-
-            popover
-                .addClass(attrs.pointTo)
-                .css('padding', 10);
-
-            attachTo.on('click.popover' + attachTo[0].id, function () {
-                attachTo.addClass('active');
+            var openPopover = function () {
                 el
                     .css('display', 'block')
-                    .css('top', attachTo[0].offsetTop + attachTo[0].offsetHeight);
+                    .css('left', attachTo[0].offsetLeft + attachTo[0].offsetWidth / 2)
+                    .css('top', attachTo[0].offsetTop + attachTo[0].offsetHeight + parseInt(attrs.offsetY));
+                if (scope.callback)
+                    scope.callback();
+            };
 
-                scope.callback();
-            });
+            var closePopover = function () {
+                el.css('display', 'none');
+            };
 
-            $(document).on('mousedown.hideExtendedForm', function (event) {
+            //set what to attach the popover to
+            if (attrs.attachTo === undefined)
+                attachTo = $(el[0].parentNode);
+            else
+                attachTo = $(attrs.attachTo);
+
+            //set starting css
+            el
+                .css('display', 'none')
+                .css('width', parseInt(attrs.width));
+            popover
+                .addClass(attrs.pointTo)
+                .css('padding', attrs.padding);
+
+            ////create listeners
+
+            //broadcast
+            if (attrs.openListener) {
+                scope.$on(attrs.openListener, function () {
+                    openPopover();
+                });
+            }
+            if (attrs.closeListener) {
+                scope.$on(attrs.closeListener, function () {
+                    closePopover();
+                });
+            }
+
+            //clicks
+            if (attrs.clickOn !== 'false') {
+                if (attrs.clickOn !== undefined)
+                    clickOn = attachTo.find(attrs.clickOn);
+                else
+                    clickOn = attachTo;
+
+                clickOn.on('click.popover' + id, function () {
+                    attachTo.addClass('active');
+                    openPopover();
+                });
+            }
+
+            //remove popover on click anywhere
+            $(document).on('mousedown.popover' + id, function (event) {
                 if (!$(event.target).closest(popover).length) {
                     attachTo.removeClass('active');
-                    el.css('display', 'none')
+                    closePopover();
                 }
-
-
             });
 
             el.on('$destroy', function () {
-                attachTo.off('click.popover' + attachTo[0].id);
+                attachTo.off('click.popover' + id);
+                $(document).off('mousedown.popover' + id);
             });
 
         };

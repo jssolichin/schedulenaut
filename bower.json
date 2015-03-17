@@ -30,6 +30,7 @@
     "moment": "~2.9.0",
     "angular-xeditable": "~0.1.8",
     "ngFx": "~1.0.6",
-    "Ionicons": "driftyco/ionicons#~2.0.1"
+    "Ionicons": "driftyco/ionicons#~2.0.1",
+    "animate-css": "~3.2.3"
   }
 }

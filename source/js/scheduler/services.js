@@ -90,4 +90,16 @@ module.exports = angular.module('events', [])
             return $http.get('/api/user/event/' + event_id);
         };
 
+        this.checkSecret = function (id, secret) {
+            var p = $q.defer();
+
+            var secretObj = {secret: secret};
+
+            $http.post('/api/user/' + id + '/secret', secretObj).success(function (response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
+        };
+
     }]);

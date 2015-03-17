@@ -6,6 +6,7 @@ var router = express.Router();
 var crypto = require('crypto');
 
 var db = require('./api/initialization.js')();
+var key = 'schedulenaut';
 
 //http://blog.tompawlak.org/how-to-generate-random-values-nodejs-javascript
 var randomValueBase64 = function (len) {
@@ -162,12 +163,28 @@ router.get('/brushes/event/:id', function (req, res) {
 
 });
 
-router.post('/user', function (req, res) {
-    var name = req.body.name ? "'" + req.body.name + "'" : null;
-    var event_id = req.body.event_id ? "'" + req.body.event_id + "'" : null;
-    var brush_id = req.body.brushes_id || null;
+router.post('/user/:id/secret', function (req, res) {
+    var id = req.params.id;
+    var secret = crypto.createHash('sha1', key).update(req.body.secret).digest('hex');
 
-    sqlRequest = "INSERT INTO 'users' values (null, " + name + ", " + event_id + ", " + brush_id + ")";
+    sqlTest = "SELECT * FROM users WHERE id = '" + id + "'";
+
+    db.get(sqlTest, function (err, row) {
+        var authenticated = row.secret === secret;
+        res.json({authenticated: authenticated});
+    });
+
+
+});
+
+router.post('/user', function (req, res) {
+    var name = encapsulate(req.body.name);
+    var event_id = encapsulate(req.body.event_id);
+    var brush_id = req.body.brushes_id || null;
+    var secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
+    var email = encapsulate(req.body.email);
+
+    sqlRequest = "INSERT INTO 'users' values (null, " + name + ", " + event_id + ", " + brush_id + "," + secret + "," + email + ")";
     console.log(sqlRequest)
 
     db.run(sqlRequest, function (err, row) {

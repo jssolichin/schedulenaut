@@ -19,16 +19,24 @@
         ul { margin: 0px; padding: 0px;
           li {padding: 0 10px; line-height: 1.8em; list-style-type: none; border-bottom: 1px solid #eee;
             &:last-child {border: 0px;}
-            a {margin-right: 10px;  color: #777;
-              &:last-child {margin-right: 0px}
-              :hover {color: #000; }
-              &:hover .ion-close {color: @red;}
-              &.active .ion-edit {color: @accent;}
+            .tools {
+              a {margin-right: 10px;  color: #777;
+                &:last-child {margin-right: 0px}
+                :hover {color: #000; }
+                &:hover .ion-close {color: @red;}
+                &.active .ion-edit {color: @accent;}
+              }
             }
-            &.addGuest {background: #eee; text-align: center;}
+            &.addGuest {cursor: pointer; padding: 5px;
+              a.button {padding: 3px 10px;}
+            }
           }
         }
       }
+    }
+
+    .popover-wrapper {
+      button {margin-top: 20px;}
     }
 
   }
