@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function (d3Provider, momentProvider, $q) {
+module.exports = function (d3Provider, $q) {
     return {
         restrict: 'C',
         scope: {
@@ -17,11 +17,9 @@ module.exports = function (d3Provider, momentProvider, $q) {
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
+            scope.timezones = ['pst', 'est'];
 
-            var promises = [d3Provider.d3(), momentProvider.moment()];
-            $q.all(promises).then(function (promise) {
-                var d3 = promise[0];
-                var moment = promise[1];
+            d3Provider.d3().then(function (d3) {
 
                 //We store data in the server per user to make it relational to the user table than events.
                 //However, since each scrubber is seperate, we need to give each scrubber all users on that specific date.
@@ -67,8 +65,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     .attr('id', 'tooltip');
                 var mouseX = 0;
 
-                var margin = {top: 0, right: 10, bottom: 0, left: 10};
-                var height = scope.height - margin.top - margin.bottom;
+                var margin = {top: 0, right: 0, bottom: 0, left: 0};
                 var tooltipOffsetY = -30;
 
                 var beginTime = new Date();
@@ -78,10 +75,13 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 var endTime = new Date(beginTime.getTime());
                 endTime.setHours(beginTime.getHours() + 23);
 
-                var x = d3.time.scale()
+                scope.x = d3.time.scale()
                     .domain([beginTime, endTime])
                     .clamp(true);
 
+                var timeFormat = d3.time.format('%I:%M %p');
+
+                /** Time Tooltip **/
                 var mouseenter = function () {
                     rule.style('display', 'block');
                 };
@@ -89,8 +89,8 @@ module.exports = function (d3Provider, momentProvider, $q) {
                     var el = d3.select(this).node();
                     mouseX = d3.mouse(this)[0] + el.offsetLeft;
                     var truePos = mouseX - margin.left - el.offsetLeft;
-                    var rawTime = x.invert(truePos);
-                    var momentTime = moment(rawTime);
+                    var rawTime = scope.x.invert(truePos);
+                    var formattedTime = timeFormat(rawTime);
 
                     tooltip
                         .style('top', function () {
@@ -99,9 +99,9 @@ module.exports = function (d3Provider, momentProvider, $q) {
                             //limit tooltip from going above
                             return (posY < 20 ? 20 : posY ) + 'px';
                         })
-                        .html(momentTime.format('hh:mm a'));
+                        .html(formattedTime);
 
-                    if (truePos < x.range()[0] || truePos > x.range()[1])
+                    if (truePos < scope.x.range()[0] || truePos > scope.x.range()[1])
                         rule.style('display', 'none');
                     else
                         rule.style('display', 'block');
@@ -111,62 +111,21 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 var mouseleave = function () {
                     rule.style('display', 'none');
                 };
-
                 var mouseUpdate = function () {
                     rule.transition()
                         .duration(5)
                         .ease('cubic-in-out')
                         .style('left', mouseX + 'px');
                 };
-
                 setInterval(mouseUpdate, 35);
-
                 hoverTime
                     .on('mouseenter', mouseenter)
                     .on('mousemove', mouseover)
                     .on('mouseleave', mouseleave);
 
-                var svg = d3.select('.timeline').selectAll('svg').data([0]).enter().append('svg')
-                    .attr("height", height + margin.top + margin.bottom);
-
-                var g = svg.append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var gridBackground = g.append("rect")
-                    .attr("class", "grid-background")
-                    .attr("height", height);
-
-                var xAxisGen = d3.svg.axis()
-                    .scale(x)
-                    .ticks(d3.time.hours, 6)
-                    .orient("bottom")
-                    .tickSize(height, 0)
-                    .tickPadding(0);
-
-                var xAxis = g.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + 0 + ")");
-
-                var update = function () {
+                /** draw time axis **/
+                var update = function (){
                     scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
-                    var width = scope.width - margin.left - margin.right;
-
-                    x.range([0, width]);
-
-                    svg.attr("width", width + margin.left + margin.right);
-
-                    gridBackground
-                        .transition()
-                        .attr("width", width);
-
-                    xAxis
-                        .transition()
-                        .call(xAxisGen)
-                        .selectAll(".tick text")
-                        .attr("y", 10)
-                        .attr("x", 5)
-                        .style("text-anchor", 'start');
-
                 };
 
                 update();
