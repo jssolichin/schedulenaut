@@ -16,3 +16,16 @@ See [the developer blog](http://blog.schedulenaut.com) to see what is being buil
 
 Go to localhost:3000 on your web browser.
 
+## TODO
+* share to all guest
+* timezone
+* hover user, highlight bars
+* highlight users over bars
+* highlight bars over users
+* event administrator password
+* event password
+* background image on event page
+* Default brush type
+* Delete user only if page admin
+* discussion
+

@@ -24,6 +24,9 @@ var schedulenaut = angular.module('schedulenaut', [
 
         $scope.$state = $state;
     })
-    .config(require('./common/routes'));
+    .config(require('./common/routes'))
+    .config(function ($locationProvider) {
+        $locationProvider.html5Mode(true);
+    });
 
 
