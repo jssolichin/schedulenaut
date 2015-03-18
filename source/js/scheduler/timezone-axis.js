@@ -7,10 +7,10 @@ module.exports = function (d3Provider, $q) {
             scale: '=',
             height: '=',
             width: '=',
-            timezone: '='
+            timezone: '=',
+            tzOptions: '='
         },
         link: function (scope, element, attrs) {
-
             var addMinutes = function (date, minutes) {
                 return new Date(date.getTime() + minutes * 60000);
             };
@@ -19,9 +19,9 @@ module.exports = function (d3Provider, $q) {
                 var add = 0;
                 var dt = new timezoneJS.Date(oldDomain[0]);
 
-                if (timezone == 'est') {
+                if (timezone) {
                     var originalOffset = dt.getTimezoneOffset();
-                    dt.setTimezone('America/Chicago');
+                    dt.setTimezone(timezone);
                     var newOffset = dt.getTimezoneOffset();
 
                     add = -1 * (originalOffset - newOffset);
@@ -35,6 +35,9 @@ module.exports = function (d3Provider, $q) {
 
             //we need to load timezone files before we can render anything
             var init = function () {
+
+                scope.tzOptions = timezoneJS.timezone.getAllZones();
+
                 d3Provider.d3().then(function (d3) {
                     var timeFormat = d3.time.format.multi([
                         ["%I %p", function (d) {
@@ -51,7 +54,7 @@ module.exports = function (d3Provider, $q) {
                     var setUp = function () {
                         height = scope.height - margin.top - margin.bottom;
 
-                        svg = d3.select(element[0]).selectAll('svg').data([0]).enter().append('svg')
+                        svg = d3.select(element[0]).select('.axis').selectAll('svg').data([0]).enter().append('svg')
                             .attr("height", height + margin.top + margin.bottom);
 
                         g = svg.append("g")
@@ -84,9 +87,13 @@ module.exports = function (d3Provider, $q) {
                     var update = function () {
                         var width = scope.width - margin.left - margin.right;
 
-                        localScale.range([0, width]);
-
                         svg.attr("width", width + margin.left + margin.right);
+
+                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone);
+
+                        localScale
+                            .domain(newDomain)
+                            .range([0, width]);
 
                         gridBackground
                             .transition()
@@ -96,7 +103,7 @@ module.exports = function (d3Provider, $q) {
                             .transition()
                             .call(xAxisGen)
                             .selectAll(".tick text")
-                            .attr("y", 10)
+                            .attr("y", height/2-5)
                             .attr("x", 5)
                             .style("text-anchor", 'start');
 
@@ -107,17 +114,17 @@ module.exports = function (d3Provider, $q) {
                         if (scope.width > 0)
                             update();
                     });
+                    scope.$watch('timezone', update)
+
                 });
             };
 
-            if (timezoneJS.timezone.zoneFileBasePath === null) {
-                timezoneJS.timezone.zoneFileBasePath = 'public/tz';
-                timezoneJS.timezone.init({callback: init});
-            }
-            else {
-                //if timezone file has been loaded already, just initialize
-                init();
-            }
+            timezoneJS.timezone.zoneFileBasePath = 'tz';
+            var x = timezoneJS.timezone.init({callback: init});
+
+            scope.$watch(function(){
+                return timezoneJS.timezone.getAllZones().length
+            }, init)
 
         }
     };

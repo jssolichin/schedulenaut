@@ -17,7 +17,7 @@ module.exports = function (d3Provider, $q) {
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
-            scope.timezones = ['pst', 'est'];
+            scope.timezones = ['America/Creston', 'America/New_York', 'America/Los_Angeles'];
 
             d3Provider.d3().then(function (d3) {
 

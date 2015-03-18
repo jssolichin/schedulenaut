@@ -32,6 +32,7 @@
     "ngFx": "~1.0.6",
     "Ionicons": "driftyco/ionicons#~2.0.1",
     "animate-css": "~3.2.3",
-    "timezone-js": "mde/timezone-js#~0.4.13"
+    "timezone-js": "mde/timezone-js#~0.4.13",
+    "angular-ui-select": "~0.11.2"
   }
 }

@@ -2,6 +2,8 @@ var schedulenaut = angular.module('schedulenaut', [
         'ui.router',
         'xeditable',
         'ngFx',
+        'ui.select',
+        'ngSanitize',
         require('./scheduler').name
     ],
     require('./common/http-request-transformer'))

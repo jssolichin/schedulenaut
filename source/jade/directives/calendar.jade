@@ -2,10 +2,13 @@
 
 table
     thead
-        tr(ng-repeat="timezone in timezones")
-            th(colspan="3") {{timezone}}
-            th.hover-time(timezone-axis scale='x' height="height" width="width" timezone='timezone')
-            //th.timeline.hover-time
+        tr(ng-repeat="timezone in timezones track by $index" timezone-axis scale='x' height="height+10" width="width" timezone='timezone' tz-options='tzOptions')
+            th(colspan="3")
+                ui-select(ng-model="timezone" on-select="timezones[$index] = timezone" theme="select2" ng-disabled='$last')
+                    ui-select-match(placeholder="Choose a timezone") {{$select.selected}}
+                    ui-select-choices(repeat="option in tzOptions | filter: $select.search" )
+                        span(ng-bind-html="option")
+            th.hover-time.axis
     tbody
         tr(ng-repeat="date in dates | orderBy: date")
             td(ng-if="$index == 0") {{date | date:'MMMM' }}
