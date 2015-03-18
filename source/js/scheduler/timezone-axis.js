@@ -93,7 +93,7 @@ module.exports = function (d3Provider, $q) {
 
                         localScale
                             .domain(newDomain)
-                            .range([0, width]);
+                            .range(scope.scale.range());
 
                         gridBackground
                             .transition()
@@ -114,7 +114,7 @@ module.exports = function (d3Provider, $q) {
                         if (scope.width > 0)
                             update();
                     });
-                    scope.$watch('timezone.zone', update)
+                    scope.$watch('timezone.zone', update);
 
                 });
             };
@@ -123,8 +123,8 @@ module.exports = function (d3Provider, $q) {
             var x = timezoneJS.timezone.init({callback: init});
 
             scope.$watch(function () {
-                return timezoneJS.timezone.getAllZones().length
-            }, init)
+                return timezoneJS.timezone.getAllZones().length;
+            }, init);
 
         }
     };

@@ -10,9 +10,11 @@ module.exports = angular.module('filters', [])
     .service('global.helpers', [function () {
         this.cloneJSON =
             function (obj) {
+                //https://stackoverflow.com/questions/4120475/how-to-create-clone-a-json-in-javascript-jquery
+
                 // basic type deep copy
                 if (obj === null || obj === undefined || typeof obj !== 'object') {
-                    return obj
+                    return obj;
                 }
                 // array deep copy
                 if (obj instanceof Array) {
@@ -24,18 +26,18 @@ module.exports = angular.module('filters', [])
                 }
                 // object deep copy
                 var cloneO = {};
-                for (var i in obj) {
-                    cloneO[i] = this.cloneJSON(obj[i]);
+                for (var j in obj) {
+                    cloneO[j] = this.cloneJSON(obj[j]);
                 }
                 return cloneO;
             };
         this.unNullify = function (obj) {
             var obj_copy = this.cloneJSON(obj);
             for (var i in obj) {
-                obj_copy[i] = obj[i] === 'null' || obj[i] == null ? undefined : obj[i];
+                obj_copy[i] = obj[i] === 'null' || obj[i] === null ? undefined : obj[i];
             }
             return obj_copy;
-        }
+        };
     }])
     .directive('popoverWrapper', [function () {
         var link = function (scope, el, attrs) {

@@ -74,7 +74,9 @@ module.exports = function (d3Provider, $q) {
                 beginTime.setMinutes(0);
                 beginTime.setSeconds(0);
                 var endTime = new Date(beginTime.getTime());
-                endTime.setHours(beginTime.getHours() + 23);
+                endTime.setDate(beginTime.getDate() + 1);
+                endTime.setHours(beginTime.getHours() - 1);
+                endTime.setMinutes(59);
 
                 scope.x = d3.time.scale()
                     .domain([beginTime, endTime])
@@ -102,10 +104,7 @@ module.exports = function (d3Provider, $q) {
                         })
                         .html(formattedTime);
 
-                    if (truePos < scope.x.range()[0] || truePos > scope.x.range()[1])
-                        rule.style('display', 'none');
-                    else
-                        rule.style('display', 'block');
+                    rule.style('display', 'block');
 
 
                 };
@@ -127,6 +126,8 @@ module.exports = function (d3Provider, $q) {
                 /** draw time axis **/
                 var update = function () {
                     scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
+                    scope.x
+                        .range([0, scope.width]);
                 };
 
                 update();

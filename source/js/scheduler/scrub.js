@@ -240,7 +240,9 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 var height = parseInt(scope.height) - margin.top - margin.bottom;
 
                 var endDate = new Date(scope.scrub.getTime());
-                endDate.setHours(endDate.getHours() + 23);
+                endDate.setDate(endDate.getDate() + 1);
+                endDate.setHours(endDate.getHours() - 1);
+                endDate.setMinutes(59);
 
                 var x = d3.time.scale.utc()
                     .domain([scope.scrub, endDate]);
@@ -296,7 +298,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     gridBackground
                         .transition()
                         .attr("width", width)
-                        .attr("height", height+margin.top +margin.bottom);
+                        .attr("height", height + margin.top + margin.bottom);
 
                     //render passive brushes
                     var layer = layers.selectAll('.layer')

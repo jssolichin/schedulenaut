@@ -28,4 +28,5 @@ Go to localhost:3000 on your web browser.
 * Default brush type
 * Delete user only if page admin
 * discussion
+* Delete timezone
 
