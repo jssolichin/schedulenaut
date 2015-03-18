@@ -13,11 +13,12 @@ module.exports = function (d3Provider, $q) {
             dates: '=',
             onEnd: '=',
             allLayers: '=',
-            activeLayerId: '='
+            activeLayerId: '=',
+            timezones: '=',
+            onTimezoneChange: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
-            scope.timezones = ['America/Creston', 'America/New_York', 'America/Los_Angeles'];
 
             d3Provider.d3().then(function (d3) {
 
@@ -124,7 +125,7 @@ module.exports = function (d3Provider, $q) {
                     .on('mouseleave', mouseleave);
 
                 /** draw time axis **/
-                var update = function (){
+                var update = function () {
                     scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
                 };
 

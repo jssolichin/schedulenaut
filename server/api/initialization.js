@@ -19,6 +19,7 @@ module.exports = function () {
                 'name varchar(255),' +
                 'open boolean NOT NULL,' +
                 'creator_id integer NOT NULL,' +
+                'timezones varchar(255),' +
                 'dates varchar(255),' +
                 'description varchar(255),' +
                 'location varchar(255),' +

@@ -3,12 +3,18 @@
  */
 
 module.exports = angular.module('events', [])
-    .service('eventsService', ['$http', '$q', function ($http, $q) {
+    .service('eventsService', ['$http', '$q', 'global.helpers', function ($http, $q, globalHelpers) {
         this.create = function (event) {
-            event.dates = JSON.stringify(event.dates);
+            //We need to create a copy or else it will replace the "event" variable in the "event" page
+            //The cloneJSON function clones only JSON objects--so we need to stringify the date from
+            //the original event and store in the copy's dates.
+            eventCopy = globalHelpers.cloneJSON(event);
+            eventCopy.dates = JSON.stringify(event.dates);
+            eventCopy.timezones = JSON.stringify(event.timezones);
+
             var p = $q.defer();
 
-            $http.post('/api/event', event).success(function (response) {
+            $http.post('/api/event', eventCopy).success(function (response) {
                 p.resolve(response);
             });
 
@@ -16,8 +22,12 @@ module.exports = angular.module('events', [])
         };
 
         this.update = function (event) {
-            event.dates = JSON.stringify(event.dates);
-            return $http.put('/api/event/' + event.id, JSON.stringify(event));
+            //See eventsService.create
+            eventCopy = globalHelpers.cloneJSON(event);
+            eventCopy.dates = JSON.stringify(event.dates);
+            eventCopy.timezones = JSON.stringify(event.timezones);
+
+            return $http.put('/api/event/' + event.id, JSON.stringify(eventCopy));
         };
 
         this.get = function (event) {

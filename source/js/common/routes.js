@@ -23,12 +23,13 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
         .state('event', {
             url: "/event/:id",
             resolve: {
-                event: ['$stateParams', 'eventsService', '$q',
-                    function ($stateParams, eventsService, $q) {
+                event: ['$stateParams', 'eventsService', '$q', 'global.helpers',
+                    function ($stateParams, eventsService, $q, globalHelpers) {
                         var p = $q.defer();
                         var serverData = eventsService.get($stateParams);
 
                         serverData.then(function (event) {
+
                             if (event.data.dates === null)
                                 event.data.dates = [];
                             else
@@ -36,7 +37,14 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                                     return new Date(d);
                                 });
 
-                            p.resolve(event.data);
+                            if (event.data.timezones === null)
+                                event.data.timezones = [{zone: 'America/Los_Angeles'}];
+                            else
+                                event.data.timezones = JSON.parse(event.data.timezones);
+
+                            //sqlite stores undefined as null--we need to convert it back
+                            var unNullifed = globalHelpers.unNullify(event.data);
+                            p.resolve(unNullifed);
                         });
 
                         return p.promise;

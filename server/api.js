@@ -67,6 +67,7 @@ router.post('/event', function (req, res) {
     var name = encapsulate(req.body.name);
     var open = 1;
     var creator_id = -1;
+    var timezones = encapsulate(req.body.timezones);
     var dates = encapsulate(req.body.dates);
     var description = encapsulate(req.body.description);
     var location = encapsulate(req.body.location);
@@ -77,7 +78,8 @@ router.post('/event', function (req, res) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + creator_id + "," + dates + "," + description + "," + location + ", " + password + ")";
+        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + creator_id + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
+        console.log(sqlRequest)
 
         db.run(sqlRequest, function (err) {
             if (err !== null)

@@ -10,7 +10,7 @@ app.use("/tz", express.static(process.env.PWD + '/tz'));
 app.use("/bower_components", express.static(process.env.PWD + '/bower_components'));
 app.get('/', function (req, res) {
     res.sendFile(process.env.PWD + '/public/index.html');
-})
+});
 
 //API
 app.use(bodyParser.urlencoded({extended: false}));

@@ -43,7 +43,7 @@ module.exports = function (d3Provider, $q) {
                         ["%I %p", function (d) {
                             return d.getHours();
                         }],
-                        ["Day Begin", function (d) {
+                        ["Day Change", function (d) {
                             return d.getDay();
                         }],
                     ]);
@@ -64,7 +64,7 @@ module.exports = function (d3Provider, $q) {
                             .attr("class", "grid-background")
                             .attr("height", height);
 
-                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone);
+                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
                         localScale = d3.time.scale()
                             .domain(newDomain)
@@ -89,7 +89,7 @@ module.exports = function (d3Provider, $q) {
 
                         svg.attr("width", width + margin.left + margin.right);
 
-                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone);
+                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
                         localScale
                             .domain(newDomain)
@@ -114,7 +114,7 @@ module.exports = function (d3Provider, $q) {
                         if (scope.width > 0)
                             update();
                     });
-                    scope.$watch('timezone', update)
+                    scope.$watch('timezone.zone', update)
 
                 });
             };

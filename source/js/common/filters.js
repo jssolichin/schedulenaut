@@ -7,6 +7,36 @@ module.exports = angular.module('filters', [])
                 return '';
         };
     }])
+    .service('global.helpers', [function () {
+        this.cloneJSON =
+            function (obj) {
+                // basic type deep copy
+                if (obj === null || obj === undefined || typeof obj !== 'object') {
+                    return obj
+                }
+                // array deep copy
+                if (obj instanceof Array) {
+                    var cloneA = [];
+                    for (var i = 0; i < obj.length; ++i) {
+                        cloneA[i] = this.cloneJSON(obj[i]);
+                    }
+                    return cloneA;
+                }
+                // object deep copy
+                var cloneO = {};
+                for (var i in obj) {
+                    cloneO[i] = this.cloneJSON(obj[i]);
+                }
+                return cloneO;
+            };
+        this.unNullify = function (obj) {
+            var obj_copy = this.cloneJSON(obj);
+            for (var i in obj) {
+                obj_copy[i] = obj[i] === 'null' || obj[i] == null ? undefined : obj[i];
+            }
+            return obj_copy;
+        }
+    }])
     .directive('popoverWrapper', [function () {
         var link = function (scope, el, attrs) {
 

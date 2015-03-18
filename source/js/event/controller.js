@@ -6,6 +6,8 @@
 
 module.exports = function (event, allLayers, usersService, eventsService, brushesService, helpers, $scope, $rootScope, $q) {
 
+    $scope.timezones = event.timezones;
+
     //template for newUser
     $scope.newUser = {event_id: event.id, brushes_id: -1};
 
@@ -24,6 +26,11 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
     $scope.activeLayerId = undefined;
 
     $scope.event = event;
+
+    $scope.addTimezone = function () {
+        $scope.timezones.unshift({zone: 'America/Los_Angeles'});
+        $scope.updateEvent();
+    };
 
     var activeLayer = {event_id: event.id};
 
