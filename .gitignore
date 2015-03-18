@@ -1,4 +1,8 @@
-public/*
+public/js/*
+public/css/*
+public/directives/*
+public/partials/*
+public/*.html
 .idea/*
 projectFilesBackup/*
 node_modules/*
