@@ -62,9 +62,8 @@ body.state-index {background: url(../images/index-background.png) no-repeat cent
   &.preferred { background: @green;}
 }
 
-.popover-wrapper{ position: absolute; z-index: 99;
-  .popover {padding: 20px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
-  }
+.popover-wrapper{ position: absolute; z-index: 99; pointer-events: none;
+  .popover {pointer-events: all; padding: 20px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); }
   .top:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: transparent transparent #fff transparent; top: -20px; left: calc(~"50% - 10px"); }
   .bottom:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
 }

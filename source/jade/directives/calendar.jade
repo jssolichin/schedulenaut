@@ -10,6 +10,9 @@ table
                         span(ng-bind-html="option")
             th.hover-time.axis
     tbody
+        tr#hint(ng-hide="dates.length > 0")
+            td(colspan="3") Get Started
+            td To schedule an event you must have some possible dates. Click on "Edit Dates" below to get started!
         tr(ng-repeat="date in dates | orderBy: date")
             td(ng-if="$index == 0") {{date | date:'MMMM' }}
             td(ng-if="$index != 0") {{date | labelNewMonth:dates[$index-1] }}

@@ -103,7 +103,7 @@ module.exports = function (d3Provider, $q) {
                             .transition()
                             .call(xAxisGen)
                             .selectAll(".tick text")
-                            .attr("y", height/2-5)
+                            .attr("y", height / 2 - 5)
                             .attr("x", 5)
                             .style("text-anchor", 'start');
 
@@ -122,7 +122,7 @@ module.exports = function (d3Provider, $q) {
             timezoneJS.timezone.zoneFileBasePath = 'tz';
             var x = timezoneJS.timezone.init({callback: init});
 
-            scope.$watch(function(){
+            scope.$watch(function () {
                 return timezoneJS.timezone.getAllZones().length
             }, init)
 

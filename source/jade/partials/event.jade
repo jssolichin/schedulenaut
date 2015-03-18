@@ -17,7 +17,7 @@
             .calendar( calendar on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
             a#edit-dates-button.center.button
                 i.icon.ion-ios-settings
-                | Edit Dates
+                | Edit Possible Dates
             .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
                 #datepicker
         section#sidebar.right
