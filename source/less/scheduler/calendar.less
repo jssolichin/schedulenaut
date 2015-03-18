@@ -24,9 +24,11 @@
       }
     }
     thead {
-      @headerStrokes: #888;
-      th {border-bottom: 1px solid @headerStrokes;}
-      text {fill: @headerStrokes; }
+      @headerStrokes: #ccc;
+      th {border-bottom: 1px solid @headerStrokes;
+        &:first-child > div {width: 100%; font-size: .8em;}
+      }
+      text {fill: #333; }
       line {stroke: @headerStrokes;}
     }
     th {font-weight: bold; }
@@ -52,4 +54,27 @@
   .brush-passive {fill-opacity:.33; fill: @green;
     &.preferred {fill-opacity: 1; fill: @green; }
   }
+}
+
+.select2-container .select2-choice {
+  background-image: none;
+  border: 1px solid #ccc;
+}
+.select2-container .select2-choice .select2-arrow {
+  background-image: none; background: #eee;
+  border-left: 1px solid #ccc;
+}
+.select2-drop {
+  padding-top: 5px;
+  border: 1px solid #ccc;
+}
+.select2-results .select2-highlighted {
+  background: @blue;
+}
+.select2-container.select2-container-disabled .select2-choice {
+  background: #eee;
+  border: none;
+}
+.select2-container.select2-container-disabled .select2-choice .select2-arrow {
+  background: #eee;
 }

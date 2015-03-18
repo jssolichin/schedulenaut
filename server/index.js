@@ -6,6 +6,7 @@ var app = express();
 
 //App
 app.use("/public", express.static(process.env.PWD + '/public'));
+app.use("/tz", express.static(process.env.PWD + '/tz'));
 app.use("/bower_components", express.static(process.env.PWD + '/bower_components'));
 app.get('/', function (req, res) {
     res.sendFile(process.env.PWD + '/public/index.html');
