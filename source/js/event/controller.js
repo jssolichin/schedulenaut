@@ -6,6 +6,18 @@
 
 module.exports = function (event, allLayers, usersService, eventsService, brushesService, helpers, $scope, $rootScope, $q) {
 
+    $scope.messages = {event_id: event.id, data: []};
+    $scope.sendMessage = function () {
+        $scope.messages.data.push(
+            {
+                id: $scope.messages.data.length,
+                user: $scope.activeLayerId,
+                content: $scope.newMessage.content,
+                timestamp: new Date()
+            });
+        $scope.newMessage.content = '';
+    };
+
     $scope.timezones = event.timezones;
 
     //template for newUser

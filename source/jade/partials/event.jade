@@ -57,3 +57,15 @@
                                     button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine()" ng-disabled="new_user.$invalid") Add Guest!
                             // a(editable-text="user.name" onaftersave="createUser()")
                                 | {{ user.name || "+ Add Guest" }}
+            aside#discussion
+                header Discussion
+                article
+                    ul
+                        li.clearfix(ng-repeat="message in messages.data track by message.id" ng-attr-id="message.id" title="{{message.timestamp | date:'short'}}")
+                            span.user {{users[message.user].name}}
+                            | {{message.content}}
+                        li
+                            div.loginRequired(ng-show="activeLayerId == undefined") Please activate your user to send message
+                            form#newMessage(name="new_message" ng-hide="activeLayerId == undefined")
+                                input(type="text" ng-model="newMessage.content" placeholder="Sending as {{users[activeLayerId].name}}" required)
+                                button.center(type="submit" value="submit" ng-click="sendMessage(); new_message.$setPristine()" ng-disabled="new_message.$invalid") Send!
