@@ -2,16 +2,17 @@ extends components/templates/default
 
 block content
     header.top.clearfix.middle
-        a.left.rotate(ui-sref="index")
+        a.left.rotate#logo(ui-sref="index")
             img(src="public/images/logo.png" alt="Schedulenaut Logo")
             h1 Schedulenaut
         nav#main.right
             ul
                 li
-                    a(ui-sref="scheduler") Scheduler
-                li
                     a(ui-sref="about") About
                 li
                     a(href="http://blog.schedulenaut.com") Blog
+                li.special
+                    a(ng-click="scheduleEvent()") + Schedule Event
+
     main(ui-view)
 

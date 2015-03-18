@@ -5,6 +5,7 @@
 module.exports = angular.module('events', [])
     .service('eventsService', ['$http', '$q', 'global.helpers', 'discussionsService', function ($http, $q, globalHelpers, discussionsService) {
         this.create = function (event) {
+            console.log(event)
             //We need to create a copy or else it will replace the "event" variable in the "event" page
             //The cloneJSON function clones only JSON objects--so we need to stringify the date from
             //the original event and store in the copy's dates.
