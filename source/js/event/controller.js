@@ -37,12 +37,18 @@ module.exports = function (event, allLayers, discussion, usersService, eventsSer
     $scope.highlightMessage = function (id){
         var elId = '#message-'+id;
 
+        $scope.bounce(elId)
+    };
+
+    $scope.bounce = function (elId){
         var wrapper = $(elId);
+
         wrapper[0].scrollIntoView( true );
         wrapper.addClass('animated bounce');
         wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
             wrapper.removeClass('animated bounce');
         });
+
     };
 
     $scope.timezones = event.timezones;
