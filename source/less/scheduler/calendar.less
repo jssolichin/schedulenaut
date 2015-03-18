@@ -1,4 +1,4 @@
-.calendar { position: relative; margin-bottom: 5px;
+.calendar { position: relative;
   background: #eee; border-radius: @radius;
   tbody {background: #fff}
   table {border-collapse: collapse; width: 100%;
@@ -25,16 +25,22 @@
     }
     thead {
       @headerStrokes: #ccc;
-      th {border-bottom: 1px solid @headerStrokes;
+      th {border-bottom: 1px solid @headerStrokes; font-weight: bold;
         &:first-child > div {width: 100%; font-size: .8em;}
       }
       text {fill: #333; }
       line {stroke: @headerStrokes;}
     }
-    th {font-weight: bold; }
-    td {
-      &:first-child {border-bottom: 0px}
-      &:first-child:not(:empty) {border-top: 1px solid #ddd;}
+    tbody{
+      tr {
+        &:last-child {
+          td:first-child {border-bottom: 1px solid #ccc;}
+        }
+        td {
+          &:first-child {border-bottom: 0px}
+          &:first-child:not(:empty) {border-bottom: 1px solid #ccc;}
+        }
+      }
     }
   }
 
@@ -69,7 +75,7 @@
   border: 1px solid #ccc;
 }
 .select2-results .select2-highlighted {
-  background: @blue;
+  background: @accent;
 }
 .select2-container.select2-container-disabled .select2-choice {
   background: #eee;
