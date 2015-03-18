@@ -61,6 +61,24 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                         });
 
                         return p.promise;
+                    }],
+                discussion: ['$stateParams', 'discussionsService', '$q', 'global.helpers',
+                    function ($stateParams, discussionsService, $q, globalHelpers) {
+                        var p = $q.defer();
+                        var serverData = discussionsService.withEvent($stateParams);
+
+                        serverData.then(function (discussion) {
+
+                            if (discussion.data.data === null)
+                                discussion.data.data = [];
+                            else
+                                discussion.data.data = JSON.parse(discussion.data.data);
+
+                            //sqlite stores undefined as null--we need to convert it back
+                            p.resolve(discussion.data);
+                        });
+
+                        return p.promise;
                     }]
             },
             templateUrl: "public/partials/event.html",

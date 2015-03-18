@@ -4,9 +4,9 @@
 
 'use strict';
 
-module.exports = function (event, allLayers, usersService, eventsService, brushesService, helpers, $scope, $rootScope, $q) {
+module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q) {
 
-    $scope.messages = {event_id: event.id, data: []};
+    $scope.messages = discussion;
     $scope.sendMessage = function () {
         $scope.messages.data.push(
             {
@@ -16,6 +16,7 @@ module.exports = function (event, allLayers, usersService, eventsService, brushe
                 timestamp: new Date()
             });
         $scope.newMessage.content = '';
+        discussionsService.updateWithEvent($scope.messages);
     };
 
     $scope.timezones = event.timezones;

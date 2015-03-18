@@ -89,5 +89,29 @@ module.exports = function () {
                 console.log("SQL Table 'brushes' already initialized.");
             }
         });
+
+    db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='discussions'",
+        function (err, rows) {
+            if (err !== null) {
+                console.log(err);
+            }
+            else if (rows === undefined) {
+                db.run('CREATE TABLE "discussions" ' +
+                '(id integer NOT NULL PRIMARY KEY AUTOINCREMENT, ' +
+                'event_id varchar(255) NOT NULL, ' +
+                'data varchar(255) NOT NULL' +
+                ')', function (err) {
+                    if (err !== null) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("SQL Table 'brushes' initialized.");
+                    }
+                });
+            }
+            else {
+                console.log("SQL Table 'brushes' already initialized.");
+            }
+        });
     return db;
 };
