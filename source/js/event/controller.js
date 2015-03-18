@@ -7,6 +7,9 @@
 module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q) {
 
     $scope.messages = discussion;
+    $scope.updateDiscussion = function (){
+        discussionsService.updateWithEvent($scope.messages);
+    };
     $scope.sendMessage = function () {
         $scope.messages.data.push(
             {
@@ -16,7 +19,30 @@ module.exports = function (event, allLayers, discussion, usersService, eventsSer
                 timestamp: new Date()
             });
         $scope.newMessage.content = '';
-        discussionsService.updateWithEvent($scope.messages);
+        $scope.updateDiscussion();
+    };
+    $scope.starIt = function (id){
+        if($scope.messages.star === undefined)
+            $scope.messages.star = [];
+
+        if($scope.messages.star.indexOf(id) < 0){
+            $scope.messages.star.push(id);
+            $scope.messages.data[id].star = true;
+        }
+        else{
+            $scope.messages.star.splice($scope.messages.star.indexOf(id), 1);
+            $scope.messages.data[id].star = false;
+        }
+    };
+    $scope.highlightMessage = function (id){
+        var elId = '#message-'+id;
+
+        var wrapper = $(elId);
+        wrapper[0].scrollIntoView( true );
+        wrapper.addClass('animated bounce');
+        wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+            wrapper.removeClass('animated bounce');
+        });
     };
 
     $scope.timezones = event.timezones;

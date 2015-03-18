@@ -15,7 +15,7 @@ module.exports = angular.module('events', [])
             var p = $q.defer();
 
             $http.post('/api/event', eventCopy).success(function (response) {
-                discussionsService.create({event_id:response.id, data: undefined});
+                discussionsService.create({event_id:response.id, data: undefined, star: undefined});
                 p.resolve(response);
             });
 
@@ -121,6 +121,7 @@ module.exports = angular.module('events', [])
             //the original event and store in the copy's dates.
             discussion_copy = globalHelpers.cloneJSON(discussion);
             discussion_copy.data = JSON.stringify(discussion.data);
+            discussion_copy.star = JSON.stringify(discussion.star);
 
             var p = $q.defer();
 
@@ -135,6 +136,7 @@ module.exports = angular.module('events', [])
             //See eventsService.create
             discussion_copy = globalHelpers.cloneJSON(discussion);
             discussion_copy.data = JSON.stringify(discussion.data);
+            discussion_copy.star = JSON.stringify(discussion.star);
 
             return $http.put('/api/discussion/event/' + discussion.event_id, JSON.stringify(discussion_copy));
         };

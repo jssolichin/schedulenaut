@@ -60,10 +60,18 @@
             aside#discussion
                 header Discussion
                 article
+                    h2 Important messages
                     ul
-                        li.clearfix(ng-repeat="message in messages.data track by message.id" ng-attr-id="message.id" title="{{message.timestamp | date:'short'}}")
+                        li(ng-repeat="id in messages.star" ng-click="highlightMessage(id)")
+                            a {{messages.data[id].content}}
+                    h2 Latest
+                    ul
+                        li.clearfix(ng-repeat="message in messages.data track by message.id" id="message-{{message.id}}" title="{{message.timestamp | date:'short'}}")
                             span.user {{users[message.user].name}}
                             | {{message.content}}
+                            .right
+                                i.icon.ion-ios-star-outline(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star == undefined ||!message.star")
+                                i.icon.ion-ios-star(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star")
                         li
                             div.loginRequired(ng-show="activeLayerId == undefined") Please activate your user to send message
                             form#newMessage(name="new_message" ng-hide="activeLayerId == undefined")

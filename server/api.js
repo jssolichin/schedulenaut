@@ -317,8 +317,10 @@ router.post('/discussion', function (req, res) {
     var event_id = req.body.event_id;
     var data = req.body.data || [];
     data = JSON.stringify(data);
+    var star = req.body.star || [];
+    star = JSON.stringify(star);
 
-    sqlRequest = "INSERT INTO 'discussions' values (null, '" + event_id + "', '" + data + "')";
+    sqlRequest = "INSERT INTO 'discussions' values (null, '" + event_id + "', '" + data + "', '" + star + "')";
     console.log(sqlRequest);
 
     db.run(sqlRequest, function (err) {

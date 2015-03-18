@@ -74,6 +74,11 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                             else
                                 discussion.data.data = JSON.parse(discussion.data.data);
 
+                            if (discussion.data.star === null)
+                                discussion.data.star = [];
+                            else
+                                discussion.data.star = JSON.parse(discussion.data.star);
+
                             //sqlite stores undefined as null--we need to convert it back
                             p.resolve(discussion.data);
                         });
