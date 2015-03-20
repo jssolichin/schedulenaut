@@ -7,7 +7,7 @@ var schedulenaut = angular.module('schedulenaut', [
         require('./scheduler').name
     ],
     require('./common/http-request-transformer'))
-    .controller('mainController', function ($scope, $rootScope, $state) {
+    .controller('mainController', ['$scope', '$rootScope', '$state', 'eventsService', function ($scope, $rootScope, $state, eventsService) {
         var resizeDelay = 250;
         window.resizeEvt = undefined;
 
@@ -25,7 +25,15 @@ var schedulenaut = angular.module('schedulenaut', [
         $scope.$on('requestWindowSize', resizeHandler);
 
         $scope.$state = $state;
-    })
+
+        $scope.event = {public: true};
+        $scope.scheduleEvent = function () {
+            var p = eventsService.create($scope.event);
+            p.then(function (d) {
+                $state.go('event', {id: d.id});
+            });
+        };
+    }])
     .config(require('./common/routes'))
     .config(function ($locationProvider) {
         $locationProvider.html5Mode(true);

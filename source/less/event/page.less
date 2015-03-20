@@ -18,10 +18,18 @@
     }
   }
   #sidebar {width: 25%;
-    aside{ border: 1px solid #eee; border-radius: @radius; font-size: .9em;
+    aside{ border: 1px solid #eee; border-radius: @radius; font-size: .9em; margin-top: 10px;
+      &:first-child {margin-top: 0px;}
       header {text-transform: uppercase; font-size: .7em; font-weight: bold; background: #eee; padding: 5px 10px;}
       article {
-        ul { margin: 0px; padding: 0px;
+        h2 {
+          font-size: .7em;
+          font-weight: normal;
+          text-transform: uppercase;
+          margin: 5px 10px 3px 10px;
+        }
+        ul { margin: 0 0 10px 0; padding: 0px; border: 1px solid #eee; border-left:0px; border-right: 0px;
+          &:last-child {margin-bottom: 0px; border-bottom: 0px;}
           li {padding: 0 10px; line-height: 1.8em; list-style-type: none; border-bottom: 1px solid #eee;
             &:last-child {border: 0px;}
             .tools {
@@ -31,6 +39,21 @@
                 &:hover .ion-close {color: @red;}
                 &.active .ion-edit {color: @accent;}
               }
+            }
+            span.user { font-size: .7em; text-transform: uppercase; background: #eee; border-radius: @radius; vertical-align: text-top;
+              display: inline-block; line-height: 1.8em; padding: 0 5px; margin-right: 5px; }
+            .loginRequired {
+              font-size: .7em;
+              text-transform: uppercase;
+              line-height: 1.2em;
+              display: inline-block;
+              padding: 5px;
+              margin: 10px 0;
+              border-radius: 3px;
+              background: #eee;
+            }
+            form#newMessage {margin: 10px 0;
+              button {margin-top: 5px;}
             }
             &.addGuest {cursor: pointer; padding: 5px;
               a.button {padding: 3px 10px;}

@@ -67,3 +67,12 @@ body.state-index {background: url(../images/index-background.png) no-repeat cent
   .top:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: transparent transparent #fff transparent; top: -20px; left: calc(~"50% - 10px"); }
   .bottom:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
 }
+
+.editable-click, a.editable-click {
+  color: #333;
+  border: 0;
+  border-radius: @radius;
+  &:hover {
+    color: @accent;
+  }
+}

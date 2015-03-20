@@ -262,6 +262,77 @@ router.get('/user/event/:id', function (req, res) {
     });
 });
 
+router.get('/discussion/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlTest = "SELECT * FROM discussions WHERE event_id = '" + id + "'";
+
+    db.get(sqlTest, function (err, row) {
+        if (row === undefined)
+            res.json({message: '404 not found'});
+        else {
+            res.json(row);
+        }
+    });
+});
+
+router.put('/discussion/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    var updateQuery = '';
+    for (key in req.body) {
+        var value = isNaN(req.body[key]) ? "'" + req.body[key] + "'" : req.body[key];
+        if (key != 'id')
+            updateQuery += key + " = " + value + ",";
+    }
+
+    console.log(id);
+
+    sqlUpdate = "UPDATE discussions SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE event_id = '" + id + "'";
+    console.log(sqlUpdate);
+
+    db.run(sqlUpdate, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
+        else
+            res.json(row);
+    });
+
+});
+
+router.delete('/discussion/event/:id', function (req, res) {
+    var id = req.params.id;
+
+    sqlDelete = "DELETE FROM users WHERE event_id=" + id;
+    console.log(sqlDelete);
+
+    db.run(sqlDelete, function (err, row) {
+        if (row === undefined)
+            res.json({message: 'Something went wrong!'});
+    });
+
+});
+
+router.post('/discussion', function (req, res) {
+    var event_id = req.body.event_id;
+    var data = req.body.data || [];
+    data = JSON.stringify(data);
+    var star = req.body.star || [];
+    star = JSON.stringify(star);
+
+    sqlRequest = "INSERT INTO 'discussions' values (null, '" + event_id + "', '" + data + "', '" + star + "')";
+    console.log(sqlRequest);
+
+    db.run(sqlRequest, function (err) {
+        if (err !== null)
+            console.log(err);
+        else {
+            res.json(this.lastID);
+            console.log('event_id' + " brush added");
+        }
+    });
+
+});
 router.use('/api', router);
 
 module.exports = router;

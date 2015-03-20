@@ -57,3 +57,23 @@
                                     button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine()" ng-disabled="new_user.$invalid") Add Guest!
                             // a(editable-text="user.name" onaftersave="createUser()")
                                 | {{ user.name || "+ Add Guest" }}
+            aside#discussion
+                header Discussion
+                article
+                    h2 Important messages
+                    ul
+                        li(ng-repeat="id in messages.star" ng-click="bounce('#message-'+id)")
+                            a {{messages.data[id].content}}
+                    h2 Latest
+                    ul
+                        li.clearfix(ng-repeat="message in messages.data track by message.id" id="message-{{message.id}}" title="{{message.timestamp | date:'short'}}")
+                            span.user {{users[message.user].name}}
+                            | {{message.content}}
+                            .right
+                                i.icon.ion-ios-star-outline(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star == undefined ||!message.star")
+                                i.icon.ion-ios-star(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star")
+                        li
+                            div.loginRequired(ng-click="bounce('#users')" ng-show="activeLayerId == undefined") Please activate your user to send message
+                            form#newMessage(name="new_message" ng-hide="activeLayerId == undefined")
+                                input(type="text" ng-model="newMessage.content" placeholder="Sending as {{users[activeLayerId].name}}" required)
+                                button.center(type="submit" value="submit" ng-click="sendMessage(); new_message.$setPristine()" ng-disabled="new_message.$invalid") Send!

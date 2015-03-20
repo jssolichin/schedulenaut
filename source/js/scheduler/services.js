@@ -3,8 +3,9 @@
  */
 
 module.exports = angular.module('events', [])
-    .service('eventsService', ['$http', '$q', 'global.helpers', function ($http, $q, globalHelpers) {
+    .service('eventsService', ['$http', '$q', 'global.helpers', 'discussionsService', function ($http, $q, globalHelpers, discussionsService) {
         this.create = function (event) {
+            console.log(event)
             //We need to create a copy or else it will replace the "event" variable in the "event" page
             //The cloneJSON function clones only JSON objects--so we need to stringify the date from
             //the original event and store in the copy's dates.
@@ -15,6 +16,7 @@ module.exports = angular.module('events', [])
             var p = $q.defer();
 
             $http.post('/api/event', eventCopy).success(function (response) {
+                discussionsService.create({event_id:response.id, data: undefined, star: undefined});
                 p.resolve(response);
             });
 
@@ -110,6 +112,38 @@ module.exports = angular.module('events', [])
             });
 
             return p.promise;
+        };
+
+    }])
+    .service('discussionsService', ['$http', '$q', 'global.helpers', function ($http, $q, globalHelpers) {
+        this.create = function (discussion) {
+            //We need to create a copy or else it will replace the "event" variable in the "event" page
+            //The cloneJSON function clones only JSON objects--so we need to stringify the date from
+            //the original event and store in the copy's dates.
+            discussion_copy = globalHelpers.cloneJSON(discussion);
+            discussion_copy.data = JSON.stringify(discussion.data);
+            discussion_copy.star = JSON.stringify(discussion.star);
+
+            var p = $q.defer();
+
+            $http.post('/api/discussion', discussion_copy).success(function (response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
+        };
+
+        this.updateWithEvent = function (discussion) {
+            //See eventsService.create
+            discussion_copy = globalHelpers.cloneJSON(discussion);
+            discussion_copy.data = JSON.stringify(discussion.data);
+            discussion_copy.star = JSON.stringify(discussion.star);
+
+            return $http.put('/api/discussion/event/' + discussion.event_id, JSON.stringify(discussion_copy));
+        };
+
+        this.withEvent = function (event) {
+            return $http.get('/api/discussion/event/' + event.id);
         };
 
     }]);
