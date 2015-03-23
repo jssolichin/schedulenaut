@@ -21,6 +21,10 @@ module.exports = function () {
             var helpers = this;
             var edge = [];
 
+            //if brush.extent.start does not exist, we are brushing for first time, and it's special case
+            if(brush.extent.start === undefined)
+                brush.extent.start = brush.extent();
+
             //go through each event blocks and look for the 2 closest one on both side to the current one and store that to edge
             brushWrappers.forEach(function (brushWrapper) {
                 var otherBrush = brushWrapper.brush;

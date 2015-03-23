@@ -5,12 +5,15 @@ block content
         a.left.rotate#logo(ui-sref="index")
             img(src="public/images/logo.png" alt="Schedulenaut Logo")
             h1 Schedulenaut
+                span.super 0.1-Alpha
         nav#main.right
             ul
                 li
                     a(ui-sref="about") About
                 li
                     a(href="http://blog.schedulenaut.com") Blog
+                li
+                    a(href="http://github.com/jssolichin/schedulenaut") Github
                 li.special
                     a(ng-click="scheduleEvent()") + Schedule Event
 

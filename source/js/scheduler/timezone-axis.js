@@ -124,7 +124,10 @@ module.exports = function (d3Provider, $q) {
 
             scope.$watch(function () {
                 return timezoneJS.timezone.getAllZones().length;
-            }, init);
+            }, function(){
+                if(timezoneJS.timezone.getAllZones().length > 0)
+                    init();
+            });
 
         }
     };

@@ -75,23 +75,20 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         }
 
                         //make sure that event blocks (brush) do not overlap
-                        //brush.extent.start is a property created that holds the original extent of the bar when brush start
-                        if (brush.extent.start) {
 
-                            //time where we can not go pass as to not overlap
-                            var edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId].data);
+                        //find out what surrounds this brush
+                        var edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId].data);
 
-                            //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
-                            if (edge[1] !== undefined && extent1[1].getTime() > edge[1].getTime()) {
-                                extent1[1] = edge[1];
-                                //if we are moving, not only do we stop it from going past, but also keep the brush the same size
-                                if (d3.event.mode === "move")
-                                    extent1[0] = d3.time.hour.offset(extent1[1], -Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
-                            } else if (edge[0] !== undefined && extent1[0].getTime() < edge[0].getTime()) {
-                                extent1[0] = edge[0];
-                                if (d3.event.mode === "move")
-                                    extent1[1] = d3.time.hour.offset(extent1[0], Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
-                            }
+                        //if the current block gets brushed beyond the surrounding block, limit it so it does not go past
+                        if (edge[1] !== undefined && extent1[1].getTime() > edge[1].getTime()) {
+                            extent1[1] = edge[1];
+                            //if we are moving, not only do we stop it from going past, but also keep the brush the same size
+                            if (d3.event.mode === "move")
+                                extent1[0] = d3.time.hour.offset(extent1[1], -Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
+                        } else if (edge[0] !== undefined && extent1[0].getTime() < edge[0].getTime()) {
+                            extent1[0] = edge[0];
+                            if (d3.event.mode === "move")
+                                extent1[1] = d3.time.hour.offset(extent1[0], Math.round((brush.extent.start[1] - brush.extent.start[0]) / 3600000));
                         }
 
                         d3.select(this).call(brush.extent(extent1));
@@ -103,8 +100,8 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         scope.onEnd();
 
                         //if mouse hasn't moved since mouse down, it is a click (brush doesn't have a click event, so we fake one)
-                        //if (d3.event.sourceEvent && brush.mouseStart == d3.event.sourceEvent.x)
-                        popoverHandler(d3.select(this));
+                        if (d3.event.sourceEvent && brush.mouseStart == d3.event.sourceEvent.x)
+                            popoverHandler(d3.select(this));
 
                         //When we finish brushing, the extent will be the starting extent for next time
                         //This is useful for determining what is surrounding the current block later (i.e. to know which blocks bound the brush)
@@ -404,22 +401,26 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             .attr("class", function (brushWrapper) {
                                 return brushWrapper.preferred ? 'brush preferred' : 'brush';
                             })
-                            .each(function (brushWrapper) {
+                            .each(function (brushWrapper, i) {
+
+                                var domEl = d3.select(this);
 
                                 if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                    brushWrapper.brush(d3.select(this));
+                                    brushWrapper.brush(domEl);
                                 else {
                                     var b = newBrush(brushWrapper);
                                     b(d3.select(this));
                                 }
 
-                            });
+                                domEl
+                                    .selectAll('.background')
+                                    .style('pointer-events', function () {
+                                        return i === 0
+                                        && brushWrapper.brush !== undefined
+                                        && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime()
+                                            ? 'all' : 'none';
+                                    });
 
-                        gBrush
-                            .selectAll('.background')
-                            .style('pointer-events', function (d, i) {
-                                var brushWrapper = d3.select(this.parentNode).datum();
-                                return i === 0 && brushWrapper.brush && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
                             });
 
                         gBrush.selectAll('.extent')

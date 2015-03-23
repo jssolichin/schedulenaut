@@ -60,11 +60,12 @@
             aside#discussion
                 header Discussion
                 article
-                    h2 Important messages
-                    ul
+                    p.hint(ng-hide="messages.data > 0") It's lonely in here. Ask for chips and salsa. They always liven up meetings!
+                    h2(ng-show="messages.star > 0") Important messages
+                    ul(ng-show="messages.data > 0")
                         li(ng-repeat="id in messages.star" ng-click="bounce('#message-'+id)")
                             a {{messages.data[id].content}}
-                    h2 Latest
+                    h2(ng-show="messages.data > 0") Latest
                     ul
                         li.clearfix(ng-repeat="message in messages.data track by message.id" id="message-{{message.id}}" title="{{message.timestamp | date:'short'}}")
                             span.user {{users[message.user].name}}
