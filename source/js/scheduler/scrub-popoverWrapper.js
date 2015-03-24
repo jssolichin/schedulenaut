@@ -46,11 +46,19 @@ module.exports = function (d3Provider, momentProvider, $q) {
             $('.time-picker .start')
                 .timepicker('setTime', scope.start)
                 .timepicker('option', 'minTime', scope.edge[0])
-                .timepicker('option', 'showDuration', false);
+                .timepicker('option', 'showDuration', false)
+                .on('mousedown', function () {
+                    if (scope.link == true)
+                        datepair.option('anchor', 'start');
+                });
 
             $('.time-picker .end')
+                .timepicker('setTime', scope.end)
                 .timepicker('option', 'maxTime', scope.edge[1])
-                .timepicker('setTime', scope.end);
+                .on('mousedown', function () {
+                    if (scope.link === true)
+                        datepair.option('anchor', 'end');
+                });
 
             $('.time-picker input')
                 .on('changeTime timeRangeError', function (a) {
@@ -82,8 +90,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
             datepair.option('anchor', scope.link);
 
             scope.changeLink = function () {
-                scope.link = scope.link == 'start' ? null : 'start';
-                datepair.option('anchor', scope.link);
+                scope.link = scope.link == true ? null : true;
             };
 
             scope.deleteBrush = function () {

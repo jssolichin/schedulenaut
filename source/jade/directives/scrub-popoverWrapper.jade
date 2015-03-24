@@ -3,7 +3,8 @@
 .popover
     .time-picker.clearfix
         input.left.time.start(type="text" id="start")
-        span.left(ng-class="{link: link == 'start'}" ng-click="changeLink()") -
+        span.link-indicator.left(ng-class="{link: link == true}" ng-click="changeLink()")
+            i.icon.ion-link
         input.left.time.end(type="text" id="end")
 
     ul.clearfix

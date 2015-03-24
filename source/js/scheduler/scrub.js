@@ -152,7 +152,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         newScope.step = scope.granularity;
                         newScope.disabled = getOtherBrushesExtent();
                         newScope.edge = helpers.getEdge(brush, scope.layers[scope.activeLayerId].data);
-                        newScope.link = "start";
+                        newScope.link = true;
 
                         var $el = $compile('<div class="scheduler-popover-wrapper"></div>')(newScope);
 
