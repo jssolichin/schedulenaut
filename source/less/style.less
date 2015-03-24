@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,800);
 
 @radius: 3px;
 @green: #4CD964;
@@ -8,7 +8,6 @@
 body {color: #333; padding: 0px; margin: 0px;}
 body, textarea {font-family: 'Open Sans', sans-serif; }
 .super {vertical-align: super; font-size: .5em; margin-left: 5px;}
-
 
 //global
 svg {margin-bottom: -4px}
@@ -39,7 +38,7 @@ form{
 
 //state specific style
 body.state-index {background: url(../images/index-background.png) no-repeat center center fixed; background-size: cover; }
-
+body.state-about {background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(255,255,255,1) 45%), url(../images/index-background.png) no-repeat center center fixed; background-size: cover; }
 
 //media queries
 @media only screen and (max-width: 960px) {
@@ -70,12 +69,17 @@ body.state-index {background: url(../images/index-background.png) no-repeat cent
   .bottom:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
 }
 
-.editable-click, a.editable-click {
-  color: #333;
-  border: 0;
-  border-radius: @radius;
-  &:hover {
-    color: @accent;
-  }
+.editable-click, a.editable-click { color: #333; border: 0; border-radius: @radius;
+  &:hover { color: @accent; }
 }
 p.hint {font-size: .7em; padding: 0 10px; }
+
+article.text { width: 80%; max-width: 710px; margin: 40px auto 100px auto;
+  h1,h2,h3,h4,h5 {font-weight: 800; margin: 0;}
+  a {color: @accent;
+    &:hover {color: @accent + #222; }
+  }
+  h1 {font-size: 3em; text-align: center; margin: 50px 0 40px 0; padding-bottom: 30px;}
+  h2 {font-size: 2.5em; margin-bottom: .4em;}
+  p {line-height: 1.7em; margin: 0 0 1.7em 0;}
+}
