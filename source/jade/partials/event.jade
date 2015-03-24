@@ -6,6 +6,7 @@
         .middle
             h1(editable-text="event.name" onaftersave="updateEvent()") {{event.name || "Add an Event Name" }}
             p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
+            p(editable-text="event.location" onaftersave="updateEvent()") {{event.location || "Add a Location"}}
     article.middle.clearfix
         section#toolbar
             ul.clearfix
