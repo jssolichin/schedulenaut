@@ -48,7 +48,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
                 .timepicker('option', 'minTime', scope.edge[0])
                 .timepicker('option', 'showDuration', false)
                 .on('mousedown', function () {
-                    if (scope.link == true)
+                    if (scope.link === true)
                         datepair.option('anchor', 'start');
                 });
 
@@ -90,7 +90,7 @@ module.exports = function (d3Provider, momentProvider, $q) {
             datepair.option('anchor', scope.link);
 
             scope.changeLink = function () {
-                scope.link = scope.link == true ? null : true;
+                scope.link = scope.link === true ? null : true;
             };
 
             scope.deleteBrush = function () {

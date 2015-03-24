@@ -9,11 +9,15 @@
                     label(for="calendar") Possible Dates
                     #calendar
                 .right
-                    label(for="privacy") Privacy
-                    input(type="radio" name="privacy" ng-value="true" ng-model="event.public")
-                    | Public
-                    input(type="radio" name="privacy" ng-value="false" ng-model="event.public")
-                    | Password Protected
+                    div(style="opacity: .4")
+                        label(for="privacy") Privacy
+                            em  (coming soon)
+                        input(type="radio" name="privacy" ng-value="true" ng-model="event.public" disabled)
+                        | Public
+                        input(type="radio" name="privacy" ng-value="false" ng-model="event.public" disabled)
+                        | Password Protected
+                        label(for="password" ng-show="event.public == false") Secret Word
+                        input(type="password" ng-show="event.public == false" name="location" ng-model="event.password" placeholder="Used to access the event")
                     label(for="location") Location (optional)
                     input(type="text" name="location" ng-model="event.location" placeholder="Event Location")
                     label(for="description") Event Description (optional)

@@ -415,10 +415,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                                 domEl
                                     .selectAll('.background')
                                     .style('pointer-events', function () {
-                                        return i === 0
-                                        && brushWrapper.brush !== undefined
-                                        && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime()
-                                            ? 'all' : 'none';
+                                        return i === 0 && brushWrapper.brush !== undefined && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
                                     });
 
                             });

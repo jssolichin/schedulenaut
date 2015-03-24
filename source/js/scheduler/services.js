@@ -5,7 +5,6 @@
 module.exports = angular.module('events', [])
     .service('eventsService', ['$http', '$q', 'global.helpers', 'discussionsService', function ($http, $q, globalHelpers, discussionsService) {
         this.create = function (event) {
-            console.log(event)
             //We need to create a copy or else it will replace the "event" variable in the "event" page
             //The cloneJSON function clones only JSON objects--so we need to stringify the date from
             //the original event and store in the copy's dates.
@@ -16,7 +15,7 @@ module.exports = angular.module('events', [])
             var p = $q.defer();
 
             $http.post('/api/event', eventCopy).success(function (response) {
-                discussionsService.create({event_id:response.id, data: undefined, star: undefined});
+                discussionsService.create({event_id: response.id, data: undefined, star: undefined});
                 p.resolve(response);
             });
 
