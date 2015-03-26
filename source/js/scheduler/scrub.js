@@ -303,7 +303,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             var data;
 
                             //If there is an active layer, we need to remove it from the regular layer stack
-                            if (scope.activeLayerId !== undefined) {
+                            if (scope.layers !== undefined && scope.activeLayerId !== undefined) {
                                 data = scope.layers.slice(0);
                                 data.splice(scope.activeLayerId, 1);
                             }
@@ -370,7 +370,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
 
                     //If we are editing a layer (activeLayerId is not undefined) then we need to add the brushes from those layers
-                    if (scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined) {
+                    if (scope.layers !== undefined && scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined) {
                         var active_brushWrappers = scope.layers[scope.activeLayerId].data;
 
                         //add a new brush if the top brush is not empty, or there is no brush at all
