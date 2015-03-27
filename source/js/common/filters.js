@@ -7,6 +7,23 @@ module.exports = angular.module('filters', [])
                 return '';
         };
     }])
+    .filter('underscoreToSpace', ['$filter', function () {
+        return function (string) {
+            return string ? string.replace(/_/g, ' ') : string;
+
+        };
+    }])
+    .filter('afterLastSlash', ['$filter', function () {
+        return function (string) {
+            return string ? string.replace(/^.*\//, '') : string;
+        };
+    }])
+    .filter('shortTimezone', ['$filter', function ($filter) {
+        return function (string) {
+            var noUnderscore = $filter('underscoreToSpace')(string);
+            return $filter('afterLastSlash')(noUnderscore);
+        };
+    }])
     .service('global.helpers', [function () {
         this.cloneJSON =
             function (obj) {

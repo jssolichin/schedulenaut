@@ -1,4 +1,4 @@
 {
   "browserify": true,
-  "predef": ["console", "$", "angular", "Datepair", "timezoneJS"]
+  "predef": ["console", "$", "angular", "Datepair", "timezoneJS", "jstz"]
 }

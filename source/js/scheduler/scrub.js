@@ -274,179 +274,180 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                 //Update the view
                 var update = function () {
-                    width = parseInt(scope.width) - margin.left - margin.right;
-                    height = parseInt(scope.height) - margin.top - margin.bottom;
+                    if (scope.width > 0) {
+                        width = parseInt(scope.width) - margin.left - margin.right;
+                        height = parseInt(scope.height) - margin.top - margin.bottom;
 
-                    x.range([0, width]);
+                        x.range([0, width]);
 
-                    xgrid
-                        .transition()
-                        .call(axisGen);
+                        xgrid
+                            .transition()
+                            .call(axisGen);
 
-                    xgrid.selectAll('.tick')
-                        .classed('major', function (d) {
-                            return d.getHours() % 6 === 0;
-                        });
+                        xgrid.selectAll('.tick')
+                            .classed('major', function (d) {
+                                return d.getHours() % 6 === 0;
+                            });
 
-                    svg
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom);
+                        svg
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom);
 
-                    gridBackground
-                        .transition()
-                        .attr("width", width)
-                        .attr("height", height + margin.top + margin.bottom);
+                        gridBackground
+                            .transition()
+                            .attr("width", width)
+                            .attr("height", height + margin.top + margin.bottom);
 
-                    //render passive brushes
-                    var layer = layers.selectAll('.layer')
-                        .data(function () {
-                            var data;
+                        //render passive brushes
+                        var layer = layers.selectAll('.layer')
+                            .data(function () {
+                                var data;
 
-                            //If there is an active layer, we need to remove it from the regular layer stack
-                            if (scope.layers !== undefined && scope.activeLayerId !== undefined) {
-                                data = scope.layers.slice(0);
-                                data.splice(scope.activeLayerId, 1);
-                            }
-                            else if (scope.layers)
-                                data = scope.layers;
-                            else
-                                data = [];
+                                //If there is an active layer, we need to remove it from the regular layer stack
+                                if (scope.layers !== undefined && scope.activeLayerId !== undefined) {
+                                    data = scope.layers.slice(0);
+                                    data.splice(scope.activeLayerId, 1);
+                                }
+                                else if (scope.layers)
+                                    data = scope.layers;
+                                else
+                                    data = [];
 
-                            return data;
-                        }, function (d) {
-                            return d.id;
-                        });
-
-                    layer
-                        .enter()
-                        .append('g')
-                        .attr('class', 'layer');
-
-                    layer
-                        .transition()
-                        .duration(function (d) {
-                            return d.visible === false ? 170 : 0;
-                        })
-                        .style('opacity', function (d) {
-                            return d.visible === false ? 0 : 1;
-                        });
-
-                    layer.selectAll('rect')
-                        .data(function (layer) {
-                            return layer.data;
-                        })
-                        .enter()
-                        .append('rect');
-
-                    layer.selectAll('rect')
-                        .transition()
-                        .attr("class", function (brushWrapper) {
-                            return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
-                        })
-                        .attr('rx', radius)
-                        .attr('ry', radius)
-                        .attr('x', function (brushWrapper) {
-                            var xPos;
-                            if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                xPos = x(brushWrapper.brush.extent()[0]);
-                            else
-                                xPos = x(brushWrapper.brush[0]);
-
-                            return xPos;
-                        })
-                        .attr('width', function (brushWrapper) {
-                            var width;
-                            if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                width = x(brushWrapper.brush.extent()[1]) - x(brushWrapper.brush.extent()[0]);
-                            else
-                                width = x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
-
-                            return width;
-                        })
-                        .attr('height', height);
-
-                    layer.exit()
-                        .remove();
-
-
-                    //If we are editing a layer (activeLayerId is not undefined) then we need to add the brushes from those layers
-                    if (scope.layers !== undefined && scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined) {
-                        var active_brushWrappers = scope.layers[scope.activeLayerId].data;
-
-                        //add a new brush if the top brush is not empty, or there is no brush at all
-                        if (active_brushWrappers.length > 0) {
-                            var lastBrush = active_brushWrappers[0];
-                            var lastBrushExtent = helpers.getExtent(lastBrush.brush);
-                            if (lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()) {
-                                newBrush();
-                            }
-                        }
-                        else {
-                            newBrush();
-                        }
-
-                        //render active brushes
-                        var gBrush = brushContainer.selectAll('.brush')
-                            .data(active_brushWrappers, function (d) {
+                                return data;
+                            }, function (d) {
                                 return d.id;
                             });
 
-                        gBrush.enter()
-                            .insert("g", '.brush')
-                            .on('click', function () {
-                                d3.event.stopPropagation();
-                            });
+                        layer
+                            .enter()
+                            .append('g')
+                            .attr('class', 'layer');
 
-                        gBrush
-                            .attr("class", function (brushWrapper) {
-                                return brushWrapper.preferred ? 'brush preferred' : 'brush';
+                        layer
+                            .transition()
+                            .duration(function (d) {
+                                return d.visible === false ? 170 : 0;
                             })
-                            .each(function (brushWrapper, i) {
-
-                                var domEl = d3.select(this);
-
-                                if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
-                                    brushWrapper.brush(domEl);
-                                else {
-                                    var b = newBrush(brushWrapper);
-                                    b(d3.select(this));
-                                }
-
-                                domEl
-                                    .selectAll('.background')
-                                    .style('pointer-events', function () {
-                                        return i === 0 && brushWrapper.brush !== undefined && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
-                                    });
-
+                            .style('opacity', function (d) {
+                                return d.visible === false ? 0 : 1;
                             });
 
-                        gBrush.selectAll('.extent')
+                        layer.selectAll('rect')
+                            .data(function (layer) {
+                                return layer.data;
+                            })
+                            .enter()
+                            .append('rect');
+
+                        layer.selectAll('rect')
+                            .transition()
+                            .attr("class", function (brushWrapper) {
+                                return brushWrapper.preferred ? 'brush-passive preferred' : 'brush-passive';
+                            })
                             .attr('rx', radius)
-                            .attr('ry', radius);
+                            .attr('ry', radius)
+                            .attr('x', function (brushWrapper) {
+                                var xPos;
+                                if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
+                                    xPos = x(brushWrapper.brush.extent()[0]);
+                                else
+                                    xPos = x(brushWrapper.brush[0]);
 
-                        gBrush.selectAll('.resize').selectAll('rect')
-                            .attr('rx', radius)
-                            .attr('ry', radius);
+                                return xPos;
+                            })
+                            .attr('width', function (brushWrapper) {
+                                var width;
+                                if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
+                                    width = x(brushWrapper.brush.extent()[1]) - x(brushWrapper.brush.extent()[0]);
+                                else
+                                    width = x(brushWrapper.brush[1]) - x(brushWrapper.brush[0]);
 
-                        gBrush.selectAll('rect')
-                            .attr("height", height);
+                                return width;
+                            })
+                            .attr('height', height);
 
-                        gBrush.exit()
+                        layer.exit()
                             .remove();
 
-                    } else {
-                        brushContainer.selectAll('.brush')
-                            .data([])
-                            .exit()
-                            .remove();
+
+                        //If we are editing a layer (activeLayerId is not undefined) then we need to add the brushes from those layers
+                        if (scope.layers !== undefined && scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined) {
+                            var active_brushWrappers = scope.layers[scope.activeLayerId].data;
+
+                            //add a new brush if the top brush is not empty, or there is no brush at all
+                            if (active_brushWrappers.length > 0) {
+                                var lastBrush = active_brushWrappers[0];
+                                var lastBrushExtent = helpers.getExtent(lastBrush.brush);
+                                if (lastBrushExtent[0].getTime() !== lastBrushExtent[1].getTime()) {
+                                    newBrush();
+                                }
+                            }
+                            else {
+                                newBrush();
+                            }
+
+                            //render active brushes
+                            var gBrush = brushContainer.selectAll('.brush')
+                                .data(active_brushWrappers, function (d) {
+                                    return d.id;
+                                });
+
+                            gBrush.enter()
+                                .insert("g", '.brush')
+                                .on('click', function () {
+                                    d3.event.stopPropagation();
+                                });
+
+                            gBrush
+                                .attr("class", function (brushWrapper) {
+                                    return brushWrapper.preferred ? 'brush preferred' : 'brush';
+                                })
+                                .each(function (brushWrapper, i) {
+
+                                    var domEl = d3.select(this);
+
+                                    if (brushWrapper.brush && Object.prototype.toString.call(brushWrapper.brush) == '[object Function]')
+                                        brushWrapper.brush(domEl);
+                                    else {
+                                        var b = newBrush(brushWrapper);
+                                        b(d3.select(this));
+                                    }
+
+                                    domEl
+                                        .selectAll('.background')
+                                        .style('pointer-events', function () {
+                                            return i === 0 && brushWrapper.brush !== undefined && brushWrapper.brush.extent()[0].getTime() == brushWrapper.brush.extent()[1].getTime() ? 'all' : 'none';
+                                        });
+
+                                });
+
+                            gBrush.selectAll('.extent')
+                                .attr('rx', radius)
+                                .attr('ry', radius);
+
+                            gBrush.selectAll('.resize').selectAll('rect')
+                                .attr('rx', radius)
+                                .attr('ry', radius);
+
+                            gBrush.selectAll('rect')
+                                .attr("height", height);
+
+                            gBrush.exit()
+                                .remove();
+
+                        } else {
+                            brushContainer.selectAll('.brush')
+                                .data([])
+                                .exit()
+                                .remove();
+                        }
                     }
-
                 };
 
                 //Watch for when users interact with data & browser
-                scope.$watch('layers', update); //add new users
-                scope.$watch('activeLayerId', update); //change who we are editing
-                scope.$watch('width', update); //window resize
+                scope.$watch('layers', update);
+                scope.$watch('activeLayerId', update);
+                scope.$watch('width', update);
 
             }); //end promises
         } //end link function

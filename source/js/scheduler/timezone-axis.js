@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (d3Provider, $q) {
+module.exports = function (d3Provider, $filter) {
     return {
         restrict: 'A',
         scope: {
@@ -20,8 +20,17 @@ module.exports = function (d3Provider, $q) {
                 var dt = new timezoneJS.Date(oldDomain[0]);
 
                 if (timezone) {
+                    //get the full timezone name
+                    var rawTzOpt = timezoneJS.timezone.getAllZones();
+                    var tzOpt = rawTzOpt.map(function (opt) {
+                        return $filter('shortTimezone')(opt);
+                    });
+                    var index = tzOpt.indexOf(timezone);
+                    var rawTimezone = rawTzOpt[index];
+
+                    //convert the timezone
                     var originalOffset = dt.getTimezoneOffset();
-                    dt.setTimezone(timezone);
+                    dt.setTimezone(rawTimezone);
                     var newOffset = dt.getTimezoneOffset();
 
                     add = -1 * (originalOffset - newOffset);
@@ -36,7 +45,12 @@ module.exports = function (d3Provider, $q) {
             //we need to load timezone files before we can render anything
             var init = function () {
 
-                scope.tzOptions = timezoneJS.timezone.getAllZones();
+
+                scope.tzOptions = timezoneJS.timezone.getAllZones()
+                    .map(function (option) {
+                        var noUnderscore = $filter('underscoreToSpace')(option);
+                        return $filter('afterLastSlash')(noUnderscore);
+                    });
 
                 d3Provider.d3().then(function (d3) {
                     var timeFormat = d3.time.format.multi([
@@ -45,7 +59,7 @@ module.exports = function (d3Provider, $q) {
                         }],
                         ["Day Change", function (d) {
                             return d.getDay();
-                        }],
+                        }]
                     ]);
 
                     var height, svg, g, gridBackground, xAxisGen, xAxis, localScale;
@@ -63,6 +77,9 @@ module.exports = function (d3Provider, $q) {
                         gridBackground = g.append("rect")
                             .attr("class", "grid-background")
                             .attr("height", height);
+
+                        if (scope.timezone.zone === undefined)
+                            scope.timezone.zone = $filter('shortTimezone')(jstz.determine().name());
 
                         var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
@@ -85,35 +102,36 @@ module.exports = function (d3Provider, $q) {
                     };
 
                     var update = function () {
-                        var width = scope.width - margin.left - margin.right;
 
-                        svg.attr("width", width + margin.left + margin.right);
+                        if (scope.width > 0) {
 
-                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
+                            var width = scope.width - margin.left - margin.right;
 
-                        localScale
-                            .domain(newDomain)
-                            .range(scope.scale.range());
+                            svg.attr("width", width + margin.left + margin.right);
 
-                        gridBackground
-                            .transition()
-                            .attr("width", width);
+                            var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
-                        xAxis
-                            .transition()
-                            .call(xAxisGen)
-                            .selectAll(".tick text")
-                            .attr("y", height / 2 - 5)
-                            .attr("x", 5)
-                            .style("text-anchor", 'start');
+                            localScale
+                                .domain(newDomain)
+                                .range(scope.scale.range());
 
+                            gridBackground
+                                .transition()
+                                .attr("width", width);
+
+                            xAxis
+                                .transition()
+                                .call(xAxisGen)
+                                .selectAll(".tick text")
+                                .attr("y", height / 2 - 5)
+                                .attr("x", 5)
+                                .style("text-anchor", 'start');
+
+                        }
                     };
 
                     scope.$watch('scale', setUp);
-                    scope.$watch('width', function () {
-                        if (scope.width > 0)
-                            update();
-                    });
+                    scope.$watch('width', update);
                     scope.$watch('timezone.zone', update);
 
                 });
@@ -124,8 +142,8 @@ module.exports = function (d3Provider, $q) {
 
             scope.$watch(function () {
                 return timezoneJS.timezone.getAllZones().length;
-            }, function(){
-                if(timezoneJS.timezone.getAllZones().length > 0)
+            }, function () {
+                if (timezoneJS.timezone.getAllZones().length > 0)
                     init();
             });
 

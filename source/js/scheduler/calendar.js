@@ -20,6 +20,11 @@ module.exports = function (d3Provider, $q) {
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
 
+            scope.removeTimezone = function () {
+                scope.timezones.splice(this.$index, 1);
+                scope.$parent.updateEvent();
+            };
+
             d3Provider.d3().then(function (d3) {
 
                 //We store data in the server per user to make it relational to the user table than events.
@@ -130,8 +135,10 @@ module.exports = function (d3Provider, $q) {
                         .range([0, scope.width]);
                 };
 
-                update();
-                scope.$watch('width', update);
+                scope.$watch('width', function () {
+                    if (hoverTime.node() && hoverTime.node().offsetLeft && element[0].offsetWidth)
+                        update();
+                });
                 scope.$on('resize', update);
             });
 

@@ -38,7 +38,7 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                                 });
 
                             if (event.data.timezones === null)
-                                event.data.timezones = [{zone: 'America/Los_Angeles'}];
+                                event.data.timezones = [{zone: undefined, id: 0}];
                             else
                                 event.data.timezones = JSON.parse(event.data.timezones);
 

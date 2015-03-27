@@ -2,12 +2,15 @@
 
 table
     thead
-        tr(ng-repeat="timezone in timezones track by $index" timezone-axis on-timezone-change="updateEvent" scale='x' height="height+10" width="width" timezone='timezone' tz-options='tzOptions')
-            th(colspan="3")
+        tr(ng-repeat="timezone in timezones track by timezone.id" timezone-axis on-timezone-change="updateEvent" scale='x' height="height+10" width="width" timezone='timezone' tz-options='tzOptions')
+            th(colspan="2")
                 ui-select(ng-model="timezone.zone" on-select="onTimezoneChange()" theme="select2" ng-disabled='$last')
                     ui-select-match(placeholder="Choose a timezone") {{$select.selected}}
-                    ui-select-choices(repeat="option in tzOptions | filter: $select.search" )
+                    ui-select-choices(repeat="option in tzOptions| filter: $select.search" )
                         span(ng-bind-html="option")
+            th
+                a.delete(ng-hide="$last" ng-click="removeTimezone()")
+                    i.icon.ion-close-circled
             th.hover-time.axis
     tbody
         tr#hint(ng-hide="dates.length > 0")

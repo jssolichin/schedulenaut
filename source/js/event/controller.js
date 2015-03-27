@@ -4,7 +4,7 @@
 
 'use strict';
 
-module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q) {
+module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
 
     $scope.messages = discussion;
     $scope.updateDiscussion = function () {
@@ -72,7 +72,7 @@ module.exports = function (event, allLayers, discussion, usersService, eventsSer
     $scope.event = event;
 
     $scope.addTimezone = function () {
-        $scope.timezones.unshift({zone: 'America/Los_Angeles'});
+        $scope.timezones.unshift({zone: undefined, id: $scope.timezones.length});
         $scope.updateEvent();
     };
 

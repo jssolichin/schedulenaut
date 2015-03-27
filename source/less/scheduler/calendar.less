@@ -28,6 +28,9 @@
       @headerStrokes: #ccc;
       th {border-bottom: 1px solid @headerStrokes; font-weight: bold;
         &:first-child > div {width: 100%; font-size: .8em;}
+        .delete {color: #ccc;
+          &:hover {color: @red;}
+        }
       }
       text {fill: #333; }
       line {stroke: @headerStrokes;}
