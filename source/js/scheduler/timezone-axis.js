@@ -11,29 +11,29 @@ module.exports = function (d3Provider, $filter) {
             tzOptions: '='
         },
         link: function (scope, element, attrs) {
+
+            var rawTzOptions;
+
             var addMinutes = function (date, minutes) {
                 return new Date(date.getTime() + minutes * 60000);
             };
 
             var changeTimezone = function (oldDomain, timezone) {
                 var add = 0;
-                var dt = new timezoneJS.Date(oldDomain[0]);
+                var dt = new timezoneJS.Date(oldDomain[0], jstz.determine().name());
 
-                if (timezone) {
+                if (timezone && scope.tzOptions.length === rawTzOptions.length) {
                     //get the full timezone name
-                    var rawTzOpt = timezoneJS.timezone.getAllZones();
-                    var tzOpt = rawTzOpt.map(function (opt) {
-                        return $filter('shortTimezone')(opt);
-                    });
-                    var index = tzOpt.indexOf(timezone);
-                    var rawTimezone = rawTzOpt[index];
+                    var index = scope.tzOptions.indexOf(timezone);
+                    var rawTimezone = rawTzOptions[index];
 
                     //convert the timezone
                     var originalOffset = dt.getTimezoneOffset();
                     dt.setTimezone(rawTimezone);
                     var newOffset = dt.getTimezoneOffset();
 
-                    add = -1 * (originalOffset - newOffset);
+                    add = (originalOffset - newOffset);
+
                 }
 
                 var begin = addMinutes(scope.scale.domain()[0], add);
@@ -45,12 +45,18 @@ module.exports = function (d3Provider, $filter) {
             //we need to load timezone files before we can render anything
             var init = function () {
 
-
-                scope.tzOptions = timezoneJS.timezone.getAllZones()
+                rawTzOptions = timezoneJS.timezone.getAllZones();
+                var x = rawTzOptions
                     .map(function (option) {
-                        var noUnderscore = $filter('underscoreToSpace')(option);
-                        return $filter('afterLastSlash')(noUnderscore);
+                        return $filter('shortTimezone')(option);
                     });
+
+                var uniqueNames = [];
+                $.each(x, function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+
+                scope.tzOptions = uniqueNames;
 
                 d3Provider.d3().then(function (d3) {
                     var timeFormat = d3.time.format.multi([
@@ -62,42 +68,41 @@ module.exports = function (d3Provider, $filter) {
                         }]
                     ]);
 
-                    var height, svg, g, gridBackground, xAxisGen, xAxis, localScale;
+                    var height, svg, gridBackground, xAxisGen, xAxis, localScale;
                     var margin = {top: 0, right: 0, bottom: 0, left: 0};
 
                     var setUp = function () {
                         height = scope.height - margin.top - margin.bottom;
 
-                        svg = d3.select(element[0]).select('.axis').selectAll('svg').data([0]).enter().append('svg')
+                        svg = d3.select(element[0]).select('.axis').selectAll('svg')
+                            .data([0]);
+
+                        svg.enter()
+                            .append('svg')
                             .attr("height", height + margin.top + margin.bottom);
 
-                        g = svg.append("g")
+                        xAxis = svg.selectAll('g')
+                            .data([0]);
+
+                        xAxis.enter()
+                            .append("g")
+                            .attr("class", "x axis")
                             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                        gridBackground = g.append("rect")
+                        gridBackground = xAxis.append("rect")
                             .attr("class", "grid-background")
                             .attr("height", height);
 
-                        if (scope.timezone.zone === undefined)
-                            scope.timezone.zone = $filter('shortTimezone')(jstz.determine().name());
-
-                        var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
-
                         localScale = d3.time.scale()
-                            .domain(newDomain)
                             .clamp(true);
 
                         xAxisGen = d3.svg.axis()
-                            .scale(localScale)
                             .ticks(d3.time.hours, 6)
                             .orient("bottom")
                             .tickSize(height, 0)
-                            .tickFormat(timeFormat)
+                            //.tickFormat(timeFormat)
                             .tickPadding(0);
 
-                        xAxis = g.append("g")
-                            .attr("class", "x axis")
-                            .attr("transform", "translate(0," + 0 + ")");
 
                     };
 
@@ -111,6 +116,9 @@ module.exports = function (d3Provider, $filter) {
 
                             var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
+                            if(scope.timezone.zone === undefined)
+                                scope.timezone.zone = $filter('shortTimezone')(jstz.determine().name());
+
                             localScale
                                 .domain(newDomain)
                                 .range(scope.scale.range());
@@ -118,6 +126,9 @@ module.exports = function (d3Provider, $filter) {
                             gridBackground
                                 .transition()
                                 .attr("width", width);
+
+                            xAxisGen
+                                .scale(localScale);
 
                             xAxis
                                 .transition()
@@ -138,6 +149,7 @@ module.exports = function (d3Provider, $filter) {
             };
 
             timezoneJS.timezone.zoneFileBasePath = 'tz';
+//            timezoneJS.timezone.loadingScheme = timezoneJS.timezone.loadingSchemes.PRELOAD_ALL;
             var x = timezoneJS.timezone.init({callback: init});
 
             scope.$watch(function () {

@@ -64,7 +64,6 @@ module.exports = function (d3Provider, $q) {
                 });
 
                 var el = d3.select(element[0]);
-                var hoverTime = d3.selectAll('.hover-time');
                 var rule = el.append('div')
                     .attr('id', 'rule');
                 var tooltip = rule.append('div')
@@ -123,22 +122,32 @@ module.exports = function (d3Provider, $q) {
                         .style('left', mouseX + 'px');
                 };
                 setInterval(mouseUpdate, 35);
-                hoverTime
-                    .on('mouseenter', mouseenter)
-                    .on('mousemove', mouseover)
-                    .on('mouseleave', mouseleave);
+
+                var hoverTime;
+
+                var setUpHoverTime = function () {
+
+                    hoverTime = d3.selectAll('.hover-time');
+
+                    hoverTime
+                        .on('mouseenter', mouseenter)
+                        .on('mousemove', mouseover)
+                        .on('mouseleave', mouseleave);
+
+                };
 
                 /** draw time axis **/
                 var update = function () {
+
+                    setUpHoverTime();
+
                     scope.width = element[0].offsetWidth - hoverTime.node().offsetLeft;
                     scope.x
                         .range([0, scope.width]);
+
                 };
 
-                scope.$watch('width', function () {
-                    if (hoverTime.node() && hoverTime.node().offsetLeft && element[0].offsetWidth)
-                        update();
-                });
+                scope.$watch('width', update);
                 scope.$on('resize', update);
             });
 
