@@ -65,9 +65,9 @@ module.exports = function (d3Provider, $q) {
 
                 var el = d3.select(element[0]);
                 var rule = el.append('div')
-                    .attr('id', 'rule');
+                    .attr('class', 'rule');
                 var tooltip = rule.append('div')
-                    .attr('id', 'tooltip');
+                    .attr('class', 'tooltip');
                 var mouseX = 0;
 
                 var margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -91,37 +91,50 @@ module.exports = function (d3Provider, $q) {
                 /** Time Tooltip **/
                 var mouseenter = function () {
                     rule.style('display', 'block');
+
+                    scope.$broadcast('showTooltip');
                 };
                 var mouseover = function ($event) {
-                    var el = d3.select(this).node();
-                    mouseX = d3.mouse(this)[0] + el.offsetLeft;
-                    var truePos = mouseX - margin.left - el.offsetLeft;
+                    var td = d3.select(this).node();
+                    mouseX = d3.mouse(this)[0] + td.offsetLeft;
+                    var truePos = mouseX - margin.left - td.offsetLeft;
                     var rawTime = scope.x.invert(truePos);
                     var formattedTime = timeFormat(rawTime);
 
                     tooltip
                         .style('top', function () {
-                            var posY = el.offsetTop + d3.event.offsetY + tooltipOffsetY;
+                            var posY = td.offsetTop + d3.event.offsetY + tooltipOffsetY;
+                            return posY + 'px';
+                        })
+                        .style('opacity', function () {
+                            var posY = td.offsetTop + d3.event.offsetY + tooltipOffsetY;
 
-                            //limit tooltip from going above
-                            return (posY < 20 ? 20 : posY ) + 'px';
+                            var tBodyTop = $(element[0]).find('tbody')[0].offsetTop - 15;
+                            return posY < tBodyTop ? 0 : 1;
                         })
                         .html(formattedTime);
 
-                    rule.style('display', 'block');
+                    rule
+                        .style('left', mouseX + 'px')
+                        .style('display', 'block');
 
+                    scope.$broadcast('moveTooltip', {timeFormat: timeFormat, truePos: truePos});
 
                 };
                 var mouseleave = function () {
                     rule.style('display', 'none');
+
+                    scope.$broadcast('hideTooltip');
                 };
-                var mouseUpdate = function () {
-                    rule.transition()
-                        .duration(5)
-                        .ease('cubic-in-out')
-                        .style('left', mouseX + 'px');
-                };
-                setInterval(mouseUpdate, 35);
+                /*
+                 var mouseUpdate = function () {
+                 rule.transition()
+                 .duration(5)
+                 .ease('cubic-in-out')
+                 .style('left', mouseX + 'px');
+                 };
+                 setInterval(mouseUpdate, 35);
+                 */
 
                 var hoverTime;
 

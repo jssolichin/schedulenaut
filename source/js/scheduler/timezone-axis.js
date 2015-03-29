@@ -68,13 +68,24 @@ module.exports = function (d3Provider, $filter) {
                         }]
                     ]);
 
-                    var height, svg, gridBackground, xAxisGen, xAxis, localScale;
+                    var height, svg, gridBackground, xAxisGen, xAxis, localScale, rule, tooltip;
                     var margin = {top: 0, right: 0, bottom: 0, left: 0};
 
+                    var el = d3.select(element[0]).selectAll('.axis');
                     var setUp = function () {
                         height = scope.height - margin.top - margin.bottom;
 
-                        svg = d3.select(element[0]).select('.axis').selectAll('svg')
+                        el.selectAll('.rule').data([0])
+                            .enter()
+                            .append('div')
+                            .attr('class', 'rule')
+                            .append('div')
+                            .attr('class', 'tooltip');
+
+                        rule = el.select('.rule');
+                        tooltip = el.select('.tooltip');
+
+                        svg = el.selectAll('svg')
                             .data([0]);
 
                         svg.enter()
@@ -103,7 +114,6 @@ module.exports = function (d3Provider, $filter) {
                             //.tickFormat(timeFormat)
                             .tickPadding(0);
 
-
                     };
 
                     var update = function () {
@@ -116,7 +126,7 @@ module.exports = function (d3Provider, $filter) {
 
                             var newDomain = changeTimezone(scope.scale.domain(), scope.timezone.zone);
 
-                            if(scope.timezone.zone === undefined)
+                            if (scope.timezone.zone === undefined)
                                 scope.timezone.zone = $filter('shortTimezone')(jstz.determine().name());
 
                             localScale
@@ -139,7 +149,31 @@ module.exports = function (d3Provider, $filter) {
                                 .style("text-anchor", 'start');
 
                         }
+
                     };
+
+                    scope.$on('showTooltip', function (event, data) {
+                        rule
+                            .style('display', 'block');
+                    });
+                    scope.$on('moveTooltip', function (event, data) {
+
+                        var time = localScale.invert(data.truePos);
+                        tooltip
+                            .html(data.timeFormat(time))
+                            .style('top', '8px');
+
+                        rule.transition()
+                            .duration(5)
+                            .ease('cubic-in-out')
+                            .style('left', data.truePos + 'px');
+
+                    });
+                    scope.$on('hideTooltip', function (event, data) {
+                        rule
+                            .style('display', 'none');
+                    });
+
 
                     scope.$watch('scale', setUp);
                     scope.$watch('width', update);

@@ -3,7 +3,7 @@
   tbody {background: #fff}
   table {border-collapse: collapse; width: 100%;
     td,th {border-bottom: 1px solid #ccc; position: relative; font-size: .8em; ; text-transform: uppercase; padding: 0 5px;
-      &:last-child {text-align: center; padding: 0px;}
+      &:last-child {text-align: center; padding: 0px; font-size: 1em;}
       .scheduler-popover-wrapper{ position: absolute; z-index: 99;
         .popover {padding: 20px; width: 300px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
           .time-picker { margin: 0 0 20px 0;
@@ -26,6 +26,10 @@
     }
     thead {
       @headerStrokes: #ccc;
+      tr {
+        position: relative;
+        .tooltip {z-index: 1;}
+      }
       th {border-bottom: 1px solid @headerStrokes; font-weight: bold;
         &:first-child > div {width: 100%; font-size: .8em;}
         .delete {color: #ccc;
@@ -51,10 +55,10 @@
     }
   }
 
-  #rule { border-left: 1px dotted #333; display: none; position: absolute; top: 0; bottom: 0;  pointer-events: none;
-    #tooltip { left: -30px;position: absolute; background: #333; border-radius: @radius; padding: 2px 5px;
+  .rule { border-left: 1px dotted #333; display: none; position: absolute; top: 0; bottom: 0;  pointer-events: none;
+    .tooltip { left: -30px;position: absolute; background: #333; border-radius: @radius; padding: 2px 5px; font-weight: normal;
       white-space: nowrap; font-size: .7em; text-transform: uppercase; color: #fff; pointer-events: none;}
-    #tooltip:after { top: 19px; left: 25px; border-width: 4px; border-color: #000 transparent transparent transparent;
+    .tooltip:after { top: 19px; left: 25px; border-width: 4px; border-color: #000 transparent transparent transparent;
       border-style: solid; position: absolute; content: ""; width: 0; height: 0;
     }
   }
