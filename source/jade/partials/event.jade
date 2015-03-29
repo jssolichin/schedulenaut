@@ -8,19 +8,27 @@
             p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
             p(editable-text="event.location" onaftersave="updateEvent()") {{event.location || "Add a Location"}}
     article.middle.clearfix
-        section#toolbar
-            ul.clearfix
-                li
-                    a.button(ng-click="addTimezone()") + Timezone
-                li
-                    select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
         section#main.left
-            .calendar( calendar on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
-            a#edit-dates-button.center.button
-                i.icon.ion-ios-settings
-                | Edit Possible Dates
-            .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
-                #datepicker
+            section#toolbar
+                ul.clearfix
+                    li.left
+                        a.button(ng-click="addTimezone()") + Timezone
+                    li.left
+                        select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
+                    li.clearfix.right
+                        span.left Default Brush:
+                        ul.combo-button.right
+                            li
+                                a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred != true}") Available
+                            li
+                                a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred == true}") Preferred
+            section#visualization
+                .calendar( calendar preferred="preferred" on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
+                a#edit-dates-button.center.button
+                    i.icon.ion-ios-settings
+                    | Edit Possible Dates
+                .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
+                    #datepicker
         section#sidebar.right
             aside#users
                 header Guests

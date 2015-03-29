@@ -15,7 +15,8 @@ module.exports = function (d3Provider, $q) {
             allLayers: '=',
             activeLayerId: '=',
             timezones: '=',
-            onTimezoneChange: '='
+            onTimezoneChange: '=',
+            preferred: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {

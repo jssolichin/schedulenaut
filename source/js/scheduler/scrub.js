@@ -14,13 +14,24 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
             scrub: '=',
             onEnd: '=',
             layers: '=',
-            activeLayerId: '='
+            activeLayerId: '=',
+            preferred: '='
         },
         link: function (scope, element, attrs) {
             var radius = 5;
 
             d3Provider.d3().then(function (d3) {
                 scope.el = d3.select(element[0]);
+
+                var changeLastPreference = function () {
+                    if (scope.activeLayerId !== undefined && scope.layers.length > scope.activeLayerId) {
+                        var active_brushWrappers = scope.layers[scope.activeLayerId].data;
+                        var lastBrushWrappers = active_brushWrappers[0];
+                        lastBrushWrappers.preferred = scope.preferred;
+
+                        update();
+                    }
+                };
 
                 //newBrush is a wrapper around d3Brush that deals with Schedulenaut specific function:
                 //    popover, delete, preference type, etc.
@@ -198,11 +209,10 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         .on("brush", brushed)
                         .on("brushend", brushend);
 
-                    var brushWrapper = previousBrushWrapper || {preferred: false, brush: brush};
+                    var brushWrapper = previousBrushWrapper || {preferred: scope.preferred, brush: brush};
+
                     if (previousBrushWrapper)
                         brush.extent(helpers.getExtent(previousBrushWrapper.brush));
-
-                    brush.preferred = true;
 
                     var currentLayer = scope.layers[scope.activeLayerId];
                     if (previousBrushWrapper !== undefined && !isNaN(previousBrushWrapper.id)) {
@@ -445,6 +455,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 };
 
                 //Watch for when users interact with data & browser
+                scope.$watch('preferred', changeLastPreference);
                 scope.$watch('layers', update);
                 scope.$watch('activeLayerId', update);
                 scope.$watch('width', update);

@@ -6,6 +6,11 @@
 
 module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
 
+    $scope.preferred = true;
+    $scope.changeBrushPreference = function () {
+        $scope.preferred = !$scope.preferred;
+    };
+
     $scope.messages = discussion;
     $scope.updateDiscussion = function () {
         discussionsService.updateWithEvent($scope.messages);
