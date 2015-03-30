@@ -4,7 +4,9 @@ var schedulenaut = angular.module('schedulenaut', [
         'ngFx',
         'ui.select',
         'ngSanitize',
-        require('./scheduler').name
+        'ngDroplet',
+        require('./scheduler').name,
+        require('./event').name
     ],
     require('./common/http-request-transformer'))
     .controller('mainController', ['$scope', '$rootScope', '$state', 'eventsService', function ($scope, $rootScope, $state, eventsService) {

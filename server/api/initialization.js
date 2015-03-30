@@ -4,7 +4,30 @@
 
 module.exports = function () {
 
+    var fs = require('fs');
     var sqlite3 = require('sqlite3').verbose();
+
+    //http://stackoverflow.com/questions/21194934/node-how-to-create-a-directory-if-doesnt-exist/21196961#21196961
+    function ensureExists(path, mask, cb) {
+        if (typeof mask == 'function') { // allow the `mask` parameter to be optional
+            cb = mask;
+            mask = 0777;
+        }
+        fs.mkdir(path, mask, function(err) {
+            if (err) {
+                if (err.code == 'EEXIST') cb(null); // ignore the error if the folder already exists
+                else cb(err); // something else went wrong
+            } else cb(null); // successfully created folder
+        });
+    }
+
+    ensureExists('public/event-images', 0744, function(err) {
+        if (err) // handle folder creation error
+            console.log('Could not create folder: event-images');
+        else // we're all good
+            console.log('Folder for event images setted up: event-images');
+    });
+
     var db = new sqlite3.Database('server/database.db');
 
     // Database initialization
@@ -18,7 +41,8 @@ module.exports = function () {
                 '(id varchar(255) NOT NULL PRIMARY KEY, ' +
                 'name varchar(255),' +
                 'open boolean NOT NULL,' +
-                'creator_id integer NOT NULL,' +
+                'admin_pass varchar(255),' +
+                'image varchar(255),' +
                 'timezones varchar(255),' +
                 'dates varchar(255),' +
                 'description varchar(255),' +

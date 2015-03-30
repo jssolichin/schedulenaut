@@ -4,7 +4,12 @@
 
 'use strict';
 
-module.exports = function (event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
+module.exports = function ($window, event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
+
+    $scope.$on('$dropletReady', function whenDropletReady() {
+        $scope.interface.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
+        $scope.interface.setRequestUrl('api/saveimage');
+    });
 
     $scope.preferred = true;
     $scope.changeBrushPreference = function () {
@@ -233,7 +238,13 @@ module.exports = function (event, allLayers, discussion, usersService, eventsSer
     };
 
     //When we edit an event properties, upload it to server
-    $scope.updateEvent = function () {
+    $scope.updateEvent = function (obj) {
+        if (obj !== undefined) {
+            for (var key in obj) {
+                event[key] = obj[key];
+            }
+        }
+
         eventsService.update(event);
     };
 

@@ -2,11 +2,20 @@
    Created by Jonathan on 2/27/2015.
 
 #event
-    header
+    header(droplet save-drops ng-model="interface" style="background-image: url({{event.image}})")
         .middle
+            #hint-add-cover
+                i.icon.ion-image.right
+                span + Cover Image
+                input(type="file" droplet-upload-single ng-model="interface")
             h1(editable-text="event.name" onaftersave="updateEvent()") {{event.name || "Add an Event Name" }}
             p(editable-text="event.description" onaftersave="updateEvent()") {{event.description || "Add a Description"}}
             p(editable-text="event.location" onaftersave="updateEvent()") {{event.location || "Add a Location"}}
+        #drop-hint-wrapper
+            #drop-hint
+                h1
+                    i.icon.ion-image
+                h1 + Add Cover Image
     article.middle.clearfix
         section#main.left
             section#toolbar

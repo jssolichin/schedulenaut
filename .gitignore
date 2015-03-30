@@ -3,6 +3,7 @@ public/css/*
 public/directives/*
 public/partials/*
 public/*.html
+public/event-images/*
 .idea/*
 projectFilesBackup/*
 node_modules/*

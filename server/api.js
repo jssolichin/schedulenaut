@@ -2,11 +2,14 @@
  * Created by Jonathan on 2/26/2015.
  */
 var express = require('express');
+var fs = require('fs');
 var router = express.Router();
 var crypto = require('crypto');
 
 var db = require('./api/initialization.js')();
 var key = 'schedulenaut';
+
+var imgPath = 'public/event-images/';
 
 //http://blog.tompawlak.org/how-to-generate-random-values-nodejs-javascript
 var randomValueBase64 = function (len) {
@@ -47,6 +50,7 @@ router.put('/event/:id', function (req, res) {
     }
 
     sqlUpdate = "UPDATE events SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE id = '" + id + "'";
+    console.log(sqlUpdate)
 
     db.run(sqlUpdate, function (err, row) {
         if (row === undefined)
@@ -66,7 +70,8 @@ router.post('/event', function (req, res) {
 
     var name = encapsulate(req.body.name);
     var open = 1;
-    var creator_id = -1;
+    var admin_pass = encapsulate(req.body.admin_pass);
+    var image = encapsulate(req.body.image);
     var timezones = encapsulate(req.body.timezones);
     var dates = encapsulate(req.body.dates);
     var description = encapsulate(req.body.description);
@@ -78,7 +83,7 @@ router.post('/event', function (req, res) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + creator_id + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
+        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
         console.log(sqlRequest)
 
         db.run(sqlRequest, function (err) {
@@ -333,6 +338,24 @@ router.post('/discussion', function (req, res) {
     });
 
 });
+
+router.post('/saveimage', function (request, response) {
+    var imgUri = '';
+    request.on('data', function (data) {
+        imgUri += data.toString().replace(/^data:image\/(png|gif|jpeg);base64,/, '');
+    });
+    request.on('end', function (d) {
+        var img = new Buffer(imgUri, 'base64');
+        var filename = imgPath + randomValueBase64(7) + '.png';
+        console.log(filename)
+        fs.writeFile(filename, img, 'base64', function (err) {
+            response.send(filename);
+            if (err)
+                console.log(err);
+        });
+    })
+});
+
 router.use('/api', router);
 
 module.exports = router;
