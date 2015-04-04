@@ -30,8 +30,10 @@ form{
 .button {padding: 5px 10px; background: #eee; color: #333; border-radius: @radius; text-decoration: none; cursor: pointer; border: 0px;
   &.subtle {background: #fff; text-decoration: underline;}
   //&.on {border: 1px solid @green; }
+	.symbol {border-color: #333;}
   &.on {background: @green; color: #fff;
-    &:hover {background: @green - #111;}
+	.symbol {border-color: #fff;}
+	&:hover {background: @green - #111;}
   }
   &:hover {background: #ddd;}
   &:active, &.active {background: #ccc; }
@@ -67,9 +69,9 @@ body.state-about {background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(2
 @import (less) "scheduler/tooltip.less";
 
 //misc
-.symbol { width: .7em; height: .7em; display: inline-block; border: 1px solid @green; border-radius: @radius; margin: 0 .5em -.1em 0;
-  &.free {}
-  &.preferred { background: @green;}
+.symbol { width: .7em; height: 1em; vertical-align: top; display: inline-block; border-width: 1px; border-style: solid; border-radius: @radius; margin: .3em .5em 0 0;
+  &.free {height: .65em;}
+  //&.preferred { background: @green;}
 }
 
 .popover-wrapper{ position: absolute; z-index: 99; pointer-events: none;

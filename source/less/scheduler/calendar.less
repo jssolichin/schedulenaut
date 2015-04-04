@@ -6,6 +6,7 @@
       &:last-child {text-align: center; padding: 0px; font-size: 1em;}
       .scheduler-popover-wrapper{ position: absolute; z-index: 99;
         .popover {padding: 20px; width: 300px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+				.symbol {font-size: .8em !important;}
           .time-picker { margin: 0 0 20px 0;
             span {margin: 0 10px;}
             .link-indicator {opacity: .4; font-size: 1.5em;}
@@ -66,11 +67,8 @@
   .brush, .brush-passive {shape-rendering: geometricPrecision;}
   .brush {
     rect { stroke : @accent; fill: @accent; fill-opacity: .33;}
-    &.preferred rect {fill-opacity: 1;}
   }
-  .brush-passive {fill-opacity:.33; fill: @green;
-    &.preferred {fill-opacity: 1; fill: @green; }
-  }
+  .brush-passive {fill: @green; stroke : @green; fill-opacity: .33; }
 }
 
 .select2-container .select2-choice {

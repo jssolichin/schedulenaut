@@ -19,6 +19,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
         },
         link: function (scope, element, attrs) {
             var radius = 5;
+			var heightFactor = 0.65; //height of available event block vs preferred
 
             d3Provider.d3().then(function (d3) {
                 scope.el = d3.select(element[0]);
@@ -374,7 +375,12 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                                 return width;
                             })
-                            .attr('height', height);
+							.attr("height", function(d){
+								return d.preferred ? height : height*heightFactor;
+							})
+							.style("fill-opacity", function(d){
+								return 1/layer.data().length;
+							});
 
                         layer.exit()
                             .remove();
@@ -442,6 +448,11 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             gBrush.selectAll('rect')
                                 .attr("height", height);
 
+							gBrush.selectAll('.extent')
+                                .attr("height", function(d){
+									return d.preferred ? height : height*heightFactor;
+								});
+									
                             gBrush.exit()
                                 .remove();
 
