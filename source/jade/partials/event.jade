@@ -47,7 +47,7 @@
                 header Guests
                 article
                     ul
-                        li.clearfix(ng-repeat="user in users")
+                        li.clearfix(ng-repeat="user in users" ng-mouseenter="highlightUser()" ng-mouseleave="dehighlightUser()")
                             .name.left {{user.name}}
                             .tools.right
                                 a(ng-click="hideUser($index)" )

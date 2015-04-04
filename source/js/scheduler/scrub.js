@@ -20,6 +20,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
         link: function (scope, element, attrs) {
             var radius = 5;
 			var heightFactor = 0.65; //height of available event block vs preferred
+			var layer;
 
             d3Provider.d3().then(function (d3) {
                 scope.el = d3.select(element[0]);
@@ -310,7 +311,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                             .attr("height", height + margin.top + margin.bottom);
 
                         //render passive brushes
-                        var layer = layers.selectAll('.layer')
+                        layer = layers.selectAll('.layer')
                             .data(function () {
                                 var data;
 
@@ -470,6 +471,13 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 scope.$watch('layers', update);
                 scope.$watch('activeLayerId', update);
                 scope.$watch('width', update);
+
+				scope.$on('highlightUser', function (event, data){
+					layer
+						.classed('brush-active', function(d){
+							return d.id === data.id ? data.highlight : false;
+						});
+				});
 
             }); //end promises
         } //end link function

@@ -6,6 +6,13 @@
 
 module.exports = function ($window, event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
 
+	$scope.highlightUser = function (){
+		$scope.$broadcast('highlightUser', {id: parseInt(this.user.brushes_id), highlight: true});
+	}
+	$scope.dehighlightUser = function (){
+		$scope.$broadcast('highlightUser', {id: parseInt(this.user.brushes_id), highlight: false});
+	}
+
     $scope.$on('$dropletReady', function whenDropletReady() {
         $scope.interface.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
         $scope.interface.setRequestUrl('api/saveimage');
