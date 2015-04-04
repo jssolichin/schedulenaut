@@ -70,3 +70,4 @@ gulp.task('browserify', function () {
  });
 
 gulp.task('default', ['less', 'jade', 'jshint', 'browserify', 'serve', 'watch']);
+gulp.task('build', ['less', 'jade', 'jshint', 'browserify']);
