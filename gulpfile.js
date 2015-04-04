@@ -12,19 +12,21 @@ var buffer = require('vinyl-buffer');
 
 var jade = require('gulp-jade');
 var less = require('gulp-less');
-var server = require('gulp-express');
+var gls = require('gulp-live-server');
 
 gulp.task('watch', function() {
     gulp.watch(['./source/less/*.less', './source/less/**/*.less'], ['less']);
     gulp.watch(['./source/jade/*.jade', './source/jade/**/*.jade'], ['jade']);
     gulp.watch(['./source/js/*.js', './source/js/**/*.js'], ['jshint', 'browserify']);
-    gulp.watch(['./server/*.js', './server/**/*.js'], ['server']);
 });
 
-gulp.task('server', function () {
-    // Start the server at the beginning of the task
-    server.run(['./server/index.js']);
+gulp.task('serve', function() {
+    var server = gls.new('./server/index.js');
+    server.start();
+    //restart my server
+    gulp.watch(['./server/*.js', './server/**/*.js'], server.start);
 });
+
 
 gulp.task('jshint', function() {
     return gulp.src(['./source/js/main.js', './source/js/**/*.js'])
@@ -40,19 +42,20 @@ gulp.task('jade', function() {
 
 gulp.task('less', function () {
     gulp.src('./source/less/*.less')
-        .pipe(less())
+        .pipe(less().on('error', onError))
         .pipe(gulp.dest('./public/css'));
 });
 
 var onError = function ( err ) {
     gutil.log( gutil.colors.green( err.message ));
-    gutil.log.bind(gutil, 'Browserify Error');
+    gutil.log.bind(gutil, 'Error');
     this.emit( 'end' );
 };
 
-var bundler = browserify({debug: true}).add('./source/js/main.js');
 
 gulp.task('browserify', function () {
+
+	var bundler = browserify({debug: true}).add('./source/js/main.js');
 
     return bundler.bundle()
         // log errors if they happen
@@ -66,4 +69,4 @@ gulp.task('browserify', function () {
 
  });
 
-gulp.task('default', ['less', 'jade', 'jshint', 'browserify', 'server', 'watch']);
+gulp.task('default', ['less', 'jade', 'jshint', 'browserify', 'serve', 'watch']);
