@@ -1,6 +1,6 @@
 header.top { padding: 20px 0;
   a:visited, a:link {color: #333;text-decoration: none; }
-  a:hover {color: #000; font-weight: bold; }
+  a:hover {color: #000; }
   a.rotate img {transition: transform 1.0s ease}
   a.rotate:hover img {transform: rotate(360deg)}
 
@@ -14,11 +14,13 @@ header.top { padding: 20px 0;
         line-height: 2em;
         &.special {  border: 1px solid #ccc; border-radius: 3px; cursor: pointer;
           &:hover {background: #eee;
-            a {font-weight: normal!important; }
+            a {text-decoration: none!important; }
           }
         }
         &:last-child {margin-right: 0px;}
-        a {padding: 2px 10px; display: block; }
+        a {padding: 2px 10px; display: block;
+			&:hover {text-decoration: underline; }
+		 }
       }
     }
   }
