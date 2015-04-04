@@ -5,4 +5,5 @@
 'use strict';
 
 module.exports = angular.module('schedulenaut.eventPage', [])
-    .directive('saveDrops', require('./dropBackground'));
+    .directive('saveDrops', require('./dropBackground'))
+    .factory('eventHelpers', require('./helpers'));

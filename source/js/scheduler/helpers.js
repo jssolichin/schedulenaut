@@ -4,6 +4,9 @@
 
 module.exports = function () {
     return {
+        inBetween: function (time, extent){
+            return time.getTime() >= extent[0].getTime() && time.getTime() <= extent[1].getTime();
+        },
         //getExtent is useful to get brush extent when we are not sure whether we are passing function or extent, since they get converted through the app
         getExtent: function (brushOrBrushExtent) {
             if (brushOrBrushExtent !== undefined) {

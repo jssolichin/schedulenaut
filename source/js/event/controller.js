@@ -4,14 +4,28 @@
 
 'use strict';
 
-module.exports = function ($window, event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter) {
+module.exports = function ($window, event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
 
-	$scope.highlightUser = function (){
-		$scope.$broadcast('highlightUser', {id: parseInt(this.user.brushes_id), highlight: true});
-	}
-	$scope.dehighlightUser = function (){
-		$scope.$broadcast('highlightUser', {id: parseInt(this.user.brushes_id), highlight: false});
-	}
+	var usersBlockHovered = [];
+
+	$scope.isUsersBlockHovered = function (){
+		return usersBlockHovered.indexOf(this.user.id) >= 0;
+	};
+
+	$scope.$on('highlightUser', function (event,data){
+		if(!eventHelpers.arrayIsEqual(usersBlockHovered, data)){
+			usersBlockHovered = data;
+			$scope.$apply();
+		}
+	});
+
+	$scope.highlightUserBlocks = function (){
+		$scope.$broadcast('highlightUserBlocks', {id: parseInt(this.user.brushes_id), highlight: true});
+	};
+
+	$scope.dehighlightUserBlocks = function (){
+		$scope.$broadcast('highlightUserBlocks', {id: parseInt(this.user.brushes_id), highlight: false});
+	};
 
     $scope.$on('$dropletReady', function whenDropletReady() {
         $scope.interface.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);

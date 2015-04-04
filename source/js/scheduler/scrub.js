@@ -260,7 +260,27 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 
                 var g = svg
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + ",0)");
+                    .attr("transform", "translate(" + margin.left + ",0)")
+					.on('mousemove', function() {
+						//see which users have blocks under current mouse
+						var userHoveredOver = [];
+						var timeUnderMouse = x.invert(d3.event.offsetX);
+						scope.layers.forEach(function(d) {
+							d.data.forEach(function(layer) {
+								var extent = helpers.getExtent(layer.brush);
+								var inBetween = helpers.inBetween(timeUnderMouse, extent);
+
+								if (inBetween) {
+									if (userHoveredOver.indexOf(d.id) < 0)
+										userHoveredOver.push(d.id);
+								}
+							});
+						});
+						scope.$emit('highlightUser', userHoveredOver);
+					})
+					.on('mouseleave', function() {
+						scope.$emit('highlightUser', []);
+					});
 
                 var gridBackground = g.append("rect")
                     .attr("class", "grid-background");
@@ -472,7 +492,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 scope.$watch('activeLayerId', update);
                 scope.$watch('width', update);
 
-				scope.$on('highlightUser', function (event, data){
+				scope.$on('highlightUserBlocks', function (event, data){
 					layer
 						.classed('brush-active', function(d){
 							return d.id === data.id ? data.highlight : false;
