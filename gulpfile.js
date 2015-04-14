@@ -36,7 +36,9 @@ gulp.task('jshint', function() {
 
 gulp.task('jade', function() {
     gulp.src(['./source/jade/*.jade', './source/jade/**/*.jade', '!./source/jade/components/**/*.jade'])
-        .pipe(jade())
+        .pipe(jade()
+            .on('error', onError)
+        )
         .pipe(gulp.dest('./public/'))
 });
 
