@@ -41,6 +41,20 @@ router.get('/event/:id', function (req, res) {
     });
 
 });
+router.get('/event/:id/:property', function (req, res) {
+    var id = req.params.id;
+    var property  = req.params.property;
+
+    sqlTest = "SELECT " + property + " FROM events WHERE id = '" + id + "'";
+
+    db.get(sqlTest, function (err, row) {
+        if (row === undefined)
+            res.json({message: '404 not found'});
+        else
+            res.json(row);
+    });
+
+});
 router.put('/event/:id', function (req, res) {
     var id = req.params.id;
 
@@ -69,7 +83,7 @@ router.post('/event', function (req, res) {
         id = req.body.name.replace(/[^a-z0-9]+/g, '-');
 
     var name = encapsulate(req.body.name);
-    var open = 1;
+    var open = encapsulate(true);
     var admin_pass = encapsulate(req.body.admin_pass);
     var image = encapsulate(req.body.image);
     var timezones = encapsulate(req.body.timezones);

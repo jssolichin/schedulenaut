@@ -31,8 +31,11 @@ module.exports = angular.module('events', [])
             return $http.put('/api/event/' + event.id, JSON.stringify(eventCopy));
         };
 
-        this.get = function (event) {
-            return $http.get('/api/event/' + event.id);
+        this.get = function (event, property) {
+            if(property !== undefined)
+                return $http.get('/api/event/' + event.id + '/' + property);
+            else
+                return $http.get('/api/event/' + event.id);
         };
 
     }])

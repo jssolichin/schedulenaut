@@ -3,7 +3,7 @@
  */
 'use strict';
 
-module.exports = function ($stateProvider, $urlRouterProvider) {
+module.exports = function($stateProvider, $urlRouterProvider) {
     //
     // For any unmatched url, redirect to /state1
     $urlRouterProvider.otherwise("/index");
@@ -22,23 +22,49 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
         })
         .state('event', {
             url: "/event/:id",
+            templateUrl: "public/partials/event.html",
+            controller: require('../event/controller'),
             resolve: {
+                redirect: ['$stateParams', 'eventsService', '$state', '$rootScope',
+                    function($stateParams, eventsService, $state, $rootScope) {
+                        var isOpenPromise = eventsService.get($stateParams, 'open');
+
+                        isOpenPromise.then(function(data) {
+                            var isOpen = JSON.parse(data.data.open);
+
+                            var redirectLogicListener = $rootScope.$on('$stateChangeSuccess',
+                                function(event, toState, toParams, fromState, fromParams) {
+
+                                    if (toState.name !== 'event.editing' && isOpen)
+                                        $state.go('event.editing', $stateParams);
+                                    else if (toState.name !== 'event.invitation' && !isOpen)
+                                        $state.go('event.invitation', $stateParams);
+
+                                    redirectLogicListener();
+                                }
+                            );
+                        });
+                    }
+                ],
                 event: ['$stateParams', 'eventsService', '$q', 'global.helpers',
-                    function ($stateParams, eventsService, $q, globalHelpers) {
+                    function($stateParams, eventsService, $q, globalHelpers) {
                         var p = $q.defer();
                         var serverData = eventsService.get($stateParams);
 
-                        serverData.then(function (event) {
+                        serverData.then(function(event) {
 
                             if (event.data.dates === null)
                                 event.data.dates = [];
                             else
-                                event.data.dates = JSON.parse(event.data.dates).map(function (d) {
+                                event.data.dates = JSON.parse(event.data.dates).map(function(d) {
                                     return new Date(d);
                                 });
 
                             if (event.data.timezones === null)
-                                event.data.timezones = [{zone: undefined, id: 0}];
+                                event.data.timezones = [{
+                                    zone: undefined,
+                                    id: 0
+                                }];
                             else
                                 event.data.timezones = JSON.parse(event.data.timezones);
 
@@ -48,46 +74,67 @@ module.exports = function ($stateProvider, $urlRouterProvider) {
                         });
 
                         return p.promise;
-                    }],
-                allLayers: ['$stateParams', 'brushesService', '$q',
-                    function ($stateParams, brushesService, $q) {
-                        var p = $q.defer();
+                    }
+                ]
+            }
+        })
+        .state('event.editing', {
+            views: {
+                'content': {
+                    controller: require('../event/controller.editing'),
+                    templateUrl: "public/partials/event.editing.html",
+                    resolve: {
+                        allLayers: ['$stateParams', 'brushesService', '$q',
+                            function($stateParams, brushesService, $q) {
 
-                        //Date objects are stored in string in sqlite, we need to convert it back to date objects
-                        var serverData = brushesService.withEvent($stateParams.id);
-                        serverData.then(function (layersPromise) {
-                            brushesService.parse(layersPromise);
-                            p.resolve(layersPromise.data);
-                        });
+                                var p = $q.defer();
 
-                        return p.promise;
-                    }],
-                discussion: ['$stateParams', 'discussionsService', '$q', 'global.helpers',
-                    function ($stateParams, discussionsService, $q, globalHelpers) {
-                        var p = $q.defer();
-                        var serverData = discussionsService.withEvent($stateParams);
+                                //Date objects are stored in string in sqlite, we need to convert it back to date objects
+                                var serverData = brushesService.withEvent($stateParams.id);
+                                serverData.then(function(layersPromise) {
+                                    brushesService.parse(layersPromise);
+                                    p.resolve(layersPromise.data);
+                                });
 
-                        serverData.then(function (discussion) {
+                                return p.promise;
+                            }
+                        ],
+                        discussion: ['$stateParams', 'discussionsService', '$q', 'global.helpers',
+                            function($stateParams, discussionsService, $q, globalHelpers) {
+                                var p = $q.defer();
+                                var serverData = discussionsService.withEvent($stateParams);
 
-                            if (discussion.data.data === null)
-                                discussion.data.data = [];
-                            else
-                                discussion.data.data = JSON.parse(discussion.data.data);
+                                serverData.then(function(discussion) {
 
-                            if (discussion.data.star === null)
-                                discussion.data.star = [];
-                            else
-                                discussion.data.star = JSON.parse(discussion.data.star);
+                                    if (discussion.data.data === null)
+                                        discussion.data.data = [];
+                                    else
+                                        discussion.data.data = JSON.parse(discussion.data.data);
 
-                            //sqlite stores undefined as null--we need to convert it back
-                            p.resolve(discussion.data);
-                        });
+                                    if (discussion.data.star === null)
+                                        discussion.data.star = [];
+                                    else
+                                        discussion.data.star = JSON.parse(discussion.data.star);
 
-                        return p.promise;
-                    }]
+                                    //sqlite stores undefined as null--we need to convert it back
+                                    p.resolve(discussion.data);
+                                });
+
+                                return p.promise;
+                            }
+                        ]
+                    }
+                }
+            }
+        })
+        .state('event.invitation', {
+            views: {
+                'content': {
+                    templateUrl: "public/partials/event.invitation.html",
+
+                    //	controller: require('../event/controller'),
+                }
             },
-            templateUrl: "public/partials/event.html",
-            controller: require('../event/controller')
         })
         .state('about', {
             url: "/about",
