@@ -31,13 +31,15 @@ article.middle.clearfix
         aside#users
             header Guests
             article
+                p.hint(ng-hide="users.length > 0") It's lonely in here. Add Guests to start brushing availability.
+                p.hint(ng-show="users.length > 0 && dates.length <= 0" ng-click="bounce('#edit-dates-button')") A guest can only show availability when there are dates available.
                 ul
-                    li.clearfix(ng-repeat="user in users" ng-class="{hover: isUsersBlockHovered()}" ng-mouseenter="highlightUserBlocks()" ng-mouseleave="dehighlightUserBlocks()")
+                    li.clearfix(ng-repeat="user in users" ng-class="{hover: isUsersBlockHovered(), 'editing': activeLayerId == $index }" ng-mouseenter="highlightUserBlocks()" ng-mouseleave="dehighlightUserBlocks()")
                         .name.left {{user.name}}
                         .tools.right
                             a(ng-click="hideUser($index)" )
                                 i.icon.ion-eye(ng-class="{'ion-eye-disabled': allLayers[$index].visible == false}")
-                            a#edit(ng-class="{'active': activeLayerId == $index }" ng-click="editHandler($index)")
+                            a#edit(ng-click="editHandler($index)")
                                 i.icon.ion-edit
                             a(ng-click="deleteUser()")
                                 i.icon.ion-close
@@ -61,13 +63,13 @@ article.middle.clearfix
                                 input(type="email" name="email" ng-model="newUser.email" placeholder="Used to notify" required)
                                 .error-container(ng-show="new_user.email.$dirty && new_user.email.$invalid")
                                     .error(ng-show="new_user.email.$error.email") Please enter a valid email
-                                button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine()" ng-disabled="new_user.$invalid") Add Guest!
+                                button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); bounce('.calendar')" ng-disabled="new_user.$invalid") Add Guest!
                         // a(editable-text="user.name" onaftersave="createUser()")
                             | {{ user.name || "+ Add Guest" }}
         aside#discussion
             header Discussion
             article
-                p.hint(ng-hide="messages.data.length > 0") It's lonely in here. Ask for chips and salsa. They always liven up meetings!
+                p.hint(ng-hide="messages.data.length > 0") Make friends! Ask for chips and salsa. They always liven up meetings!
                 h2(ng-show="messages.star.length > 0") Important messages
                 ul(ng-show="messages.data.length > 0")
                     li(ng-repeat="id in messages.star" ng-click="bounce('#message-'+id)")

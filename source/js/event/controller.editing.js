@@ -207,7 +207,7 @@ module.exports = function ($window, event, allLayers, discussion, usersService, 
         });
 
         //reset the form
-        $scope.newUser = {name: undefined, secret: undefined, email: undefined};
+        $scope.newUser = {event_id: event.id, brushes_id: -1, name: undefined, secret: undefined, email: undefined};
     };
 
     $scope.deleteUser = function () {
