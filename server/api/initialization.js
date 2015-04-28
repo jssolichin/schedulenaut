@@ -42,6 +42,7 @@ module.exports = function () {
                 'name varchar(255),' +
                 'open boolean NOT NULL,' +
                 'admin_pass varchar(255),' +
+                'event_settings varchar(255),' +
                 'image varchar(255),' +
                 'timezones varchar(255),' +
                 'dates varchar(255),' +

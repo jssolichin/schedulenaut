@@ -60,6 +60,9 @@ router.put('/event/:id', function (req, res) {
 
     var updateQuery = '';
     for (key in req.body) {
+        if(key == 'admin_pass')
+            req.body['admin_pass'] = crypto.createHash('sha1', key).update(req.body.admin_pass).digest('hex');
+
         updateQuery += key + " = '" + req.body[key] + "',";
     }
 
@@ -74,6 +77,20 @@ router.put('/event/:id', function (req, res) {
     });
 
 });
+
+router.post('/event/:id/admin_pass', function (req, res) {
+    var id = req.params.id;
+    var admin_pass = crypto.createHash('sha1', key).update(req.body.admin_pass).digest('hex');
+
+    sqlTest = "SELECT admin_pass FROM events WHERE id = '" + id + "'";
+
+    db.get(sqlTest, function (err, row) {
+        var authenticated = row.admin_pass === admin_pass;
+        res.json({authenticated: authenticated});
+    });
+
+});
+
 router.post('/event', function (req, res) {
     var id;
     if (req.body.name === undefined) {
@@ -91,13 +108,14 @@ router.post('/event', function (req, res) {
     var description = encapsulate(req.body.description);
     var location = encapsulate(req.body.location);
     var password = encapsulate(req.body.password);
+    var event_settings = encapsulate(req.body.event_settings);
 
     sqlTest = "select count(0) AS 'length' from (SELECT id FROM events WHERE id LIKE '" + id + "%')";
     db.each(sqlTest, function (err, rows) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
+        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + event_settings + ","+ image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
         console.log(sqlRequest)
 
         db.run(sqlRequest, function (err) {

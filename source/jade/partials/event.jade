@@ -5,9 +5,9 @@
     header(droplet save-drops ng-model="interface" style="background-image: url({{event.image}})")
         .middle.clearfix
             .left
-                h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="isEventClosed()" ) {{event.name || "Add an Event Name" }}
-                p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="isEventClosed()" ) {{event.description || "Add a Description"}}
-                p(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="isEventClosed()" ) {{event.location || "Add a Location"}}
+                h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
+                p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
+                p(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.location || "Add a Location"}}
             ul.right#event-tools
                 li#event-status(ng-class="{finalized: !event.open}")
                     p.right(ng-click="event.open = !event.open; updateEvent(); reloadView();") 
@@ -15,8 +15,33 @@
                         span(ng-if="!event.open") 
                             i.icon.ion-checkmark-circled
                             |  Finalized
+                li(ng-if="event.open" )
+                    .hint.right#event-settings(ng-class="{'active': adminAuthenticated}" )
+                        i.icon.ion-gear-a.right
+                        span + Event Settings 
+                    .popover-wrapper(point-to="top" callback="" offset-y="10" click-on="#event-settings" width="175")
+                        form(name="set_event_admin_password" ng-if="event.admin_pass == undefined && adminAuthenticated != true")
+                            div.grey-small-hint No administrator secret word set. 
+                            label(for="secret") Add Secret Word
+                                span *
+                            input(type="password" name="secret" ng-model="admin_pass" placeholder="Used to edit event settings later" required)
+                            button.center(type="submit" value="submit" ng-click="updateEvent({admin_pass: admin_pass}); $parent.adminAuthenticated = true;" ng-disabled="set_event_admin_password.$invalid") Submit
+                            //correctly set adminAuthenticated
+                        form(name="check_event_admin_password" ng-if="event.admin_pass != undefined && adminAuthenticated != true")
+                            label(for="secret" ) Secret Word
+                                span *
+                            input(type="password" name="secret" ng-model="admin_pass" placeholder="" required)
+                            button.center(type="submit" value="submit" ng-click="checkAdminPass(event.id, admin_pass, $event); " ng-disabled="check_event_admin_password.$invalid") Submit
+                        form.small-labels(name="event_settings" ng-show="adminAuthenticated")
+                            span Allow everyone to: 
+                            label(for="editable-everyone") Edit Event Details: 
+                                input(type="checkbox" name="editable-everyone" ng-model="event.event_settings.editableEveryone" ng-click="updateEvent({event_settings: event.event_settings}); ")
+                            label(for="invite-everyone") Edit Guests:  
+                                input(type="checkbox" name="invite-everyone" ng-model="event.event_settings.inviteEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
+                            label(for="timezone-everyone") Edit Timezones:  
+                                input(type="checkbox" name="timezone-everyone" ng-model="event.event_settings.timezoneEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
                 li(ng-if="event.open")
-                    #hint-add-cover.right
+                    .hint.right
                         i.icon.ion-image.right
                         span + Cover Image
                         input(type="file" droplet-upload-single ng-model="interface")

@@ -13,6 +13,7 @@ body, textarea {font-family: 'Open Sans', sans-serif; }
 svg {margin-bottom: -4px}
 form{
   .error {color: @red; text-transform: uppercase; font-size: .7em; line-height: 1.6em;}
+  &.small-labels label {font-size: .7em;}
   label {margin-top: 10px; color: #777; margin-bottom: 5px; display: block;
     &:first-child {margin-top: 0px;}
     span {color: @red;}
@@ -46,6 +47,7 @@ form{
     &:last-child .button {border-radius: 0px @radius @radius 0px;};
   }
 }
+.grey-small-hint { font-size: .7em; text-transform: uppercase; line-height: 1.2em; display: inline-block; padding: 5px; margin: 10px 0; border-radius: 3px; background: #eee; }
 
 //state specific style
 body.state-index {background: url(../images/index-background.jpg) no-repeat center center fixed; background-size: cover; }
@@ -75,13 +77,17 @@ body.state-about {background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(2
 }
 
 .popover-wrapper{ position: absolute; z-index: 99; pointer-events: none;
-  .popover {pointer-events: all; padding: 20px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); }
+  .popover {pointer-events: all; padding: 20px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); 
+    form {
+      button {margin-top: 20px;}
+    }
+  }
   .top:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: transparent transparent #fff transparent; top: -20px; left: calc(~"50% - 10px"); }
   .bottom:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
 }
 
 .editable-text {margin-bottom: 10px;}
-.editable-click, a.editable-click { color: #333; border: 0; border-radius: @radius;
+.editable-click, a.editable-click { font-style: italic; color: #333; border: 0; border-radius: @radius;
   &:hover { color: @accent; }
 }
 p.hint {font-size: .7em; padding: 0 10px; }

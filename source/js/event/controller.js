@@ -4,13 +4,36 @@
 
 'use strict';
 
-module.exports = function ($window, event, eventsService, helpers, $scope, $rootScope, $q, $filter, $state) {
+module.exports = function (globalHelpers, $window, event, eventsService, helpers, $scope, $rootScope, $q, $filter, $state) {
+	//TODO: change editable/disabled automatically, without reloading--waiting for xeditable resolve #281
 
+    $scope.checkAdminPass = function (id, event_pass, $event){
+        var isAdminAuth = eventsService.checkAdminPass(id, event_pass);
+        isAdminAuth.then(function(d){
+            
+           $scope.adminAuthenticated =  d.authenticated;
+           
+           if($scope.adminAuthenticated == false ){
+                var wrapper =  $($event.currentTarget.offsetParent);
+                wrapper.addClass('animated shake');
+                wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                    wrapper.removeClass('animated shake');
+                });
+           }
+        })
+    }
 
     $scope.event = event;
     $scope.event.open = JSON.parse(event.open);
-    $scope.isEventClosed = function (){
-        return !event.open;
+    $scope.isEditEnabled = function (){
+        if(event.open === false)
+            return false;
+        else {
+            if(event.event_settings !== undefined && event.event_settings.editableEveryone === false)
+                return $scope.adminAuthenticated;
+            else
+                return true;
+        }
     };
 
     //When we edit an event properties, upload it to server
@@ -21,7 +44,14 @@ module.exports = function ($window, event, eventsService, helpers, $scope, $root
             }
         }
 
-        eventsService.update(event);
+		//copy that can be modified to be passed to server
+		var eventCopy = globalHelpers.cloneJSON(event);
+		
+		//only pass admin_pass if done manually (new password)
+		if(obj == undefined || (obj != undefined && obj.admin_pass == undefined))
+			eventCopy.admin_pass = undefined;
+
+		eventsService.update(eventCopy);
     };
 
     $scope.reloadView = function (){

@@ -6,7 +6,7 @@ article.middle.clearfix
         section#toolbar
             ul.clearfix
                 li.left
-                    a.button(ng-click="addTimezone()") + Timezone
+                    a.button(ng-click="addTimezone()" ng-show="event.event_settings.timezoneEveryone || adminAuthenticated") + Timezone
                 li.left
                     select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
                 li.clearfix.right
@@ -41,13 +41,13 @@ article.middle.clearfix
                                 i.icon.ion-edit
                             a(ng-click="deleteUser()")
                                 i.icon.ion-close
-                        .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" width=" 200" ng-attr-id="{{'popover-user-'+$index}}" padding="10")
+                        .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" width=" 200" ng-attr-id="{{'popover-user-'+$index}}" )
                             form(name="user_password" )
                                 label(for="secret") Secret Word
                                 input#secret(type="password" name="secret" ng-model="secretWord")
                                 button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''") Submit
-                    li.addGuest#addGuest
-                        a.button.center + Add Guests
+                    li.addGuest#addGuest(ng-show="event.event_settings.inviteEveryone || adminAuthenticated")
+                        a.button.center + Guests
                         .popover-wrapper(point-to="top" callback="")
                             form(name="new_user" )
                                 label(for="user") Name
@@ -81,7 +81,7 @@ article.middle.clearfix
                             i.icon.ion-ios-star-outline(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star == undefined ||!message.star")
                             i.icon.ion-ios-star(ng-click="starIt(message.id); updateDiscussion()" ng-show="message.star")
                     li
-                        div.loginRequired(ng-click="bounce('#users')" ng-show="activeLayerId == undefined") Please activate your user to send message
+                        div.grey-small-hint(ng-click="bounce('#users')" ng-show="activeLayerId == undefined") Please activate your user to send message
                         form#newMessage(name="new_message" ng-hide="activeLayerId == undefined")
                             input(type="text" ng-model="newMessage.content" placeholder="Sending as {{users[activeLayerId].name}}" required)
                             button.center(type="submit" value="submit" ng-click="sendMessage(); new_message.$setPristine()" ng-disabled="new_message.$invalid") Send!

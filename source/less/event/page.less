@@ -5,14 +5,17 @@
       &:last-child {margin-bottom: 0px;}
     }
     #event-tools { margin: 0px; list-style-type: none;
-        li { margin-bottom: 5px; }
-        li:after {content:""; display:table; clear:both;}
-        #event-status {cursor: pointer;
+        li { margin-bottom: 5px; 
+           &:after {content:""; display:table; clear:both;} 
+           &.active .hint {background: #fff;  width: auto;}
+        }
+        li#event-status {cursor: pointer;
             p {background: rgba(255,255,255,.6);}
             &:hover p {background: #fff;}
             &.finalized p {background: @green; color: #fff;}
         }
-        #hint-add-cover { position: relative; padding: 2px 5px 3px 4px; background: rgba(255,255,255,.6);
+        .hint{ position: relative; padding: 2px 5px 3px 4px; background: rgba(255,255,255,.6);
+          &.active {background: @accent !important; color: #fff;}
           width: 1em; height: calc(~"1em + 5px"); overflow: hidden; border-radius: @radius;
           &:hover {background: #fff;  width: auto;}
           span{margin-right: 5px; cursor: pointer;}
@@ -71,16 +74,6 @@
             }
             span.user { font-size: .7em; text-transform: uppercase; background: #eee; border-radius: @radius; vertical-align: text-top;
               display: inline-block; line-height: 1.8em; padding: 0 5px; margin-right: 5px; }
-            .loginRequired {
-              font-size: .7em;
-              text-transform: uppercase;
-              line-height: 1.2em;
-              display: inline-block;
-              padding: 5px;
-              margin: 10px 0;
-              border-radius: 3px;
-              background: #eee;
-            }
             form#newMessage {margin: 10px 0;
               button {margin-top: 5px;}
             }
@@ -91,10 +84,6 @@
           }
         }
       }
-    }
-
-    .popover-wrapper {
-      button {margin-top: 20px;}
     }
 
     #users article ul li{

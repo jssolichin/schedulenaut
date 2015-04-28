@@ -11,6 +11,7 @@ module.exports = angular.module('events', [])
             eventCopy = globalHelpers.cloneJSON(event);
             eventCopy.dates = JSON.stringify(event.dates);
             eventCopy.timezones = JSON.stringify(event.timezones);
+            eventCopy.event_settings = JSON.stringify(event.event_settings);
 
             var p = $q.defer();
 
@@ -27,6 +28,7 @@ module.exports = angular.module('events', [])
             eventCopy = globalHelpers.cloneJSON(event);
             eventCopy.dates = JSON.stringify(event.dates);
             eventCopy.timezones = JSON.stringify(event.timezones);
+            eventCopy.event_settings = JSON.stringify(event.event_settings);
 
             return $http.put('/api/event/' + event.id, JSON.stringify(eventCopy));
         };
@@ -36,6 +38,18 @@ module.exports = angular.module('events', [])
                 return $http.get('/api/event/' + event.id + '/' + property);
             else
                 return $http.get('/api/event/' + event.id);
+        };
+
+        this.checkAdminPass = function (id, admin_pass) {
+            var p = $q.defer();
+
+            var secretObj = {admin_pass: admin_pass};
+
+            $http.post('/api/event/' + id + '/admin_pass', secretObj).success(function (response) {
+                p.resolve(response);
+            });
+
+            return p.promise;
         };
 
     }])

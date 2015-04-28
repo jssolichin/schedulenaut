@@ -16,8 +16,6 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
         $scope.$apply();
     };
 
-    $scope.event = {public: true};
-
     $scope.formExpanded = false;
 
     $scope.placeholder = placeholders[0];
@@ -32,6 +30,8 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
     };
 
     $scope.submitData = function (event) {
+        event.event_settings = {editableEveryone: true, inviteEveryone: true, timezoneEveryone: true};
+
         var p = eventsService.create(event);
         p.then(function (d) {
             $state.go('event', {id: d.id});

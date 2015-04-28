@@ -46,6 +46,9 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                         });
                     }
                 ],
+				globalHelpers: ['global.helpers', function (globalHelpers){
+					return globalHelpers;
+				}],
                 event: ['$stateParams', 'eventsService', '$q', 'global.helpers',
                     function($stateParams, eventsService, $q, globalHelpers) {
                         var p = $q.defer();
@@ -67,6 +70,11 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                                 }];
                             else
                                 event.data.timezones = JSON.parse(event.data.timezones);
+
+                            if (event.data.event_settings === null)
+                                event.data.event_settings = {};
+                            else
+                                event.data.event_settings = JSON.parse(event.data.event_settings);
 
                             //sqlite stores undefined as null--we need to convert it back
                             var unNullifed = globalHelpers.unNullify(event.data);
