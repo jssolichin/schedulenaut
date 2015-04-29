@@ -162,4 +162,14 @@ module.exports = angular.module('events', [])
             return $http.get('/api/discussion/event/' + event.id);
         };
 
-    }]);
+    }])
+	.service('mailServices', ['$http', function($http){
+		this.sendMail = function (mail){
+			mail.from = 'schedulenaut@schedulenaut.com';
+
+            $http.post('/api/sendmail', mail).success(function (response) {
+                //discussionsService.create({event_id: response.id, data: undefined, star: undefined});
+                //p.resolve(response);
+            });
+		};
+	}]);

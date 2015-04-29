@@ -139,8 +139,7 @@ module.exports = function($stateProvider, $urlRouterProvider) {
             views: {
                 'content': {
                     templateUrl: "public/partials/event.invitation.html",
-
-                    //	controller: require('../event/controller'),
+                    controller: require('../event/controller.invitation'),
                 }
             },
         })

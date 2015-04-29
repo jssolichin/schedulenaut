@@ -5,6 +5,7 @@ var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 var crypto = require('crypto');
+var nodemailerMailgun = require('./api/mail.js');
 
 var db = require('./api/initialization.js')();
 var key = 'schedulenaut';
@@ -372,6 +373,8 @@ router.post('/discussion', function (req, res) {
 });
 
 router.post('/saveimage', function (request, response) {
+	//TODO: Create auth to upload
+
     var imgUri = '';
     request.on('data', function (data) {
         imgUri += data.toString().replace(/^data:image\/(png|gif|jpeg);base64,/, '');
@@ -386,6 +389,20 @@ router.post('/saveimage', function (request, response) {
                 console.log(err);
         });
     })
+});
+
+router.post('/sendmail', function (req, res) {
+	//TODO: Create auth to send
+
+	nodemailerMailgun.sendMail(req.body, function (err, info) {
+	  if (err) {
+		res.json({error: err});
+	  }
+	  else {
+		res.json({Response: info});
+	  }
+	});
+
 });
 
 router.use('/api', router);

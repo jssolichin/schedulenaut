@@ -6,7 +6,7 @@ article.middle.clearfix.invitation
     h1(ng-show="event.name != undefined") Yay! A time has been chosen for {{event.name}}
     section
         h2 Let your guests know!
-        a.button Send Email to Guests 
+        a.button(ng-click="sendEmailToAll(event)") Send Email to Guests 
     section
         h2 Now share with your friends!
         ul
