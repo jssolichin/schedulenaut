@@ -87,7 +87,7 @@ module.exports = function ($window, event, allLayers, discussion, usersService, 
     $scope.newUser = {event_id: event.id, brushes_id: -1};
 
     //options
-    $scope.selectedGranularity = 60;
+    $scope.selectedGranularity = 30;
 
     //list of users on this event
     usersService.withEvent(event.id).then(function (users) {

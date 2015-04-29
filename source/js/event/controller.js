@@ -13,15 +13,15 @@ module.exports = function (globalHelpers, $window, event, eventsService, helpers
             
            $scope.adminAuthenticated =  d.authenticated;
            
-           if($scope.adminAuthenticated == false ){
+           if($scope.adminAuthenticated === false ){
                 var wrapper =  $($event.currentTarget.offsetParent);
                 wrapper.addClass('animated shake');
                 wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                     wrapper.removeClass('animated shake');
                 });
            }
-        })
-    }
+        });
+    };
 
     $scope.event = event;
     $scope.event.open = JSON.parse(event.open);
@@ -44,11 +44,12 @@ module.exports = function (globalHelpers, $window, event, eventsService, helpers
             }
         }
 
-		//copy that can be modified to be passed to server
+		//create a copy that can be modified to be passed to server
 		var eventCopy = globalHelpers.cloneJSON(event);
+		eventCopy.dates = event.dates;
 		
 		//only pass admin_pass if done manually (new password)
-		if(obj == undefined || (obj != undefined && obj.admin_pass == undefined))
+		if(obj === undefined || (obj !== undefined && obj.admin_pass === undefined))
 			eventCopy.admin_pass = undefined;
 
 		eventsService.update(eventCopy);

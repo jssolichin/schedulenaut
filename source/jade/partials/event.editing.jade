@@ -7,10 +7,8 @@ article.middle.clearfix
             ul.clearfix
                 li.left
                     a.button(ng-click="addTimezone()" ng-show="event.event_settings.timezoneEveryone || adminAuthenticated") + Timezone
-                li.left
-                    select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
                 li.clearfix.right
-                    span.left Default Brush:
+                    span.left Brush:
                     ul.combo-button.right
                         li
                             a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred != true}")
@@ -20,6 +18,9 @@ article.middle.clearfix
                             a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred == true}")
                                 span.symbol.preferred
                                 | Preferred
+                li.right
+                    span.left Snap-to:
+                    select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
         section#visualization
             .calendar( calendar preferred="preferred" on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
             a#edit-dates-button.center.button
