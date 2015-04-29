@@ -25,7 +25,7 @@
                             label(for="secret") Add Secret Word
                                 span *
                             input(type="password" name="secret" ng-model="admin_pass" placeholder="Used to edit event settings later" required)
-                            button.center(type="submit" value="submit" ng-click="updateEvent({admin_pass: admin_pass}); $parent.adminAuthenticated = true;" ng-disabled="set_event_admin_password.$invalid") Submit
+                            button.center(type="submit" value="submit" ng-click="$parent.adminAuthenticated = true;updateEvent({admin_pass: admin_pass}); " ng-disabled="set_event_admin_password.$invalid") Submit
                             //correctly set adminAuthenticated
                         form(name="check_event_admin_password" ng-if="event.admin_pass != undefined && adminAuthenticated != true")
                             label(for="secret" ) Secret Word
@@ -40,6 +40,8 @@
                                 input(type="checkbox" name="invite-everyone" ng-model="event.event_settings.inviteEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
                             label(for="timezone-everyone") Edit Timezones:  
                                 input(type="checkbox" name="timezone-everyone" ng-model="event.event_settings.timezoneEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
+                            label(for="available-dates-everyone") Edit Available Dates:  
+                                input(type="checkbox" name="available-dates-everyone" ng-model="event.event_settings.availableDatesEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
                 li(ng-if="event.open")
                     .hint.right
                         i.icon.ion-image.right

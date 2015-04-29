@@ -4,7 +4,19 @@
 
 'use strict';
 
-module.exports = function ($window, event, allLayers, discussion, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
+module.exports = function ($window, event, allLayers, discussion, mailServices, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
+
+	$scope.sendEmail = function (users, email){
+        var to = users.map(function(d){return d.email});
+        var eventName = event.name || 'Schedulenaut';
+
+		mailServices.sendMail({
+			to: to,
+			subject: eventName + ': ' + email.sub,
+			html: email.text 
+		})
+	};
+
 
 	var usersBlockHovered = [];
 

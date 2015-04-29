@@ -23,7 +23,7 @@ article.middle.clearfix
                     select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
         section#visualization
             .calendar( calendar preferred="preferred" on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId")
-            a#edit-dates-button.center.button
+            a#edit-dates-button.center.button(ng-show="event.event_settings.availableDatesEveryone || adminAuthenticated ")
                 i.icon.ion-ios-settings
                 | Edit Possible Dates
             .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
@@ -34,7 +34,7 @@ article.middle.clearfix
             article
                 p.hint(ng-hide="users.length > 0") It's lonely in here. Add Guests to start brushing availability.
                 p.hint(ng-show="users.length > 0 && dates.length <= 0" ng-click="bounce('#edit-dates-button')") A guest can only show availability when there are dates available.
-                ul
+                ul#guests-list
                     li.clearfix(ng-repeat="user in users" ng-class="{hover: isUsersBlockHovered(), 'editing': activeLayerId == $index }" ng-mouseenter="highlightUserBlocks()" ng-mouseleave="dehighlightUserBlocks()")
                         .name.left {{user.name}}
                         .tools.right
@@ -50,23 +50,43 @@ article.middle.clearfix
                                 input#secret(type="password" name="secret" ng-model="secretWord")
                                 button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''") Submit
                     li.addGuest#addGuest(ng-show="event.event_settings.inviteEveryone || adminAuthenticated")
-                        a.button.center + Guests
-                        .popover-wrapper(point-to="top" callback="")
-                            form(name="new_user" )
-                                label(for="user") Name
-                                    span *
-                                input(type="text" name="user" ng-model="newUser.name" placeholder="Used to identify" required)
-                                label(for="secret") Secret word
-                                    span *
-                                input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" required)
-                                label(for="email") E-mail
-                                    span *
-                                input(type="email" name="email" ng-model="newUser.email" placeholder="Used to notify" required)
-                                .error-container(ng-show="new_user.email.$dirty && new_user.email.$invalid")
-                                    .error(ng-show="new_user.email.$error.email") Please enter a valid email
-                                button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); bounce('.calendar')" ng-disabled="new_user.$invalid") Add Guest!
-                        // a(editable-text="user.name" onaftersave="createUser()")
-                            | {{ user.name || "+ Add Guest" }}
+                        .center
+                            a.button + Guests
+                                .popover-wrapper(point-to="top" callback="")
+                                    form(name="new_user" )
+                                        label(for="user") Name
+                                            span *
+                                        input(type="text" name="user" ng-model="newUser.name" placeholder="Used to identify" required)
+                                        label(for="secret") Secret word
+                                            span *
+                                        input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" required)
+                                        label(for="email") E-mail
+                                            span *
+                                        input(type="email" name="email" ng-model="newUser.email" placeholder="Used to notify" required)
+                                        .error-container(ng-show="new_user.email.$dirty && new_user.email.$invalid")
+                                            .error(ng-show="new_user.email.$error.email") Please enter a valid email
+                                        button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); bounce('.calendar')" ng-disabled="new_user.$invalid") Add Guest!
+                                        // a(editable-text="user.name" onaftersave="createUser()")
+                                            | {{ user.name || "+ Add Guest" }}
+                            a#notify-all.button(ng-show="users.length > 0")
+                                i.icon.ion-email
+                                | Notify All 
+                            .popover-wrapper.mail-services(point-to="top" padding="10" width="180" attach-to="#notify-all")
+                                ul(ng-show="showNewEmailForm != true")
+                                    li
+                                        a.button(ng-click="showNewEmailForm = true") Custom Message
+                                    //Implement
+                                    li
+                                        a.button Send User/Secret
+                                form.full-width(name='new_email' ng-show="showNewEmailForm")
+                                    label(for="subject") Subject 
+                                        span *
+                                    input(name="subject" ng-model="new_email.sub" required )
+                                    label(for="body") Body 
+                                        span *
+                                    textarea(name="body" ng-model="new_email.text" required )
+                                    button(ng-click="sendEmail(users, new_email)") submit
+                                    button.subtle(ng-click="showNewEmailForm = false" ng-disabled="new_email.$invalid") Cancel 
         aside#discussion
             header Discussion
             article
