@@ -265,17 +265,19 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 						//see which users have blocks under current mouse
 						var userHoveredOver = [];
 						var timeUnderMouse = x.invert(d3.event.offsetX);
-						scope.layers.forEach(function(d) {
-							d.data.forEach(function(layer) {
-								var extent = helpers.getExtent(layer.brush);
-								var inBetween = helpers.inBetween(timeUnderMouse, extent);
+                        if(scope.layers){
+                            scope.layers.forEach(function(d) {
+                                d.data.forEach(function(layer) {
+                                    var extent = helpers.getExtent(layer.brush);
+                                    var inBetween = helpers.inBetween(timeUnderMouse, extent);
 
-								if (inBetween) {
-									if (userHoveredOver.indexOf(d.id) < 0)
-										userHoveredOver.push(d.id);
-								}
-							});
-						});
+                                    if (inBetween) {
+                                        if (userHoveredOver.indexOf(d.id) < 0)
+                                            userHoveredOver.push(d.id);
+                                    }
+                                });
+                            });
+                        }
 						scope.$emit('highlightUser', userHoveredOver);
 					})
 					.on('mouseleave', function() {

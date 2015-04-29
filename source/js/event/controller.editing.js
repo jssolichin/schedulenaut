@@ -9,7 +9,7 @@ module.exports = function ($window, event, allLayers, discussion, usersService, 
 	var usersBlockHovered = [];
 
 	$scope.isUsersBlockHovered = function (){
-		return usersBlockHovered.indexOf(this.user.id) >= 0;
+		return usersBlockHovered.indexOf(parseInt(this.user.brushes_id)) >= 0;
 	};
 
 	$scope.$on('highlightUser', function (event,data){
