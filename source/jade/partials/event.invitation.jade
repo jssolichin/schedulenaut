@@ -1,14 +1,25 @@
 //
    Created by Jonathan on 2/27/2015.
 
-article.middle.clearfix
-    h1 Yay! A time has been chosen! 
-    //TODO:
-        h2 Share with your friends!
-            ul
-                li facebook
-                li twitter
-        h3 Notify all attendees?
-            ul 
-                li list of who is available
-        h3 Ask to reopen?
+article.middle.clearfix.invitation
+    h1(ng-hide="event.name != undefined") Yay! A time has been chosen
+    h1(ng-show="event.name != undefined") Yay! A time has been chosen for {{event.name}}
+    section
+        h2 Let your guests know!
+        a.button Send Email to Guests 
+    section
+        h2 Now share with your friends!
+        ul
+            li
+                a.facebookShare(facebook data-url='currentUrl' data-shares='shares') {{shares}}
+            li
+                a(twitter data-lang="en" data-count='horizontal' data-url='currentLocation' data-via='Schedulenaut' data-text='Come to my amazing {{event.name}} event')
+            li
+                .linkedinShare(linkedin data-url='currentLocation' data-title='Come to my amazing {{event.name}} event' data-summary='{{event.description}}' data-shares='linkedinshares') {{linkedinshares}}
+            li
+                .g-plus(gplus data-size='tall' data-annotation='bubble' data-href='currentLocation' data-action='share')
+            li
+                div(tumblr-text data-url='window.location' data-name='Sharing to Tumblr' data-title='Come to my amazing {{event.name}} event' data-buttontext='Sharing {{event.name}}' data-styling="display:inline-block; text-indent:-9999px; overflow:hidden; width:129px; height:20px; background:url('http://platform.tumblr.com/v1/share_3.png') top left no-repeat transparent;" data-description='{{event.description}}')
+    section
+        a.button.subtle Request to change time
+

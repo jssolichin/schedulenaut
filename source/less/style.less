@@ -29,7 +29,9 @@ form{
 .right {float: right;}
 .clearfix:after {content:""; display:table; clear:both;}
 .button {padding: 5px 10px; background: #eee; color: #333; border-radius: @radius; text-decoration: none; cursor: pointer; border: 0px;
-  &.subtle {background: #fff; text-decoration: underline;}
+  &.subtle {background: #fff; text-decoration: underline; color: #777;
+    &:hover {color: #333;} 
+  }
   //&.on {border: 1px solid @green; }
 	.symbol {border-color: #333;}
   &.on {background: @green; color: #fff;

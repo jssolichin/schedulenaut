@@ -5,6 +5,7 @@
 'use strict';
 
 module.exports = function (globalHelpers, $window, event, eventsService, helpers, $scope, $rootScope, $q, $filter, $state) {
+	$scope.currentUrl = window.location.href;
 	//TODO: change editable/disabled automatically, without reloading--waiting for xeditable resolve #281
 
     $scope.checkAdminPass = function (id, event_pass, $event){
