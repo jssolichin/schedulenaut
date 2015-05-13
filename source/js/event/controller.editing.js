@@ -6,10 +6,10 @@
 
 module.exports = function ($window, event, allLayers, discussion, mailServices, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
     //TODO: break this up lol
+    //TODO: use global.helpers bounce
 
     $scope.importedLayers = [];
     $scope.updateImported = function (){
-        console.log('broadcasting');
         $scope.$broadcast('calendarsImported.change');
     };
 

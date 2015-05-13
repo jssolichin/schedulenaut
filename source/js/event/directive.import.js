@@ -1,4 +1,4 @@
-module.exports = function(Facebook, $filter, gapiProvider) {
+module.exports = ['Facebook', '$filter', 'gapiProvider', 'global.helpers', function(Facebook, $filter, gapiProvider, globalHelpers) {
     return {
         scope: {
             dates: '=',
@@ -9,8 +9,21 @@ module.exports = function(Facebook, $filter, gapiProvider) {
         templateUrl: 'public/directives/directive-import.html',
         link: function($scope, element, attrs) {
 
+        	$scope.showNoEventInfo = false;
             $scope.fbColor = '#3B5998';
             $scope.fbColor_light = '#7d97cd';
+
+            var sortedDates, earliestDate, latestDate;
+
+            var getBoundingDates = function (){
+                if($scope.dates.length > 0){
+                    sortedDates = $filter('orderBy')($scope.dates);
+                    earliestDate = sortedDates[0].getTime() / 1000;
+                    latestDate = sortedDates[sortedDates.length - 1].getTime() / 1000;
+                }
+            };
+
+            $scope.$watch('dates', getBoundingDates);
 
         	//COMMON
         	var groupExtentsIntoLayers = function(extents) {
@@ -47,11 +60,7 @@ module.exports = function(Facebook, $filter, gapiProvider) {
         		$scope.callback();
             };
 
-
             //FACEBOOK
-            var sortedDates = $filter('orderBy')($scope.dates);
-            var earliestDate = sortedDates[0].getTime() / 1000;
-            var latestDate = sortedDates[sortedDates.length - 1].getTime() / 1000;
 
             $scope.getLoginStatus = function() {
                 Facebook.getLoginStatus(function(response) {
@@ -148,6 +157,14 @@ module.exports = function(Facebook, $filter, gapiProvider) {
                             toggleImportedLayer({id: 'google_'+calId, data: brushes, color: color}, true);
 
                         } else {
+                        	$scope.showNoEventInfo = true;
+                        	$scope.$apply();
+                        	globalHelpers.bounce('#no-event-info');
+                        	window.setTimeout(function (){
+                        		$scope.showNoEventInfo = false;
+                        		$scope.$apply();
+                        	}, 3000);
+
                             console.log('No upcoming events found.');
                         }
 
@@ -195,4 +212,4 @@ module.exports = function(Facebook, $filter, gapiProvider) {
 
         }
     };
-};
+}];

@@ -55,6 +55,16 @@ module.exports = angular.module('filters', [])
             }
             return obj_copy;
         };
+        this.bounce= function (elId){
+            var wrapper = $(elId);
+
+            wrapper[0].scrollIntoView(true);
+            wrapper.addClass('animated bounce');
+            wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                wrapper.removeClass('animated bounce');
+            });
+        }
+
     }])
     .directive('popoverWrapper', [function () {
         var link = function (scope, el, attrs) {

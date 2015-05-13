@@ -1,22 +1,26 @@
 div#importer
-	div#facebook-import
-		header Facebook
-		div(ng-show="loggedIn == false")
-			fb:login-button(scope="public_profile, email, user_events" onlogin="getLoginStatus()")
-		div(ng-show="loggedIn")
-			ul
-				li(ng-click="getFacebookEvents('attending')") 
-					span.symbol.preferred(style="background: {{fbColor}}; border: 0px;")
-					| Get Attending
-				li(ng-click="getFacebookEvents('not_replied')") 
-					span.symbol.preferred(style="background: {{fbColor_light}}; border: 0px;")
-					| Get Not Replied
-	div#google-import
-		header Google
-		div(ng-hide="googleLoggedIn")
-			a.button#authorize-button(ng-click="handleAuthClick($event)") Use Google Calendar 
-		div(ng-show="googleLoggedIn && gapiLoaded")
-			ul
-				li(ng-repeat="calendar in googleCalendarList" ng-click="listUpcomingEvents(calendar.id, calendar.backgroundColor)") 
-					span.symbol.preferred(style="background: {{calendar.backgroundColor}}; border: 0px;")
-					| {{calendar.summary}}
+	.hint(ng-show="dates.length <= 0") Events should only be imported if there are possible dates&mdash;wouldn't want to import everything!
+	div(ng-show="dates.length > 0")
+		.hint Events imported is used as a guide and is only visible to you for privacy.
+		.hint.info#no-event-info(ng-show="showNoEventInfo") Info: No events found during any possible dates.  
+		.module#facebook-import
+			header Facebook
+			div(ng-show="loggedIn == false")
+				fb:login-button(scope="public_profile, email, user_events" onlogin="getLoginStatus()")
+			div(ng-show="loggedIn")
+				ul
+					li(ng-click="getFacebookEvents('attending')") 
+						span.symbol.preferred(style="background: {{fbColor}}; border: 0px;")
+						| Get Attending
+					li(ng-click="getFacebookEvents('not_replied')") 
+						span.symbol.preferred(style="background: {{fbColor_light}}; border: 0px;")
+						| Get Not Replied
+		.module#google-import
+			header Google
+			div(ng-hide="googleLoggedIn")
+				a.button#authorize-button(ng-click="handleAuthClick($event)") Use Google Calendar 
+			div(ng-show="googleLoggedIn && gapiLoaded")
+				ul
+					li(ng-repeat="calendar in googleCalendarList" ng-click="listUpcomingEvents(calendar.id, calendar.backgroundColor)") 
+						span.symbol.preferred(style="background: {{calendar.backgroundColor}}; border: 0px;")
+						| {{calendar.summary}}
