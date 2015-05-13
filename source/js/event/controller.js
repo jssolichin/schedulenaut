@@ -48,7 +48,8 @@ module.exports = function (globalHelpers, $window, event, eventsService, helpers
 		//create a copy that can be modified to be passed to server
 		var eventCopy = globalHelpers.cloneJSON(event);
 		eventCopy.dates = event.dates;
-		
+        eventCopy.time = event.time;
+
 		//only pass admin_pass if done manually (new password)
 		if(obj === undefined || (obj !== undefined && obj.admin_pass === undefined))
 			eventCopy.admin_pass = undefined;

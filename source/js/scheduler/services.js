@@ -27,6 +27,7 @@ module.exports = angular.module('events', [])
             //See eventsService.create
             eventCopy = globalHelpers.cloneJSON(event);
             eventCopy.dates = JSON.stringify(event.dates);
+            eventCopy.time = JSON.stringify(event.time);
             eventCopy.timezones = JSON.stringify(event.timezones);
             eventCopy.event_settings = JSON.stringify(event.event_settings);
 

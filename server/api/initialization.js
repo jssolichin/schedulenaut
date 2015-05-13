@@ -48,6 +48,8 @@ module.exports = function () {
                 'dates varchar(255),' +
                 'description varchar(255),' +
                 'location varchar(255),' +
+                'time varchar(255),' +
+                'details_confirmed varchar(255),' +
                 'password varchar(255)' +
                 ')', function (err) {
                     if (err !== null) {

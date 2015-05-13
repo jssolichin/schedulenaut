@@ -8,6 +8,12 @@
                 h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
                 p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
                 p(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.location || "Add a Location"}}
+                p#event-time-picker.clearfix(name="event_time")
+                    input.left.date.start(type="text")
+                    input.left.time.start(type="text")
+                    span.left &nbsp;to&nbsp;
+                    input.left.time.end(type="text")
+                    input.left.date.end(type="text")
             ul.right#event-tools
                 li#event-status(ng-class="{finalized: !event.open}")
                     p.right(ng-click="event.open = !event.open; updateEvent(); reloadView();") 

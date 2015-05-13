@@ -67,6 +67,14 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                                     return new Date(d);
                                 });
 
+                            if(event.data.time === null)
+                                event.data.time = {};
+                            else {
+                                event.data.time = JSON.parse(event.data.time);
+                                for(var key in event.data.time)
+                                    event.data.time[key] = new Date(event.data.time[key]);
+                            }
+
                             if (event.data.timezones === null)
                                 event.data.timezones = [{
                                     zone: undefined,

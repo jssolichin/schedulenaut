@@ -8,6 +8,87 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     //TODO: break this up lol
     //TODO: use global.helpers bounce
 
+    //Time Picker
+    var startDateEl = $('#event-time-picker .date.start');
+    var startTimeEl = $('#event-time-picker .time.start');
+    var endTimeEl = $('#event-time-picker .time.end');
+    var endDateEl = $('#event-time-picker .date.end');
+
+    $('#event-time-picker .time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'g:ia',
+        'step': 30
+    });
+
+    $('#event-time-picker .date').datepicker({
+        'format': 'm/d/yyyy',
+        'autoclose': true
+    });
+
+    var eventsExampleEl = document.getElementById('event-time-picker');
+    var eventsExampleDatepair = new Datepair(eventsExampleEl);
+
+    startTimeEl
+        .timepicker('option', 'showDuration', false)
+
+    $('#event-time-picker input')
+        .on('rangeIncomplete', function (a) {
+            console.log('update')
+            $scope.updateEvent();
+        });
+
+    $('#event-time-picker')
+        .on('rangeSelected', function () {
+            $scope.bounce('#event-status');
+            $scope.updateEvent();
+        });
+
+    //deal with start time
+
+    if(event.time.startTime !== undefined)
+        startTimeEl.timepicker('setTime', event.time.startTime);
+    if(event.time.endTime !== undefined)
+        endTimeEl.timepicker('setTime', event.time.endTime);
+    if(event.time.startDate !== undefined)
+        startDateEl.datepicker('setDate', event.time.startDate);
+    if(event.time.endDate !== undefined)
+        startDateEl.datepicker('setDate', event.time.endDate);
+
+    startTimeEl
+        .on('changeTime', function (){
+            console.log('change-time');
+            var startTemp, endTemp;
+
+            if(event.time.Time !== undefined)
+                startTemp = startTimeEl.timepicker('getTime', new Date(event.time.startDate));
+            else
+                startTemp = startTimeEl.timepicker('getTime', new Date());
+
+            event.time.startTime = startTemp;
+
+            $scope.updateEvent({time: event.time});
+        });
+
+    endTimeEl
+        .on('changeTime', function (){
+            console.log('change-time');
+            var startTemp, endTemp;
+
+            if(event.time.Time !== undefined)
+                endTemp = endTimeEl.timepicker('getTime', new Date(event.time.endDate));
+            else
+                endTemp = endTimeEl.timepicker('getTime', new Date());
+
+            event.time.endTime = endTemp;
+
+            $scope.updateEvent({time: event.time});
+        });
+
+    var eventsExampleEl = document.getElementById('event-time-picker');
+    var eventsExampleDatepair = new Datepair(eventsExampleEl);
+
+    //Importer Module
+
     $scope.importedLayers = [];
     $scope.updateImported = function (){
         $scope.$broadcast('calendarsImported.change');

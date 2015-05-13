@@ -109,6 +109,8 @@ router.post('/event', function (req, res) {
     var description = encapsulate(req.body.description);
     var location = encapsulate(req.body.location);
     var password = encapsulate(req.body.password);
+    var time = encapsulate(req.body.time);
+    var details_confirmed = encapsulate(req.body.details_confirmed);
     var event_settings = encapsulate(req.body.event_settings);
 
     sqlTest = "select count(0) AS 'length' from (SELECT id FROM events WHERE id LIKE '" + id + "%')";
@@ -116,7 +118,7 @@ router.post('/event', function (req, res) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + event_settings + ","+ image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + password + ")";
+        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + event_settings + ","+ image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + time + ", " + details_confirmed + "," + password + ")";
         console.log(sqlRequest)
 
         db.run(sqlRequest, function (err) {
