@@ -32,6 +32,18 @@ module.exports = function(Facebook, $filter, gapiProvider) {
                 return brushes;
             };
 
+            var toggleImportedLayer = function (layer){
+            	var indexInStack = $scope.importedLayers.map(function(d){return d.id;}).indexOf(layer.id);
+
+	            	if(indexInStack <0)
+		            	$scope.importedLayers.push(layer);
+	            	else
+	            		$scope.importedLayers.splice(indexInStack, 1);
+
+        		$scope.$apply();
+        		$scope.callback();
+            };
+
 
             //FACEBOOK
             var sortedDates = $filter('orderBy')($scope.dates);
@@ -59,15 +71,22 @@ module.exports = function(Facebook, $filter, gapiProvider) {
                             response.data.forEach(function(d) {
                                 //TODO: What if multi day event?
 
-                                var extent = [new Date(d.start_time), new Date(d.end_time)];
-                                extents.push(extent);
+                                if(d.start_time !== undefined && d.end_time !== undefined){
+
+	                                var extent = [new Date(d.start_time), new Date(d.end_time)];
+
+	                                extents.push(extent);
+                                }
 
                             });
 
                             var brushes = groupExtentsIntoLayers(extents);
 
-                            //TODO: brushes is arrayed so we can add google cal too
-                            $scope.importedLayers = [brushes];
+                            var fbColor = '#3B5998';
+                            if(type == 'not_replied')
+                            	fbColor = '#7d97cd';
+
+                            toggleImportedLayer({id: 'facebook_'+type,data: brushes, color: fbColor}, true);
 
                         }
 
@@ -94,7 +113,7 @@ module.exports = function(Facebook, $filter, gapiProvider) {
                 	});
                 };
 
-                $scope.listUpcomingEvents = function(calendarId) {
+                $scope.listUpcomingEvents = function(calendarId, color) {
                 	var calId = calendarId || 'primary';
                 	console.log(calId);
 
@@ -123,10 +142,7 @@ module.exports = function(Facebook, $filter, gapiProvider) {
 
                             var brushes = groupExtentsIntoLayers(extents);
 
-                            $scope.importedLayers = [brushes];
-	                		$scope.$apply();
-	                		$scope.callback();
-
+                            toggleImportedLayer({id: 'google_'+calId, data: brushes, color: color}, true);
 
                         } else {
                             console.log('No upcoming events found.');

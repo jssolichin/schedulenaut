@@ -11,6 +11,6 @@ div
 		div(ng-show="googleLoggedIn && gapiLoaded")
 			a.button#authorize-button(ng-click="listUpcomingEvents()") Load Google Primary
 			ul
-				li(ng-repeat="calendar in googleCalendarList" ng-click="listUpcomingEvents(calendar.id)") {{calendar.backgroundColor}} {{calendar.summary}}
+				li(ng-repeat="calendar in googleCalendarList" ng-click="listUpcomingEvents(calendar.id, calendar.backgroundColor)") {{calendar.backgroundColor}} {{calendar.summary}}
 
 

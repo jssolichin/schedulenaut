@@ -32,28 +32,39 @@ module.exports = function (d3Provider, $q) {
                 //We store data in the server per user to make it relational to the user table than events.
                 //However, since each scrubber is seperate, we need to give each scrubber all users on that specific date.
                 //So we need to transpose our layers list
-                var transposeLayers = function () {
+                //Similarly, in imported calendars, each calendar source is equivalent to a user
+                var groupByDay = function (groupedByType){
+                   
                     //add "brushWrappers" array for every date to store brushes extent
-                    scope.allLayers.forEach(function (layers) {
+                    groupedByType.forEach(function (layers) {
                         while (layers.data.length < scope.dates.length)
                             layers.data.push([]);
                     });
 
-                    //transpose the layers so we group by date, than by users
-                    scope.transposed = d3.transpose(scope.allLayers.map(function (layers) {
+                    //transpose the layers so we group by date, than by users/calendar
+                    var transposed = d3.transpose(groupedByType.map(function (layers) {
                         return layers.data;
                     }));
 
-                    //Add again relevant data to the transposed data
+                    //Add again relevant brush data to the transposed data
                     var temp = [];
-                    scope.transposed.forEach(function (day, i) {
+                    transposed.forEach(function (day, i) {
                         temp[i] = [];
                         day.forEach(function (layer, j) {
-                            temp[i][j] = {id: scope.allLayers[j].id, data: layer, visible: scope.allLayers[j].visible};
+
+                            //brushes from schedulenaut has a visible property, whereas imported calendars has a color property
+                            if(groupedByType[j].visible)
+                                temp[i][j] = {id: scope.allLayers[j].id, data: layer, visible: scope.allLayers[j].visible};
+                            else
+                                temp[i][j] = {id: groupedByType[j].id, data: layer, color: groupedByType[j].color};
                         });
                     });
-                    scope.transposed = temp;
 
+                    return temp;
+                };
+
+                var transposeLayers = function () {
+                    scope.transposed = groupByDay(scope.allLayers);
                 };
 
                 //whenever there is a layer list change, we need to update our transposed layer list
@@ -67,11 +78,7 @@ module.exports = function (d3Provider, $q) {
 
                 //Imported Layers Data
                 var transposeImports = function (){
-                    //TODO: Return every 1st array as an array (put every day from each calendar import into one)
-                    scope.transposedImportedLayers = d3.transpose(scope.importedLayers);
-
-                    scope.transposedImportedLayers = scope.transposedImportedLayers.map(function(d){return d;});
-
+                    scope.transposedImportedLayers = groupByDay(scope.importedLayers);
                     scope.$apply();
                 };
 

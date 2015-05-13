@@ -420,15 +420,17 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         if(scope.importedLayer !== undefined){
 
                             var layerImported = layersImported.selectAll('.layer-imported')
-                                .data(scope.importedLayer);
+                                .data(scope.importedLayer, function (d){return d.id;});
 
                                 layerImported
                                     .enter()
                                     .append('g')
-                                    .attr('class', 'layer-imported');
+                                    .attr('class', 'layer-imported')
+                                    .attr('id', function (d){ return d.id;})
+                                    .style('color', function (d){ return d.color;});
 
                                 var importedBrushes = layerImported.selectAll('rect')
-                                    .data(function(d){return d;});
+                                    .data(function(d){return d.data;});
 
                                 importedBrushes
                                     .enter()
@@ -447,14 +449,18 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                                         .attr("height", function(d){
                                             return height;
                                         })
+                                        .style('fill', 'currentColor')
                                         .style("fill-opacity", function(d){
                                             return 1;
                                         });
 
-                                importedBrushes
+                                layerImported
                                     .exit()
                                     .remove();
 
+                        }
+                        else {
+                            layersImported.selectAll('.layer-imported').remove();
                         }
 
                         //If we are editing a layer (activeLayerId is not undefined) then we need to add the brushes from those layers
