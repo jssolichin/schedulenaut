@@ -5,18 +5,32 @@
     header(droplet save-drops ng-model="interface" style="background-image: url({{event.image}})")
         .middle.clearfix
             .left
-                h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
-                p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
-                p(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.location || "Add a Location"}}
-                p#event-time-picker.clearfix(name="event_time")
-                    input.left.date.start(type="text")
-                    input.left.time.start(type="text")
-                    span.left &nbsp;to&nbsp;
-                    input.left.time.end(type="text")
-                    input.left.date.end(type="text")
+                ul#event-details
+                    li
+                        h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
+                    li
+                        p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
+                    li#event-detail-location
+                        p.left(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled() || event.details_confirmed.location" ) {{event.location || "Add a Location"}}
+                        span.left.details-lock(ng-click="event.details_confirmed.location = !event.details_confirmed.location; updateEvent(); reloadView()")
+                            i.icon.ion-locked(ng-show="event.details_confirmed.location")
+                            i.icon.ion-unlocked(ng-hide="event.details_confirmed.location")
+                    li#event-detail-time
+                        p#event-time-picker.clearfix(name="event_time")
+                            span.left(ng-show="!event.details_confirmed.time ")
+                                input.left.date.start(type="text")
+                                input.left.time.start(type="text")
+                                span.left &nbsp;to&nbsp;
+                                input.left.time.end(type="text")
+                                input.left.date.end(type="text")
+                            span.left(ng-show="event.details_confirmed.time")
+                                {{event.time.startTime | date:'short'}} - {{event.time.endTime | date:'short'}}
+                            span.left.details-lock(ng-click="event.details_confirmed.time = !event.details_confirmed.time; updateEvent()")
+                                i.icon.ion-locked(ng-show="event.details_confirmed.time")
+                                i.icon.ion-unlocked(ng-hide="event.details_confirmed.time")
             ul.right#event-tools
                 li#event-status(ng-class="{finalized: !event.open}")
-                    p.right(ng-click="event.open = !event.open; updateEvent(); reloadView();") 
+                    p.right(ng-click="finalizeEvent()") 
                         span(ng-if="event.open") In Discussion
                         span(ng-if="!event.open") 
                             i.icon.ion-checkmark-circled

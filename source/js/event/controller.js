@@ -60,5 +60,22 @@ module.exports = function (globalHelpers, $window, event, eventsService, helpers
     $scope.reloadView = function (){
         $state.reload();
     };
+
+    $scope.finalizeEvent = function (){
+        var finalizeable = true;
+        
+        for (var detail in event.details_confirmed){
+            if(event.details_confirmed[detail] !== true){
+                globalHelpers.bounce('#event-detail-'+detail);
+                finalizeable = false;
+            }
+        }
+
+        if(finalizeable){
+            event.open = !event.open; 
+            $scope.updateEvent(); 
+            $scope.reloadView();
+        }
+    };
     
 };

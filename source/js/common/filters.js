@@ -63,7 +63,7 @@ module.exports = angular.module('filters', [])
             wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                 wrapper.removeClass('animated bounce');
             });
-        }
+        };
 
     }])
     .directive('popoverWrapper', [function () {

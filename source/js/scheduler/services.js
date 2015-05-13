@@ -30,6 +30,7 @@ module.exports = angular.module('events', [])
             eventCopy.time = JSON.stringify(event.time);
             eventCopy.timezones = JSON.stringify(event.timezones);
             eventCopy.event_settings = JSON.stringify(event.event_settings);
+            eventCopy.details_confirmed = JSON.stringify(event.details_confirmed);
 
             return $http.put('/api/event/' + event.id, JSON.stringify(eventCopy));
         };

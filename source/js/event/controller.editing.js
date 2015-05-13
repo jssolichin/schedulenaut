@@ -25,23 +25,28 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
         'autoclose': true
     });
 
-    var eventsExampleEl = document.getElementById('event-time-picker');
-    var eventsExampleDatepair = new Datepair(eventsExampleEl);
+    var eventTimePickerEl = document.getElementById('event-time-picker');
+    var eventDatepair = new Datepair(eventTimePickerEl);
 
     startTimeEl
-        .timepicker('option', 'showDuration', false)
-
-    $('#event-time-picker input')
-        .on('rangeIncomplete', function (a) {
-            console.log('update')
-            $scope.updateEvent();
-        });
+        .timepicker('option', 'showDuration', false);
 
     $('#event-time-picker')
         .on('rangeSelected', function () {
             $scope.bounce('#event-status');
             $scope.updateEvent();
         });
+
+    startDateEl.on('changeDate', function (){
+        event.time.startDate = startDateEl.datepicker('getDate');
+        event.time.startTime = startTimeEl.timepicker('getTime', new Date(event.time.startDate));
+        $scope.updateEvent();
+    });
+    endDateEl.on('changeDate', function (){
+        event.time.endDate = endDateEl.datepicker('getDate');
+        event.time.endTime = endTimeEl.timepicker('getTime', new Date(event.time.endDate));
+        $scope.updateEvent();
+    });
 
     //deal with start time
 
@@ -56,7 +61,6 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     startTimeEl
         .on('changeTime', function (){
-            console.log('change-time');
             var startTemp, endTemp;
 
             if(event.time.Time !== undefined)
@@ -71,7 +75,6 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     endTimeEl
         .on('changeTime', function (){
-            console.log('change-time');
             var startTemp, endTemp;
 
             if(event.time.Time !== undefined)
@@ -83,9 +86,6 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
             $scope.updateEvent({time: event.time});
         });
-
-    var eventsExampleEl = document.getElementById('event-time-picker');
-    var eventsExampleDatepair = new Datepair(eventsExampleEl);
 
     //Importer Module
 

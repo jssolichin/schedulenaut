@@ -1,13 +1,21 @@
 #event {
   & > header { padding: 20px 0; position: relative;
     background: #eee; background-repeat: no-repeat; background-attachment: fixed; background-position: 50% 0; background-size: cover;
-    h1, p {background: #fff; padding: 0 5px; margin: 0px; display: table; margin-bottom: 10px; border-radius: @radius;
-      &:last-child {margin-bottom: 0px;}
+    h1,p {margin: 0px;}
+    ul#event-details {padding: 0px; margin: 0px;
+      li {background: #fff; padding: 0 5px; margin: 0px; display: table; margin-bottom: 10px; border-radius: @radius;
+        &:last-child {margin-bottom: 0px;}
+        .details-lock {margin-left: 10px; color: #ccc;}
+        input {border: 0px; border-bottom: 1px solid #eee; margin-right: 5px;
+          &:last-child {margin: 0px;}
+        }
+      }
     }
     #event-tools { margin: 0px; list-style-type: none;
         li { margin-bottom: 5px; 
            &:after {content:""; display:table; clear:both;} 
            &.active .hint {background: #fff;  width: auto;}
+           p {padding: 0 5px; border-radius: @radius;}
         }
         li#event-status {cursor: pointer;
             p {background: rgba(255,255,255,.6);}
