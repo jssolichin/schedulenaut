@@ -8,8 +8,8 @@ article.middle.clearfix
                 li.left
                     a.button(ng-click="addTimezone()" ng-show="event.event_settings.timezoneEveryone || adminAuthenticated") + Timezone
                     a.button(ng-click="") + Import
-                        .popover-wrapper(point-to="top" callback="" imported-layers="importedLayers")
-                    .importer(importer dates="dates" imported-layers="importedLayers" callback="updateImported")
+                        .popover-wrapper(point-to="top" padding="5" callback="" imported-layers="importedLayers")
+                            .importer(importer dates="dates" imported-layers="importedLayers" callback="updateImported")
                 li.clearfix.right
                     span.left Brush:
                     ul.combo-button.right

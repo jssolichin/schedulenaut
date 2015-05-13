@@ -9,6 +9,9 @@ module.exports = function(Facebook, $filter, gapiProvider) {
         templateUrl: 'public/directives/directive-import.html',
         link: function($scope, element, attrs) {
 
+            $scope.fbColor = '#3B5998';
+            $scope.fbColor_light = '#7d97cd';
+
         	//COMMON
         	var groupExtentsIntoLayers = function(extents) {
                 //create layers to file events in
@@ -82,9 +85,9 @@ module.exports = function(Facebook, $filter, gapiProvider) {
 
                             var brushes = groupExtentsIntoLayers(extents);
 
-                            var fbColor = '#3B5998';
+                            var fbColor = $scope.fbColor;
                             if(type == 'not_replied')
-                            	fbColor = '#7d97cd';
+                            	fbColor = $scope.fbColor_light;
 
                             toggleImportedLayer({id: 'facebook_'+type,data: brushes, color: fbColor}, true);
 
