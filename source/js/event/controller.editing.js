@@ -5,6 +5,14 @@
 'use strict';
 
 module.exports = function ($window, event, allLayers, discussion, mailServices, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
+    //TODO: break this up lol
+
+    $scope.importedLayers = [];
+    $scope.updateImported = function (){
+        console.log('broadcasting');
+        $scope.$broadcast('calendarsImported.change');
+    };
+
     //User module
 
 	$scope.sendEmail = function (users, email){

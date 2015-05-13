@@ -15,7 +15,8 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
             onEnd: '=',
             layers: '=',
             activeLayerId: '=',
-            preferred: '='
+            preferred: '=',
+            importedLayer: '='
         },
         link: function (scope, element, attrs) {
             var radius = 5;
@@ -295,6 +296,10 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                     .attr('class', 'layers')
                     .attr("transform", "translate(0," + margin.top + ")");
 
+                var layersImported = g.append('g')
+                    .attr('class', 'layers-imported')
+                    .attr("transform", "translate(0," + margin.top + ")");
+
                 var brushContainer = g.append('g')
                     .attr('class', 'brushes')
                     .attr("transform", "translate(0," + margin.top + ")");
@@ -411,6 +416,46 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                         layer.exit()
                             .remove();
 
+                        //layers imported
+                        if(scope.importedLayer !== undefined){
+
+                            var layerImported = layersImported.selectAll('.layer-imported')
+                                .data(scope.importedLayer);
+
+                                layerImported
+                                    .enter()
+                                    .append('g')
+                                    .attr('class', 'layer-imported');
+
+                                var importedBrushes = layerImported.selectAll('rect')
+                                    .data(function(d){return d;});
+
+                                importedBrushes
+                                    .enter()
+                                    .append('rect')
+                                        .attr('rx', radius)
+                                        .attr('ry', radius)
+                                        .attr('x', function (brush) {
+                                            return x(brush[0]);
+                                        })
+                                        .attr('width', function (brush) {
+                                            var width;
+                                                width = x(brush[1]) - x(brush[0]);
+
+                                            return width;
+                                        })
+                                        .attr("height", function(d){
+                                            return height;
+                                        })
+                                        .style("fill-opacity", function(d){
+                                            return 1;
+                                        });
+
+                                importedBrushes
+                                    .exit()
+                                    .remove();
+
+                        }
 
                         //If we are editing a layer (activeLayerId is not undefined) then we need to add the brushes from those layers
                         if (scope.layers !== undefined && scope.activeLayerId !== undefined && scope.layers[scope.activeLayerId] !== undefined) {
@@ -496,6 +541,7 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
                 scope.$watch('layers', update);
                 scope.$watch('activeLayerId', update);
                 scope.$watch('width', update);
+                scope.$on('calendarsImported.change', update);
 
 				scope.$on('highlightUserBlocks', function (event, data){
 					layer

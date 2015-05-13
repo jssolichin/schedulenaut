@@ -16,7 +16,8 @@ module.exports = function (d3Provider, $q) {
             activeLayerId: '=',
             timezones: '=',
             onTimezoneChange: '=',
-            preferred: '='
+            preferred: '=',
+            importedLayers: '='
         },
         templateUrl: 'public/directives/calendar.html',
         link: function (scope, element, attrs) {
@@ -63,6 +64,20 @@ module.exports = function (d3Provider, $q) {
                 scope.$on('updateLayers', function () {
                     transposeLayers();
                 });
+
+                //Imported Layers Data
+                var transposeImports = function (){
+                    //TODO: Return every 1st array as an array (put every day from each calendar import into one)
+                    scope.transposedImportedLayers = d3.transpose(scope.importedLayers);
+
+                    scope.transposedImportedLayers = scope.transposedImportedLayers.map(function(d){return d;});
+
+                    scope.$apply();
+                };
+
+                scope.$on('calendarsImported.change', transposeImports);
+
+                //Calendar DOM
 
                 var el = d3.select(element[0]);
                 var rule = el.append('div')

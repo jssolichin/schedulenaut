@@ -21,4 +21,4 @@ table
             td(ng-if="$index != 0") {{date | labelNewMonth:dates[$index-1] }}
             td {{date | date:'EEE'}}
             td {{date | date:'dd'}}
-            td.scrub.hover-time(scrub="date" preferred="preferred" granularity="granularity" width="width" height="height" on-end="onEnd" layers="transposed[$index]" active-layer-id="activeLayerId")
+            td.scrub.hover-time(scrub="date" preferred="preferred" granularity="granularity" width="width" height="height" on-end="onEnd" layers="transposed[$index]" active-layer-id="activeLayerId" imported-layer="transposedImportedLayers[$index]")
