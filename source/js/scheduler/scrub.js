@@ -402,7 +402,10 @@ module.exports = function (helpers, d3Provider, $q, $compile) {
 								return d.preferred ? height : height*heightFactor;
 							})
 							.style("fill-opacity", function(d){
-								return 1/layer.data().length;
+                                if(scope.activeLayerId !== undefined)
+                                    return 1/(layer.data().length+1);
+                                else
+    								return 1/layer.data().length;
 							});
 
                         layer.exit()

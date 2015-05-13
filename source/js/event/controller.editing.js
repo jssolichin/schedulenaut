@@ -5,16 +5,17 @@
 'use strict';
 
 module.exports = function ($window, event, allLayers, discussion, mailServices, usersService, eventsService, brushesService, discussionsService, helpers, $scope, $rootScope, $q, $filter, eventHelpers ) {
+    //User module
 
 	$scope.sendEmail = function (users, email){
-        var to = users.map(function(d){return d.email});
+        var to = users.map(function(d){return d.email;});
         var eventName = event.name || 'Schedulenaut';
 
 		mailServices.sendMail({
 			to: to,
 			subject: eventName + ': ' + email.sub,
 			html: email.text 
-		})
+		});
 	};
 
 
@@ -48,6 +49,8 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     $scope.changeBrushPreference = function () {
         $scope.preferred = !$scope.preferred;
     };
+
+    //Messaging module
 
     $scope.messages = discussion;
     $scope.updateDiscussion = function () {

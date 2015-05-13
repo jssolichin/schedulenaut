@@ -35,10 +35,14 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                             var redirectLogicListener = $rootScope.$on('$stateChangeSuccess',
                                 function(event, toState, toParams, fromState, fromParams) {
 
-                                    if (toState.name !== 'event.editing' && isOpen)
-                                        $state.go('event.editing', $stateParams);
-                                    else if (toState.name !== 'event.invitation' && !isOpen)
-                                        $state.go('event.invitation', $stateParams);
+                                        if(isOpen){
+                                            if(toState.name == 'event')
+                                                $state.go('event.editing', $stateParams);
+                                        }
+                                        else {
+                                            if (toState.name !== 'event.invitation' )
+                                                $state.go('event.invitation', $stateParams);
+                                        }
 
                                     redirectLogicListener();
                                 }

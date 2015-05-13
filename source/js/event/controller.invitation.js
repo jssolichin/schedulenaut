@@ -10,6 +10,6 @@ module.exports = function ($scope, mailServices) {
 			to: 'jssolichin@gmail.com',
 			subject: 'The time for ' + event.name + ' has been set!',
 			html: event.description + ' <br> ' + event.location
-		})
-	}
+		});
+	};
 };
