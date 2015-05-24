@@ -36,7 +36,7 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                                 function(event, toState, toParams, fromState, fromParams) {
 
                                         if(isOpen){
-                                            if(toState.name == 'event')
+                                            if(toState.name == 'event' || toState.name == 'event.invitation')
                                                 $state.go('event.editing', $stateParams);
                                         }
                                         else {

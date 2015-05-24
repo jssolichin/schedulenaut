@@ -30,11 +30,14 @@
                                 i.icon.ion-unlocked(ng-hide="event.details_confirmed.time")
             ul.right#event-tools
                 li#event-status(ng-class="{finalized: !event.open}")
-                    p.right(ng-click="finalizeEvent()") 
-                        span(ng-if="event.open") In Discussion
-                        span(ng-if="!event.open") 
-                            i.icon.ion-checkmark-circled
-                            |  Finalized
+                    ul.combo-button.right
+                        li
+                            a.button(ng-click="finalizeEvent()" ng-class="{on: event.open}" ng-hide="!event.open")
+                                | In Discussion
+                        li
+                            a.button(ng-click="finalizeEvent()" ng-class="{on: !event.open, alone: !event.open}")
+                                i.icon.ion-checkmark-circled(ng-hide="event.open")
+                                | Finalized
                 li(ng-if="event.open" )
                     .hint.right#event-settings(ng-class="{'active': adminAuthenticated}" )
                         i.icon.ion-gear-a.right
