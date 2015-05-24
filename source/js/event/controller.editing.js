@@ -9,6 +9,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     //TODO: use global.helpers bounce
 
     //Time Picker
+	//TODO: When clear input, update time
     var startDateEl = $('#event-time-picker .date.start');
     var startTimeEl = $('#event-time-picker .time.start');
     var endTimeEl = $('#event-time-picker .time.end');
@@ -33,7 +34,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     $('#event-time-picker')
         .on('rangeSelected', function () {
-            $scope.bounce('#event-status');
+			//$scope.bounce('#event-status');
             $scope.updateEvent();
         });
 

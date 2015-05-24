@@ -8,6 +8,38 @@ module.exports = function (globalHelpers, $window, event, eventsService, helpers
 	$scope.currentUrl = window.location.href;
 	//TODO: change editable/disabled automatically, without reloading--waiting for xeditable resolve #281
 
+	//Locker Time
+	$scope.lockTime = function (){
+	
+		if(event.time.startDate && event.time.startTime && event.time.endTime && event.time.endDate){
+			event.details_confirmed.time = !event.details_confirmed.time; 
+			$scope.updateEvent();
+		}
+		else{
+			if(!event.time.startDate)
+				globalHelpers.bounce('#event-time-picker .date.start');
+			if(!event.time.startTime)
+				globalHelpers.bounce('#event-time-picker .time.start');
+			if(!event.time.endTime)
+				globalHelpers.bounce('#event-time-picker .time.end');
+			if(!event.time.endDate)
+				globalHelpers.bounce('#event-time-picker .date.end');
+		}
+		
+	};
+
+	//Locker Location
+	$scope.lockLocation = function (){
+		if(event.location !== undefined &&  event.location !== ''){
+			event.details_confirmed.location = !event.details_confirmed.location; 
+			$scope.updateEvent(); 
+			$scope.reloadView();
+		}
+		else
+			globalHelpers.bounce('#event-detail-location');
+	}
+
+
     $scope.checkAdminPass = function (id, event_pass, $event){
         var isAdminAuth = eventsService.checkAdminPass(id, event_pass);
         isAdminAuth.then(function(d){
