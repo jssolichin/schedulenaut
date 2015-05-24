@@ -1,5 +1,9 @@
 //Landing Page Demo
 #index
+    video#bgVideo(src="public/images/background.mp4" autoplay="true" loop="true" )
+    script(type='text/javascript').
+        var vid = document.getElementById("bgVideo");
+        bgVideo.defaultPlaybackRate = 0.2;
     article.middle
         form#create-form(name="eventForm" ng-submit="submitData(event)" ng-class="{expanded: formExpanded}" novalidate)
             input#event-name(type="input" name="name" ng-model="event.name" ng-click="formExpanded = true; addFormHider()" placeholder="{{placeholder}}" required)
@@ -23,5 +27,3 @@
                     label(for="description") Event Description (optional)
                     textarea(name="description" ng-model="event.description" placeholder="Event Description" )
             #hint(ng-class="{hidden: formExpanded}") Schedulenaut helps figure out when everyone is available for your next meeting!
-
-

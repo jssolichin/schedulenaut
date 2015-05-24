@@ -3,10 +3,11 @@
 @radius: 3px;
 @green: #4CD964;
 @red: #FF3B30;
-@accent: #5856D6;
+//@accent: #5856D6;
+@accent: #FF9500;
 
-body {color: #333; padding: 0px; margin: 0px;}
-body, textarea {font-family: 'Open Sans', sans-serif; }
+body {border-top: 2px solid @accent; color: #333; padding: 0px; margin: 0px;}
+body, textarea, input {font-family: 'Open Sans', sans-serif; }
 .super {vertical-align: super; font-size: .5em; margin-left: 5px;}
 
 //global
@@ -58,8 +59,8 @@ form{
 .grey-small-hint { font-size: .7em; text-transform: uppercase; line-height: 1.2em; display: inline-block; padding: 5px; margin: 10px 0; border-radius: 3px; background: #eee; }
 
 //state specific style
-body.state-index {background: url(../images/index-background.jpg) no-repeat center center fixed; background-size: cover; }
-body.state-about {background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(255,255,255,1) 45%), url(../images/index-background.jpg) no-repeat center center fixed; background-size: cover; }
+//body.state-index {background: url(../images/index-background.jpg) no-repeat center center fixed; background-size: cover; }
+body.state-about {background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 45%), url(../images/index-background.jpg) no-repeat center center fixed; background-size: cover; }
 
 //media queries
 @media only screen and (max-width: 980px) {

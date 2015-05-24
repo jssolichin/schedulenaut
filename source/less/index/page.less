@@ -1,13 +1,30 @@
+.state-index {
+	header.top {
+	  filter: invert(100%); 
+	  -webkit-filter: invert(100%);
+	  -moz-filter: invert(100%);
+	  -ms-filter: invert(100%);
+	  -o-filter: invert(100%);
+	}
+	#bgVideo {
+		background-color: #000;
+		background: linear-gradient(to bottom, #001842 1%,#86969e 67%,#a08e7a 87%,#d38f28 97%,#000000 100%);
+		position: absolute; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -100; background-size: cover;
+	}
+}
 #index {
   #create-form{ position: relative; width: 80%; margin: 150px auto 0 auto; padding: 10px; border-radius: 3px;
     //input, button {box-shadow: 0px 1px 3px rgba(0,0,0,0.3);}
     &.expanded {background: #fff; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); transition: all .15s ease-in-out;
       input, button {box-shadow: none;}
     }
-    #hint {background: url(../images/point-up.png) no-repeat; padding: 7px 0 0 25px; position: absolute; top: 75px;left : 40px; transition: opacity .10s ease-in-out; opacity: 1;}
+    #hint {background: url(../images/arrow.svg) no-repeat; padding: 6px 0 0 25px; position: absolute; top: 75px;left : 25px; transition: opacity .10s ease-in-out; opacity: 1;color: #eee;}
     #hint.hidden {opacity: 0; pointer-events: none;}
     #event-name {font-size: 1.5em; padding: 10px; border-radius: @radius; border: 1px solid #ccc; width: 65%;}
-    button {font-size: 1.5em; padding: 10px;margin-left: 10px; border: 0px; border-radius: @radius; width: calc(~"35% - 33px");background: @accent; color: #fff; }
+    button {font-size: 1.5em; padding: 14px;margin-left: 10px; border: 0px; border-radius: @radius; width: calc(~"35% - 33px");background: @accent; color: #fff;
+		&:hover {background: @accent + #111;}
+		&:active {background: @accent - #111;}
+	}
     button[disabled] {background: #eee; color: #999; border: 1px solid #ccc;}
     .hidden-form {margin: 10px 10px 0 10px;
       .left {width:34%;

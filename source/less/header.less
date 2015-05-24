@@ -1,8 +1,20 @@
 header.top { padding: 20px 0;
   a:visited, a:link {color: #333;text-decoration: none; }
   a:hover {color: #000; }
-  a.rotate img {transition: transform 1.0s ease}
-  a.rotate:hover img {transform: rotate(360deg)}
+  a.rotate img {
+	  transition: transform 1.0s ease;
+	  -webkit-transition: transform 1.0s ease;
+	  -moz-transition: transform 1.0s ease;
+	  -ms-transition: transform 1.0s ease;
+	  -o-transition: transform 1.0s ease;
+  }
+  a.rotate:hover img {
+	  transform: rotate(360deg);
+	  -webkit-transform: rotate(360deg);
+	  -moz-transform: rotate(360deg);
+	  -ms-transform: rotate(360deg);
+	  -o-transform: rotate(360deg);
+  }
 
   #logo { margin-top: .3em; }
   h1 {margin: 0 0 0 10px; font-size: 1.5em; display: inline; vertical-align: super; font-weight: normal }
