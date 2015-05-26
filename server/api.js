@@ -220,10 +220,16 @@ router.post('/user/:id/secret', function (req, res) {
 });
 
 router.post('/user', function (req, res) {
+    var secret;
+    console.log(secret)
+    if(req.body.secret)
+        secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
+    else
+        secret = null;
+    
     var name = encapsulate(req.body.name);
     var event_id = encapsulate(req.body.event_id);
     var brush_id = req.body.brushes_id || null;
-    var secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
     var email = encapsulate(req.body.email);
 
     sqlRequest = "INSERT INTO 'users' values (null, " + name + ", " + event_id + ", " + brush_id + "," + secret + "," + email + ")";
@@ -254,12 +260,23 @@ router.get('/user/:id', function (req, res) {
 });
 
 router.put('/user/:id', function (req, res) {
+    var secret;
+    console.log(req.body.secret)
+    if(req.body.secret)
+        secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
+    else
+        secret = null;
+
+    console.log(secret)
+
     var id = req.params.id;
 
     var updateQuery = '';
     for (key in req.body) {
         var value = isNaN(req.body[key]) ? "'" + req.body[key] + "'" : req.body[key];
-        if (key != 'id')
+        if(key == 'secret')
+            updateQuery += 'secret= ' + secret + ',';
+        else if (key != 'id')
             updateQuery += key + " = " + value + ",";
     }
 

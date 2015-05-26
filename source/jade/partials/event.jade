@@ -12,7 +12,8 @@
                         p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
                     li#event-detail-location
                         p.left(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled() || event.details_confirmed.location" ) {{event.location || "Add a Location"}}
-                        span.right.details-lock(ng-click="lockLocation()")
+                        span.right.details-lock(ng-click="lockLocation()") 
+                            //TODO: allow lock only for admin option
                             i.icon.ion-locked(ng-show="event.details_confirmed.location")
                             i.icon.ion-unlocked(ng-hide="event.details_confirmed.location")
                     li#event-detail-time
@@ -39,16 +40,16 @@
                                 i.icon.ion-checkmark-circled(ng-hide="event.open")
                                 | Finalized
                 li(ng-if="event.open" )
-                    .hint.right#event-settings(ng-class="{'active': adminAuthenticated}" )
+                    .tool-title.right#event-settings(ng-class="{'active': adminAuthenticated}" )
                         i.icon.ion-gear-a.right
                         span + Event Settings 
-                    .popover-wrapper(point-to="top" callback="" offset-y="10" click-on="#event-settings" width="175")
+                    .popover-wrapper(point-to="top" callback="" width="160" offset-y="10" click-on="#event-settings" )
                         form(name="set_event_admin_password" ng-if="event.admin_pass == undefined && adminAuthenticated != true")
-                            div.grey-small-hint No administrator secret word set. 
+                            .hint No administrator secret word set. 
                             label(for="secret") Add Secret Word
                                 span *
                             input(type="password" name="secret" ng-model="admin_pass" placeholder="Used to edit event settings later" required)
-                            button.center(type="submit" value="submit" ng-click="$parent.adminAuthenticated = true;updateEvent({admin_pass: admin_pass}); " ng-disabled="set_event_admin_password.$invalid") Submit
+                            button.center(type="submit" value="submit" ng-click="authenticateAdmin(true); updateEvent({admin_pass: admin_pass}); " ng-disabled="set_event_admin_password.$invalid") Submit
                             //correctly set adminAuthenticated
                         form(name="check_event_admin_password" ng-if="event.admin_pass != undefined && adminAuthenticated != true")
                             label(for="secret" ) Secret Word
@@ -66,7 +67,7 @@
                             label(for="available-dates-everyone") Edit Available Dates:  
                                 input(type="checkbox" name="available-dates-everyone" ng-model="event.event_settings.availableDatesEveryone" ng-click="updateEvent({event_settings: event.event_settings});")
                 li(ng-if="event.open")
-                    .hint.right
+                    .tool-title.right
                         i.icon.ion-image.right
                         span + Cover Image
                         input(type="file" droplet-upload-single ng-model="interface")

@@ -8,6 +8,73 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     //TODO: break this up lol
     //TODO: use global.helpers bounce
 
+    //Send Password
+    $scope.notifyAllUsers = function ($event){
+
+		console.log('notifying');
+        //http://stackoverflow.com/questions/1484506/random-color-generator-in-javascript  
+        var randomPasswordGenerator = function (){
+            var length = 5,
+                charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+                retVal = "";
+            for (var i = 0, n = charset.length; i < length; ++i) {
+                retVal += charset.charAt(Math.floor(Math.random() * n));
+            }
+
+            return retVal;
+        };
+
+        var eachMail = function (user){
+            var passwordInfo;
+
+            if(user.secret === null){
+                var secret = randomPasswordGenerator(); 
+                usersService.update({id: user.id, secret: secret});
+                passwordInfo = secret;
+            }
+            else 
+                passwordInfo = "<em>has been given to you</em>";
+
+            var template = 
+            	"<img src='http://schedulenaut.com/public/images/logo.png'><h1>Schedulenaut</h1>" + 
+                "Hey " + user.name + ", <br>" + 
+                "<br>" + 
+                "You've been invited to <b>" + eventName + "</b>! Cool right? " + 
+                "But, we need to know when you're available to have the best time for everybody. <br>" + 
+                "<br>" + 
+                "Lift off to <a href=http://schedulenaut.com/" + event.id  + ">the event page</a> and you can easily add your availability! <br>" + 
+                "<br>" + 
+                "Edit your information by editing your user by clicking on the pencil next to your username on the sidebar. Use the information below: <br>" +
+                "<br>" + 
+                "<b>USER: </b>" + user.name + "<br>" + 
+                "<b>SECRET WORD: </b>" + passwordInfo + "<br>" + 
+                "<br>" + 
+                "Once you have signed in, you can click and drag on the calendar to mark your availability! <br>" + 
+                "<br>" + 
+                "Easy peasy right? <br>" + 
+                "<br>" + 
+                "Thanks!" + 
+                "<br>" + 
+                "Schedulenaut";
+
+            mailServices.sendMail({
+                to: user.email,
+                subject: '[Schedulenaut] You have been invited to '  + eventName +  '! When are you available?',
+                html: template 
+            }).then(function (d){
+                $($event.target).html('Message Sent!');
+                $($event.target).attr('disabled', true);
+            });
+
+        };
+
+        var eventName = event.name || 'an event!';
+        $scope.users.forEach(function(user){
+            eachMail(user);
+        });
+            
+    };
+
     //Time Picker
 	//TODO: When clear input, update time
     var startDateEl = $('#event-time-picker .date.start');
@@ -97,15 +164,22 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     //User module
 
-	$scope.sendEmail = function (users, email){
+	$scope.sendEmail = function ($event, users, email){
         var to = users.map(function(d){return d.email;});
-        var eventName = event.name || 'Schedulenaut';
+        var eventName = event.name || 'Event Notification';
+		var content = "<img src='http://schedulenaut.com/public/images/logo.png'><h1>Schedulenaut</h1>" + 
+		"A message has been sent from an <a href=http://schedulenaut.com/" + event.id  + ">event</a> you are invited to: " +
+		"<br><br>" +
+			email.text;
 
 		mailServices.sendMail({
 			to: to,
-			subject: eventName + ': ' + email.sub,
-			html: email.text 
-		});
+			subject: "[Schedulenaut] " + eventName + ': ' + email.sub,
+			html: content 
+		}).then(function (d){
+                $($event.target).html('Message Sent!');
+                $($event.target).attr('disabled', true);
+            });
 	};
 
 
@@ -229,18 +303,22 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
                 callback(layersPromise);
         });
     };
-    var createLayer = function (user_id) {
+
+    //seperate create from activating
+    var createLayer = function (user_id, setActive) {
         var promise = $q.defer();
 
         activeLayer.user_id = user_id;
         activeLayer.data = [];
 
         brushesService.create(activeLayer).then(function (layerId) {
-            refreshAllLayers(function (d) {
-                //id of layer in local layers stack
-                $scope.activeLayerId = $scope.allLayers.map(function (d) {
-                    return d.id;
-                }).indexOf(layerId);
+			refreshAllLayers(function (d) {
+				if(setActive){
+					//id of layer in local layers stack
+					$scope.activeLayerId = $scope.allLayers.map(function (d) {
+						return d.id;
+					}).indexOf(layerId);
+				}
 
                 //id of layer in server
                 activeLayer.id = layerId;
@@ -297,18 +375,19 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     };
 
     $scope.createUser = function () {
-        var user_id_promise = usersService.create($scope.newUser);
+        var user = $scope.newUser;
+        var user_id_promise = usersService.create(user);
 
         user_id_promise.then(function (user_id) {
-            var brushes_id_promise = createLayer(user_id);
+            var brushes_id_promise = createLayer(user_id, user.secret);
             brushes_id_promise.then(function (d) {
                 var user = {};
                 user.id = user_id;
                 user.brushes_id = d;
                 usersService.update(user);
-
-                refreshUsers();
             });
+
+            refreshUsers();
         });
 
         //reset the form

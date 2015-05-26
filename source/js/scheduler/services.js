@@ -165,13 +165,16 @@ module.exports = angular.module('events', [])
         };
 
     }])
-	.service('mailServices', ['$http', function($http){
-		this.sendMail = function (mail){
-			mail.from = 'schedulenaut@schedulenaut.com';
+    .service('mailServices', ['$http', '$q', function($http, $q){
+        this.sendMail = function (mail){
+            var p = $q.defer();
+
+            mail.from = 'schedulenaut@schedulenaut.com';
 
             $http.post('/api/sendmail', mail).success(function (response) {
-                //discussionsService.create({event_id: response.id, data: undefined, star: undefined});
-                //p.resolve(response);
+                p.resolve(response);
             });
-		};
-	}]);
+
+            return p.promise;
+        };
+    }]);

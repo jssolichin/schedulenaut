@@ -16,8 +16,9 @@
     #event-tools { margin: 0px; list-style-type: none;
         li { margin-bottom: 5px; 
            &:after {content:""; display:table; clear:both;} 
-           &.active .hint {background: #fff;  width: auto;}
+           &.active .tool-title {background: #fff;  width: auto;}
            p {padding: 0 5px; border-radius: @radius;}
+           input {width: ~"calc(100% - 12px)"}
         }
         li#event-status {
 			ul {list-style-type: none}
@@ -26,7 +27,7 @@
 				&:last-child {margin-left: -1px;}
 			}
         }
-        .hint{ position: relative; padding: 2px 5px 3px 4px; background: rgba(255,255,255,.6);
+        .tool-title{ position: relative; padding: 2px 5px 3px 4px; background: rgba(255,255,255,.6);
           &.active {background: @accent !important; color: #fff;}
           width: 1em; height: calc(~"1em + 5px"); overflow: hidden; border-radius: @radius;
           &:hover {background: #fff;  width: auto;}
@@ -68,9 +69,6 @@
       a.button {display: inline-block;}
       &:first-child {margin-bottom: 0px }
     }
-    .hint {background: #eee; font-size: .7em; padding: 5px 10px;
-      &.info {background: #FFDB4C; border: 0px;}
-    }
   }
   #sidebar {width: 25%; margin-top: 15px;
     aside{ border: 1px solid #eee; border-radius: @radius; font-size: .9em; margin-top: 10px;
@@ -86,6 +84,7 @@
         ul { margin: 0 0 10px 0; padding: 0px; border: 1px solid #eee; border-left:0px; border-right: 0px;
           &:last-child {margin-bottom: 0px; border-bottom: 0px;}
           &#guests-list {
+            input {width: 140px}
             & >li {
               &.editing { color: #fff; background: @accent;
                 .icon {color: rgba(255,255,255,.8);

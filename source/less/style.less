@@ -47,7 +47,7 @@ form{
   }
   &:hover {background: #ddd;}
   &:active, &.active {background: #ccc; }
-  &[disabled] {border: 1px solid #ccc; color: #ccc; background: transparent; cursor: default;}
+  &[disabled], &.disabled {border: 1px solid #ccc; color: #ccc; background: transparent; cursor: default;}
   i {margin-right: 7px;}
 }
 .combo-button {
@@ -87,13 +87,16 @@ body.state-about {background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,
 }
 
 .popover-wrapper{ position: absolute; z-index: 99; pointer-events: none;
-  .popover {pointer-events: all; padding: 20px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); 
+  .popover {pointer-events: all; padding: 10px; position: relative; left: -50%; background: #fff; border-radius: @radius; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); 
     form {
       button {margin-top: 20px;}
     }
   }
   .top:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: transparent transparent #fff transparent; top: -20px; left: calc(~"50% - 10px"); }
   .bottom:after { content: ""; position: absolute; width: 0; height: 0; border-width: 10px; border-style: solid; border-color: #fff transparent transparent transparent; bottom: -20px; left: calc(~"50% - 5px"); }
+    .hint {background: #eee; font-size: .7em; padding: 5px 10px; line-height: 1.3em;
+      &.info {background: #FFDB4C; border: 0px;}
+    }
 }
 
 .editable-text {margin-bottom: 10px;}

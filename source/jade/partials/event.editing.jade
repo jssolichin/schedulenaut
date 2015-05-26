@@ -8,7 +8,7 @@ article.middle.clearfix
                 li.left
                     a.button(ng-click="addTimezone()" ng-show="event.event_settings.timezoneEveryone || adminAuthenticated") + Timezone
                     a.button(ng-click="") + Import
-                        .popover-wrapper(point-to="top" padding="5" callback="" imported-layers="importedLayers" width="250")
+                        .popover-wrapper(point-to="top" callback="" imported-layers="importedLayers" width="250")
                             .importer(importer dates="dates" imported-layers="importedLayers" callback="updateImported")
                 li.clearfix.right
                     span.left Brush:
@@ -45,42 +45,50 @@ article.middle.clearfix
                                 i.icon.ion-eye(ng-class="{'ion-eye-disabled': allLayers[$index].visible == false}")
                             a#edit(ng-click="editHandler($index)")
                                 i.icon.ion-edit
-                            a(ng-click="deleteUser()")
+                            a(ng-click="deleteUser()" ng-show="adminAuthenticated || activeLayerId == $index ")
                                 i.icon.ion-close
-                        .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" width=" 200" ng-attr-id="{{'popover-user-'+$index}}" )
+                        .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" ng-attr-id="{{'popover-user-'+$index}}" )
                             form(name="user_password" )
                                 label(for="secret") Secret Word
-                                input#secret(type="password" name="secret" ng-model="secretWord")
-                                button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''") Submit
+                                input#secret(type="password" name="secret" ng-model="secretWord" required)
+                                .error-container(ng-show="user_password.secret.$dirty && user_password.secret.$invalid")
+                                    .error(ng-show="user_password.email.$error.secret") Please enter the correct password 
+                                button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''" ng-disabled="user_password.$invalid") Submit
                     li.addGuest#addGuest(ng-show="event.event_settings.inviteEveryone || adminAuthenticated")
                         .center
                             a.button + Guests
-                                .popover-wrapper(point-to="top" callback="")
+                                .popover-wrapper(point-to="top" callback="" )
+                                    .hint(ng-click="bounce('#event-settings')") To allow invite only, set event settings  
+                                        i.icon.ion-gear-a
                                     form(name="new_user" )
                                         label(for="user") Name
                                             span *
                                         input(type="text" name="user" ng-model="newUser.name" placeholder="Used to identify" required)
-                                        label(for="secret") Secret word
-                                            span *
-                                        input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" required)
+
                                         label(for="email") E-mail
                                             span *
                                         input(type="email" name="email" ng-model="newUser.email" placeholder="Used to notify" required)
                                         .error-container(ng-show="new_user.email.$dirty && new_user.email.$invalid")
                                             .error(ng-show="new_user.email.$error.email") Please enter a valid email
-                                        button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); bounce('.calendar')" ng-disabled="new_user.$invalid") Add Guest!
-                                        // a(editable-text="user.name" onaftersave="createUser()")
-                                            | {{ user.name || "+ Add Guest" }}
-                            a#notify-all.button(ng-show="users.length > 0")
+
+                                        label(for="secret") Secret word
+                                        input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" )
+                                        .hint(ng-click="bounce('#notify-all-disabled, #notify-all')") If you do not put a password here, it will be generated and sent when using notify all.
+
+                                        button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); " ng-disabled="new_user.$invalid") Add Guest!
+                            a#notify-all-disabled.button.disabled(ng-hide="users.length > 0 && adminAuthenticated" ng-click="bounce('#event-settings')")
                                 i.icon.ion-email
                                 | Notify All 
-                            .popover-wrapper.mail-services(point-to="top" padding="10" width="180" attach-to="#notify-all")
+                            a#notify-all.button(ng-show="users.length > 0 && adminAuthenticated")
+                                i.icon.ion-email
+                                | Notify All 
+                            .popover-wrapper.mail-services(point-to="top" attach-to="#notify-all")
                                 ul(ng-show="showNewEmailForm != true")
                                     li
-                                        a.button(ng-click="showNewEmailForm = true") Custom Message
-                                    //Implement
+                                        button.button(ng-click="showNewEmailForm = true") Custom Message
                                     li
-                                        a.button Send User/Secret
+                                        button.button(ng-click="notifyAllUsers($event)" ) Send User/Secret
+                                        //TODO: Style this
                                 form.full-width(name='new_email' ng-show="showNewEmailForm")
                                     label(for="subject") Subject 
                                         span *
@@ -88,8 +96,8 @@ article.middle.clearfix
                                     label(for="body") Body 
                                         span *
                                     textarea(name="body" ng-model="new_email.text" required )
-                                    button(ng-click="sendEmail(users, new_email)") submit
-                                    button.subtle(ng-click="showNewEmailForm = false" ng-disabled="new_email.$invalid") Cancel 
+                                    button(ng-click="sendEmail($event, users, new_email)" ng-disabled="new_email.$invalid") submit
+                                    button.subtle(ng-click="showNewEmailForm = false" ) Cancel 
         aside#discussion
             header Discussion
             article
