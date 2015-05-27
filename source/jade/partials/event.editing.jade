@@ -32,6 +32,16 @@ article.middle.clearfix
             .popover-wrapper#edit-dates(attach-to="#edit-dates-button" point-to="top" callback="runDatepicker")
                 #datepicker
     section#sidebar.right
+        #toolbar
+            ul.clearfix
+                li.left
+                    a.button(ng-click="generateStepsStatus()")
+                        i.icon.ion-help-circled
+                        | Help
+                        .popover-wrapper(point-to="top" width="330")
+                            .hint Schedulenaut wants to help you plan your event. Please make sure you have done all the following steps. Once done, it should be crossed out.
+                            ol
+                                li(ng-repeat="step in helpSteps" ng-click="bounce(step.helpElement)" ng-class="{strike: step.status}") {{step.title}}
         aside#users
             header Guests
             article
@@ -47,6 +57,8 @@ article.middle.clearfix
                                 i.icon.ion-edit
                             a(ng-click="deleteUser()" ng-show="adminAuthenticated || activeLayerId == $index ")
                                 i.icon.ion-close
+                            a.disabled-opacity(ng-click="bounce('#event-settings')" ng-hide="adminAuthenticated || activeLayerId == $index ")
+                                i.icon.ion-close
                         .popover-wrapper(open-listener="open-{{$index}}" close-listener="close-{{$index}}" click-on="false" point-to="top" offset-y="0" ng-attr-id="{{'popover-user-'+$index}}" )
                             form(name="user_password" )
                                 label(for="secret") Secret Word
@@ -56,7 +68,7 @@ article.middle.clearfix
                                 button.center(type="submit" value="submit" ng-click="editUser(user, secretWord, $index); secretWord=''" ng-disabled="user_password.$invalid") Submit
                     li.addGuest#addGuest(ng-show="event.event_settings.inviteEveryone || adminAuthenticated")
                         .center
-                            a.button + Guests
+                            a.button#add-guests-button + Guests
                                 .popover-wrapper(point-to="top" callback="" )
                                     .hint(ng-click="bounce('#event-settings')") To allow invite only, set event settings  
                                         i.icon.ion-gear-a

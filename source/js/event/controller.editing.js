@@ -8,6 +8,47 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     //TODO: break this up lol
     //TODO: use global.helpers bounce
 
+	//Help
+    var checkAllUserHasPassword = function (){
+        var allHasPassword = false;
+
+        $scope.users.forEach(function (user){
+            allHasPassword = user.secret !== null;
+        });
+
+        return allHasPassword;
+
+    };
+
+    var checkAtLeastOneBrush = function (){
+        var atLeastOneBrush = false;
+
+        $scope.allLayers.forEach(function (layer){
+            layer.data.forEach(function(day){
+                if(day.length > 1 || day[0].brush[0].getTime() !== day[0].brush[1].getTime())
+                    atLeastOneBrush = true;
+            });
+        });
+
+        return atLeastOneBrush;
+    };
+
+    $scope.generateStepsStatus = function (){
+        $scope.helpSteps = [
+            {title: 'Set at least one possible date', helpElement: '#edit-dates-button', status: (event.dates && event.dates.length > 0)},
+            {title: 'Invite at least one guest', helpElement: '#add-guests-button', status: ($scope.users && $scope.users.length > 0)},
+            {title: 'Make sure all guests know and have access', helpElement: '#notify-all, #notify-all-disabled', status: checkAllUserHasPassword()},
+            {title: 'Activate a user', helpElement: '#guests-list #edit', status: ($scope.activeLayerId !== undefined)},
+            {title: 'Brush in time available', helpElement: '.calendar', status: checkAtLeastOneBrush()},
+            {title: 'Set time of event', helpElement: '#event-detail-time', status: (event.time.startDate && event.time.startTime && event.time.endTime && event.time.endDate)},
+            {title: 'Lock time information', helpElement: '#event-detail-time .ion-unlocked', status: (event.details_confirmed.time)},
+            {title: 'Finalize event and invite', helpElement: '#event-status .combo-button', status: (!event.open)},
+            {title: '(optional) Change who can edit what', helpElement: '#event-settings', status: (event.admin_pass)},
+        ];
+    };
+
+
+
     //Send Password
     $scope.notifyAllUsers = function ($event){
 

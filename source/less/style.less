@@ -9,6 +9,8 @@
 body {border-top: 2px solid @accent; color: #333; padding: 0px; margin: 0px;}
 body, textarea, input {font-family: 'Open Sans', sans-serif; }
 .super {vertical-align: super; font-size: .5em; margin-left: 5px;}
+.strike {text-decoration: line-through;}
+.disabled-opacity {opacity: .3}
 
 //global
 svg {margin-bottom: -4px}
@@ -49,6 +51,10 @@ form{
   &:active, &.active {background: #ccc; }
   &[disabled], &.disabled {border: 1px solid #ccc; color: #ccc; background: transparent; cursor: default;}
   i {margin-right: 7px;}
+  &.accented {border: 1px solid  @accent;
+		&:hover {background: @accent + #111;}
+		&:active {background: @accent - #111;}
+	}
 }
 .combo-button {
   li { margin-right: 0px !important; float: left;
