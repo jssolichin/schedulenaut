@@ -8,6 +8,19 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
 
     var placeholders = ['Create a new event...', 'Name your event...'];
 
+    $scope.launchButton = function () {
+        var wrapper = $('.spaceship');
+
+        wrapper[0].scrollIntoView(true);
+        wrapper.addClass('animated fadeOutUpBig');
+        wrapper.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+            wrapper.removeClass('animated fadeOutUpBig');
+        });
+
+         $("html, body").animate({ scrollTop: 0 }, 400);
+
+    };
+
     var removeExtendedForm = function () {
         $(document).off('mousedown.hideExtendedForm');
         $scope.placeholder = placeholders[0];

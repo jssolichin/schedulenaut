@@ -1,29 +1,53 @@
 //Landing Page Demo
 #index
-    video#bgVideo(src="public/images/background.mp4" autoplay="true" loop="true" )
-    script(type='text/javascript').
-        var vid = document.getElementById("bgVideo");
-        bgVideo.defaultPlaybackRate = 0.2;
-    article.middle
-        form#create-form(name="eventForm" ng-submit="submitData(event)" ng-class="{expanded: formExpanded}" novalidate)
-            input#event-name(type="input" name="name" ng-model="event.name" ng-click="formExpanded = true; addFormHider()" placeholder="{{placeholder}}" required)
-            button(type="submit" value="submit" ) Schedule It!
-            .hidden-form.clearfix.fx-fade-down(ng-show="formExpanded")
-                .left
-                    label(for="calendar") Possible Dates
-                    #calendar
-                .right
-                    div(style="opacity: .4")
-                        label(for="privacy") Privacy
-                            em  (coming soon)
-                        input(type="radio" name="privacy" ng-value="true" ng-model="event.public" disabled)
-                        | Public
-                        input(type="radio" name="privacy" ng-value="false" ng-model="event.public" disabled)
-                        | Password Protected
-                        label(for="password" ng-show="event.public == false") Secret Word
-                        input(type="password" ng-show="event.public == false" name="location" ng-model="event.password" placeholder="Used to access the event")
-                    label(for="location") Location (optional)
-                    input(type="text" name="location" ng-model="event.location" placeholder="Event Location")
-                    label(for="description") Event Description (optional)
-                    textarea(name="description" ng-model="event.description" placeholder="Event Description" )
-            #hint(ng-class="{hidden: formExpanded}") Schedulenaut helps figure out when everyone is available for your next meeting!
+    article
+        section.slide
+            video#bgVideo(src="public/images/background.mp4" autoplay="true" loop="true" )
+            form.middle#create-form(name="eventForm" ng-submit="submitData(event)" ng-class="{expanded: formExpanded}" novalidate)
+                input#event-name(type="input" name="name" ng-model="event.name" ng-click="formExpanded = true; addFormHider()" placeholder="{{placeholder}}" required)
+                button(type="submit" value="submit" ) Schedule It!
+                .hidden-form.clearfix.fx-fade-down(ng-show="formExpanded")
+                    .left
+                        label(for="calendar") Possible Dates
+                        #calendar
+                    .right
+                        div(style="opacity: .4")
+                            label(for="privacy") Privacy
+                                em  (coming soon)
+                            input(type="radio" name="privacy" ng-value="true" ng-model="event.public" disabled)
+                            | Public
+                            input(type="radio" name="privacy" ng-value="false" ng-model="event.public" disabled)
+                            | Password Protected
+                            label(for="password" ng-show="event.public == false") Secret Word
+                            input(type="password" ng-show="event.public == false" name="location" ng-model="event.password" placeholder="Used to access the event")
+                        label(for="location") Location (optional)
+                        input(type="text" name="location" ng-model="event.location" placeholder="Event Location")
+                        label(for="description") Event Description (optional)
+                        textarea(name="description" ng-model="event.description" placeholder="Event Description" )
+                #hint(ng-class="{hidden: formExpanded}") Schedulenaut helps figure out when everyone is available for your next meeting!
+        section.slide.white
+            article.middle.clearfix
+                img.right.half(src="public/images/calendar-choosing.gif")
+                div.left.half
+                    h1 Get a Higher Perspective
+                    p You can get more work done, when you can schedule meetings faster. Schedulenaut's <b>intuitive design and visualization</b> allows guests to input information quickly, and allow inviters to see availability quickly. 
+        section.slide.white
+            article.middle
+                img.full(src="public/images/full-fledged-tools.png")
+                div.three-fourths.center
+                    h1 The 
+                        span.strike Sky
+                        | &nbsp;Universe is the Limit
+                    p Easily schedule with anyone, anywhere. <b>No accounts needed</b>. Fit into any workflows via <b>calendar import</b>. Work with people in <b>different timezones</b>. Show that you're a team player by <b>denoting availability and preferences</b> (#ICouldIfIMust)!  
+        section.slide.white
+            article.middle.clearfix
+                img.left.half(src="public/images/important-messages.png")
+                div.right.half
+                    h1 Houston, we don't have a problem
+                    p We know meetings often need to be scheduled asynchronously, so we built the perfect tools to make it seem synchronous. For example: starring messages allow future guests see <b>important information quickly</b> from discussion and jump to <b>its context</b>.
+        section.slide.launch
+            article.middle
+                div.three-fourths.center
+                    h1 Ready to Get Higher?
+                    a.lift-off-button(ng-click="launchButton()") Lift Off!
+                    i.icon.ion-jet.spaceship

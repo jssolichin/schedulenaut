@@ -8,12 +8,54 @@
 	}
 	#bgVideo {
 		background-color: #000;
-		background: linear-gradient(to bottom, #001842 1%,#86969e 67%,#a08e7a 87%,#d38f28 97%,#000000 100%);
-		position: absolute; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -100; background-size: cover;
+		//background: linear-gradient(to bottom, #001842 1%,#86969e 67%,#a08e7a 87%,#d38f28 97%,#000000 100%);
+		position: absolute; right: 0; top: 0; min-width: 100%; height: 100%; z-index: -100; 
+    background-size: cover;
 	}
+  footer {
+    margin-top: 0px; padding: 15px 0 40px 0; 
+  }
 }
 #index {
-  #create-form{ position: relative; width: 80%; margin: 150px auto 0 auto; padding: 10px; border-radius: 3px;
+  .slide {
+    padding: 100px; border-bottom: 1px solid #eee;
+    &:last-child {border-bottom: 0px;}
+    &.white {
+      background: #fff;
+    }
+    h1 {font-size: 2.5em; margin: 0px;}
+    p {font-size: 1.2em; line-height: 1.6em;}
+    b {border-bottom: 2px solid @accent; font-weight: normal;}
+    .full { width: 100%; }
+    .three-fourths {width: 75%;
+      &.center {margin: 0 auto; text-align: center;}
+    }
+    .half {width: ~"calc(50% - 40px)"; padding: 20px;}
+
+    &.launch {background: linear-gradient(to bottom, #1D77EF 0%, #81F3FD 100%); color: #fff;
+       .lift-off-button {
+          cursor: pointer;
+          display: block;
+          margin: 50px auto 0 auto;
+          width: 100px; 
+          background-color: @accent;
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 10px;
+          border-radius: 10px;
+          border-bottom: 10px solid;
+          border-bottom-color: @accent - #111;;
+          box-shadow: -10px 10px 0px grey, 10px 10px 0px grey, -10px 20px 0px #333, 10px 20px 0px #333;
+          &:hover { background: @accent + #111}
+          &:active { margin-top: 60px; border-bottom-width: 0px;}
+          position: relative;
+          z-index: 9;
+        }
+        .spaceship {font-size: 4em; margin-top: -1em; display: block; position: relative; z-index: 8; color: #333;}
+    }
+  }
+ 
+  #create-form{ width: 80%; margin: 100px auto 190px auto; padding: 10px; border-radius: 3px;
     //input, button {box-shadow: 0px 1px 3px rgba(0,0,0,0.3);}
     &.expanded {background: #fff; box-shadow: 0px 1px 3px rgba(0,0,0,0.3); transition: all .15s ease-in-out;
       input, button {box-shadow: none;}
