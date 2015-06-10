@@ -36,7 +36,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     $scope.generateStepsStatus = function (){
         $scope.helpSteps = [
             {title: 'Set at least one possible date', helpElement: '#edit-dates-button', status: (event.dates && event.dates.length > 0)},
-            {title: 'Invite at least one guest', helpElement: '#add-guests-button', status: ($scope.users && $scope.users.length > 0)},
+            {title: 'Invite more than one guest', helpElement: '#add-guests-button', status: ($scope.users && $scope.users.length > 1)},
             {title: 'Make sure all guests know and have access', helpElement: '#notify-all, #notify-all-disabled', status: checkAllUserHasPassword()},
             {title: 'Activate a user', helpElement: '#guests-list #edit', status: ($scope.activeLayerId !== undefined)},
             {title: 'Brush in time available', helpElement: '.calendar', status: checkAtLeastOneBrush()},
@@ -83,7 +83,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
                 "You've been invited to <b>" + eventName + "</b>! Cool right? " + 
                 "But, we need to know when you're available to have the best time for everybody. <br>" + 
                 "<br>" + 
-                "Lift off to <a href=http://schedulenaut.com/" + event.id  + ">the event page</a> and you can easily add your availability! <br>" + 
+                "Lift off to <a href=http://schedulenaut.com/event/" + event.id  + ">the event page</a> and you can easily add your availability! <br>" + 
                 "<br>" + 
                 "Edit your information by editing your user by clicking on the pencil next to your username on the sidebar. Use the information below: <br>" +
                 "<br>" + 
@@ -92,7 +92,6 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
                 "<br>" + 
                 "Once you have signed in, you can click and drag on the calendar to mark your availability! <br>" + 
                 "<br>" + 
-                "Easy peasy right? <br>" + 
                 "<br>" + 
                 "Thanks!" + 
                 "<br>" + 
@@ -149,6 +148,8 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     startDateEl.on('changeDate', function (){
         event.time.startDate = startDateEl.datepicker('getDate');
         event.time.startTime = startTimeEl.timepicker('getTime', new Date(event.time.startDate));
+        event.time.endDate = endDateEl.datepicker('getDate');
+        event.time.endTime = endTimeEl.timepicker('getTime', new Date(event.time.endDate));
         $scope.updateEvent();
     });
     endDateEl.on('changeDate', function (){
@@ -166,7 +167,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     if(event.time.startDate !== undefined)
         startDateEl.datepicker('setDate', event.time.startDate);
     if(event.time.endDate !== undefined)
-        startDateEl.datepicker('setDate', event.time.endDate);
+        endDateEl.datepicker('setDate', event.time.endDate);
 
     startTimeEl
         .on('changeTime', function (){
@@ -196,6 +197,27 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
             $scope.updateEvent({time: event.time});
         });
 
+        $('.start.time').blur(function(d){
+            if(d.target.value.length === 0)
+                event.time.startTime = null;
+            $scope.updateEvent();
+        });
+        $('.end.time').blur(function(d){
+            if(d.target.value.length === 0)
+                event.time.endTime = null;
+            $scope.updateEvent();
+        });
+        $('.start.date').blur(function(d){
+            if(d.target.value.length === 0)
+                event.time.startDate = null;
+            $scope.updateEvent();
+        });
+        $('.end.date').blur(function(d){
+            if(d.target.value.length === 0)
+                event.time.endDate = null;
+            $scope.updateEvent();
+        });
+
     //Importer Module
 
     $scope.importedLayers = [];
@@ -209,7 +231,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
         var to = users.map(function(d){return d.email;});
         var eventName = event.name || 'Event Notification';
 		var content = "<img src='http://schedulenaut.com/public/images/logo.png'><h1>Schedulenaut</h1>" + 
-		"A message has been sent from an <a href=http://schedulenaut.com/" + event.id  + ">event</a> you are invited to: " +
+        "A message has been sent from an <a href=http://schedulenaut.com/event/" + event.id  + ">event</a> you are invited to: " +
 		"<br><br>" +
 			email.text;
 
@@ -252,7 +274,7 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     $scope.preferred = true;
     $scope.changeBrushPreference = function (setTo) {
-        if(setTo != undefined)
+        if(setTo !== undefined)
             $scope.preferred = setTo;
         else
             $scope.preferred = !$scope.preferred;

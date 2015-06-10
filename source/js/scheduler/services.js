@@ -12,6 +12,7 @@ module.exports = angular.module('events', [])
             eventCopy.dates = JSON.stringify(event.dates);
             eventCopy.timezones = JSON.stringify(event.timezones);
             eventCopy.event_settings = JSON.stringify(event.event_settings);
+            eventCopy.details_confirmed = JSON.stringify(event.details_confirmed);
 
             var p = $q.defer();
 

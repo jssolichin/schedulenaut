@@ -30,7 +30,8 @@ var schedulenaut = angular.module('schedulenaut', [
 
         $scope.event = {
             public: true,
-            event_settings: {editableEveryone: true, inviteEveryone: true, timezoneEveryone: true, availableDatesEveryone: true}
+            event_settings: {editableEveryone: true, inviteEveryone: true, timezoneEveryone: true, availableDatesEveryone: true},
+            details_confirmed: {time: false, location: false}
         };
 
         $scope.scheduleEvent = function () {

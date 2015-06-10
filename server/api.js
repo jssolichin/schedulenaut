@@ -93,13 +93,7 @@ router.post('/event/:id/admin_pass', function (req, res) {
 });
 
 router.post('/event', function (req, res) {
-    var id;
-    if (req.body.name === undefined) {
-        id = randomValueBase64(7);
-    }
-    else
-        id = req.body.name.replace(/[^a-z0-9]+/g, '-');
-
+    var id = randomValueBase64(7);
     var name = encapsulate(req.body.name);
     var open = encapsulate(true);
     var admin_pass = encapsulate(req.body.admin_pass);

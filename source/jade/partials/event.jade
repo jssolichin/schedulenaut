@@ -4,48 +4,65 @@
 #event
     header(droplet save-drops ng-model="interface" style="background-image: url({{event.image}})")
         .middle.clearfix
-            .left
-                ul#event-details
-                    li
-                        h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
-                    li
-                        p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
-                    li#event-detail-location
-                        p.left(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled() || event.details_confirmed.location" ) {{event.location || "Add a Location"}}
-                        span.right.details-lock(ng-click="lockLocation()") 
-                            //TODO: allow lock only for admin option
-                            i.icon.ion-locked(ng-show="event.details_confirmed.location")
-                            i.icon.ion-unlocked(ng-hide="event.details_confirmed.location")
-                    li#event-detail-time
-                        p#event-time-picker.clearfix(name="event_time")
-                            span.left(ng-show="!event.details_confirmed.time ")
-                                input.left.date.start(type="text" placeholder="Start Date")
-                                input.left.time.start(type="text" placeholder="Start Time")
-                                span.left &nbsp;to&nbsp;
-                                input.left.time.end(type="text" placeholder="End Time")
-                                input.left.date.end(type="text" placeholder="End Date")
-                            span.left(ng-show="event.details_confirmed.time")
-                                | {{event.time.startTime | date:'short'}} - {{event.time.endTime | date:'short'}}
-                            span.right.details-lock(ng-click="lockTime()")
-                                i.icon.ion-locked(ng-show="event.details_confirmed.time")
-                                i.icon.ion-unlocked(ng-hide="event.details_confirmed.time")
+            ul.left#event-details
+                li
+                    h1(editable-text="event.name" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.name || "Add an Event Name" }}
+                li
+                    p(editable-text="event.description" onaftersave="updateEvent()" edit-disabled="!isEditEnabled()" ) {{event.description || "Add a Description"}}
+                li#event-detail-location
+                    span.left
+                        span.details-label(ng-show="event.details_confirmed.location") Location: &nbsp;
+                    span.left
+                        span.details-label(ng-hide="event.details_confirmed.location") Potential location: &nbsp;
+                    p.left(editable-text="event.location" onaftersave="updateEvent()" edit-disabled="!isEditEnabled() || event.details_confirmed.location" ) {{event.location || "Add a Location"}}
+                    span.right.details-lock(ng-click="lockLocation()") 
+                        //TODO: allow lock only for admin option
+                        i.icon.ion-locked(ng-show="event.details_confirmed.location")
+                        i.icon.ion-unlocked(ng-hide="event.details_confirmed.location")
+                li#event-detail-time
+                    p#event-time-picker.clearfix(name="event_time")
+                        span.left
+                            span.details-label(ng-show="event.details_confirmed.time") Time: &nbsp;
+                        span.left
+                            span.details-label(ng-hide="event.details_confirmed.time") Potential Time: &nbsp;
+                        span.left(ng-show="!event.details_confirmed.time")
+                            input.left.date.start(type="text" placeholder="Start Date" ng-blur="console.log(33)")
+                            input.left.time.start(type="text" placeholder="Start Time")
+                            span.left &nbsp;to&nbsp;
+                            input.left.time.end(type="text" placeholder="End Time")
+                            input.left.date.end(type="text" placeholder="End Date")
+                        span.left(ng-show="event.details_confirmed.time")
+                            | {{event.time.startTime | date:'short'}} - {{event.time.endTime | date:'short'}}
+                        span.right.details-lock(ng-click="lockTime()")
+                            i.icon.ion-locked(ng-show="event.details_confirmed.time")
+                            i.icon.ion-unlocked(ng-hide="event.details_confirmed.time")
             ul.right#event-tools
                 li#event-status(ng-class="{finalized: !event.open}")
                     ul.combo-button.right
                         li
-                            a.button(ng-click="finalizeEvent()" ng-class="{on: event.open}" ng-hide="!event.open")
+                            a.button(ng-click="finalizeEvent(false)" ng-class="{on: event.open}" ng-hide="!event.open")
                                 | In Discussion
-                        li
-                            a.button(ng-click="finalizeEvent()" ng-class="{on: !event.open, alone: !event.open}")
+                        li(ng-show="event.open")
+                            a.button(ng-click="finalizeEvent(true)" )
                                 i.icon.ion-checkmark-circled(ng-hide="event.open")
                                 | Finalized
+                        li(ng-show="!event.open")
+                            a.button.on.alone
+                                i.icon.ion-checkmark-circled(ng-hide="event.open")
+                                | Finalized
+                                .popover-wrapper(point-to="top" callback="" width="140" )
+                                    form(name="check_event_admin_password" ng-if="event.admin_pass != undefined && adminAuthenticated != true")
+                                        label(for="secret" ) Secret Word
+                                            span *
+                                        input(type="password" name="secret" ng-model="admin_pass" placeholder="" required)
+                                        button.center(type="submit" value="submit" ng-click="checkAdminPass(event.id, admin_pass, $event, finalizeEvent, false); " ng-disabled="check_event_admin_password.$invalid") Submit
                 li(ng-if="event.open" )
                     .tool-title.right#event-settings(ng-class="{'active': adminAuthenticated}" )
                         i.icon.ion-gear-a.right
                         span + Event Settings 
-                    .popover-wrapper(point-to="top" callback="" width="160" offset-y="10" click-on="#event-settings" )
+                    .popover-wrapper(point-to="top" callback="" width="205" offset-y="10" click-on="#event-settings" )
                         form(name="set_event_admin_password" ng-if="event.admin_pass == undefined && adminAuthenticated != true")
-                            .hint No administrator secret word set. 
+                            .hint You must set an administrator password first to prevent future confusions of settings/infos being changed by different guests.  
                             label(for="secret") Add Secret Word
                                 span *
                             input(type="password" name="secret" ng-model="admin_pass" placeholder="Used to edit event settings later" required)

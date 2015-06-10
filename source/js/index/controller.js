@@ -44,6 +44,7 @@ module.exports = function ($scope, eventsService, brushesService, $state) {
 
     $scope.submitData = function (event) {
         event.event_settings = {editableEveryone: true, inviteEveryone: true, timezoneEveryone: true, availableDatesEveryone: true};
+        event.details_confirmed = {time: false, location: false};
 
         var p = eventsService.create(event);
         p.then(function (d) {

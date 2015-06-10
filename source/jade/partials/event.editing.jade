@@ -24,11 +24,12 @@ article.middle.clearfix
                 li.right
                     span.left Snap-to:
                     select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
-        div(ng-show="users.length > 0 && activeLayerId == undefined") To add your availability, click 
-            i.icon.ion-edit
-            | &nbsp;next to your name.
-        div(ng-show="users.length <= 0 && activeLayerId == undefined") To add your availability, you must first add yourself as a guest. 
         section#visualization
+            div.center
+                p.hint(ng-click="bounce('#users')" ng-show="dates.length > 0 && users.length <= 0 && activeLayerId == undefined") To add your availability, you must first add yourself as a guest. 
+                p.hint(ng-click="bounce('#users')" ng-show="dates.length > 0 && users.length > 0 && activeLayerId == undefined") To add your availability, click 
+                    i.icon.ion-edit
+                    | &nbsp;next to your name.
             .calendar( calendar preferred="preferred" on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId" imported-layers="importedLayers")
             a#edit-dates-button.center.button(ng-show="event.event_settings.availableDatesEveryone || adminAuthenticated ")
                 i.icon.ion-ios-settings
@@ -50,6 +51,7 @@ article.middle.clearfix
             header Guests
             article
                 p.hint(ng-hide="users.length > 0") It's lonely in here. Add Guests to start brushing availability.
+                p.hint(ng-show="users.length > 0" ng-click="bounce('#notify-all, #notify-all-disabled')") Don't forget to notify guests. 
                 p.hint(ng-show="users.length > 0 && dates.length <= 0" ng-click="bounce('#edit-dates-button')") A guest can only show availability when there are dates available.
                 ul#guests-list
                     li.clearfix(ng-repeat="user in users" ng-class="{hover: isUsersBlockHovered(), 'editing': activeLayerId == $index }" ng-mouseenter="highlightUserBlocks()" ng-mouseleave="dehighlightUserBlocks()")

@@ -67,12 +67,15 @@ module.exports = function($stateProvider, $urlRouterProvider) {
                                     return new Date(d);
                                 });
 
-                            if(event.data.time === null)
-                                event.data.time = {location: false, time: false};
-                            else {
+                            if(event.data.time !== null){
                                 event.data.time = JSON.parse(event.data.time);
-                                for(var key in event.data.time)
-                                    event.data.time[key] = new Date(event.data.time[key]);
+                                for(var key in event.data.time){
+                                    if(event.data.time[key] !== null)
+                                        event.data.time[key] = new Date(event.data.time[key]);
+                                    else 
+                                        event.data.time[key] = undefined;
+                                }
+
                             }
 
                             if(event.data.details_confirmed === null)
