@@ -14,16 +14,20 @@ article.middle.clearfix
                     span.left Brush:
                     ul.combo-button.right
                         li
-                            a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred != true}")
+                            a.button(ng-click="changeBrushPreference(false)" ng-class="{on: preferred != true}")
                                 span.symbol.free
                                 | Available
                         li
-                            a.button(ng-click="changeBrushPreference()" ng-class="{on: preferred == true}")
+                            a.button(ng-click="changeBrushPreference(true)" ng-class="{on: preferred == true}")
                                 span.symbol.preferred
                                 | Preferred
                 li.right
                     span.left Snap-to:
                     select(ng-model="selectedGranularity" ng-options="granularity.value as granularity.name for granularity in optionGranularity")
+        div(ng-show="users.length > 0 && activeLayerId == undefined") To add your availability, click 
+            i.icon.ion-edit
+            | &nbsp;next to your name.
+        div(ng-show="users.length <= 0 && activeLayerId == undefined") To add your availability, you must first add yourself as a guest. 
         section#visualization
             .calendar( calendar preferred="preferred" on-timezone-change="updateEvent" timezones="timezones" dates="dates" granularity="selectedGranularity" height="30" on-end="endBrush" all-layers="allLayers" active-layer-id="activeLayerId" imported-layers="importedLayers")
             a#edit-dates-button.center.button(ng-show="event.event_settings.availableDatesEveryone || adminAuthenticated ")

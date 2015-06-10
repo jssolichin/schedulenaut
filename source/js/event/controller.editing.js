@@ -251,8 +251,11 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
     });
 
     $scope.preferred = true;
-    $scope.changeBrushPreference = function () {
-        $scope.preferred = !$scope.preferred;
+    $scope.changeBrushPreference = function (setTo) {
+        if(setTo != undefined)
+            $scope.preferred = setTo;
+        else
+            $scope.preferred = !$scope.preferred;
     };
 
     //Messaging module
