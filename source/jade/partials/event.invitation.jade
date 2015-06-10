@@ -6,7 +6,7 @@ article.middle.clearfix.invitation
     h1(ng-show="event.name != undefined") Yay! A time has been chosen for {{event.name}}
     section
         h2 Let your guests know!
-        a.button(ng-click="sendEmailToAll(event)") Send Email to Guests 
+        a.button(ng-click="sendEmailToAll($event)") Send Email to Guests 
     section
         h2 Now share with your friends!
         ul
@@ -20,6 +20,4 @@ article.middle.clearfix.invitation
                 .g-plus(gplus data-size='tall' data-annotation='bubble' data-href='currentLocation' data-action='share')
             li
                 div(tumblr-text data-url='window.location' data-name='Sharing to Tumblr' data-title='Come to my amazing {{event.name}} event' data-buttontext='Sharing {{event.name}}' data-styling="display:inline-block; text-indent:-9999px; overflow:hidden; width:129px; height:20px; background:url('http://platform.tumblr.com/v1/share_3.png') top left no-repeat transparent;" data-description='{{event.description}}')
-    section
-        a.button.subtle Request to change time
 
