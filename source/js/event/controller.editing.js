@@ -160,6 +160,9 @@ module.exports = function ($window, event, allLayers, discussion, mailServices, 
 
     //deal with start time
 
+    if(event.time == undefined)
+        event.time = {};
+
     if(event.time.startTime !== undefined)
         startTimeEl.timepicker('setTime', event.time.startTime);
     if(event.time.endTime !== undefined)
