@@ -90,8 +90,8 @@ article.middle.clearfix
                                             .error(ng-show="new_user.email.$error.email") Please enter a valid email
 
                                         label(for="secret") Secret word
-                                        input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" )
-                                        .hint(ng-click="bounce('#notify-all-disabled, #notify-all')") If you do not put a password here, it will be generated and sent when using notify all.
+                                            span *
+                                        input(type="password" name="secret" ng-model="newUser.secret" placeholder="Used to edit later" required)
 
                                         button.center(type="submit" value="submit" ng-click="createUser(); new_user.$setPristine(); " ng-disabled="new_user.$invalid") Add Guest!
                             a#notify-all-disabled.button.disabled(ng-hide="users.length > 0 && adminAuthenticated" ng-click="bounce('#event-settings')")

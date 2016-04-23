@@ -21,11 +21,6 @@ var randomValueBase64 = function (len) {
         .replace(/\//g, '0'); // replace '/' with '0'
 };
 
-//encapsulate string for sqlite3
-var encapsulate = function (string) {
-    return string ? "'" + string + "'" : null;
-};
-
 router.get('/', function (req, res) {
     res.json({message: 'hooray! welcome to our api!'});
 });
@@ -59,18 +54,22 @@ router.get('/event/:id/:property', function (req, res) {
 router.put('/event/:id', function (req, res) {
     var id = req.params.id;
 
-    var updateQuery = '';
+	var updateQuery = '';
+
     for (key in req.body) {
         if(key == 'admin_pass')
             req.body['admin_pass'] = crypto.createHash('sha1', key).update(req.body.admin_pass).digest('hex');
 
-        updateQuery += key + " = '" + req.body[key] + "',";
-    }
+		if(key == 'name')
+			updateQuery += key + " = (?),";
+		else
+			updateQuery += key + " = '" + req.body[key] + "',";
+	}
 
     sqlUpdate = "UPDATE events SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE id = '" + id + "'";
     console.log(sqlUpdate)
 
-    db.run(sqlUpdate, function (err, row) {
+    db.run(sqlUpdate, req.body.name, function (err, row) {
         if (row === undefined)
             res.json({message: 'Something went wrong!'});
         else
@@ -94,28 +93,18 @@ router.post('/event/:id/admin_pass', function (req, res) {
 
 router.post('/event', function (req, res) {
     var id = randomValueBase64(7);
-    var name = encapsulate(req.body.name);
-    var open = encapsulate(true);
-    var admin_pass = encapsulate(req.body.admin_pass);
-    var image = encapsulate(req.body.image);
-    var timezones = encapsulate(req.body.timezones);
-    var dates = encapsulate(req.body.dates);
-    var description = encapsulate(req.body.description);
-    var location = encapsulate(req.body.location);
-    var password = encapsulate(req.body.password);
-    var time = encapsulate(req.body.time);
-    var details_confirmed = encapsulate(req.body.details_confirmed);
-    var event_settings = encapsulate(req.body.event_settings);
 
     sqlTest = "select count(0) AS 'length' from (SELECT id FROM events WHERE id LIKE '" + id + "%')";
     db.each(sqlTest, function (err, rows) {
         if (rows !== undefined && rows.length != 0)
             id += '-' + rows.length;
 
-        sqlRequest = "INSERT INTO 'events' values ('" + id + "'," + name + "," + open + "," + admin_pass + "," + event_settings + ","+ image + ", " + timezones + "," + dates + "," + description + "," + location + ", " + time + ", " + details_confirmed + "," + password + ")";
+		sqlRequest = "INSERT INTO 'events' values ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
         console.log(sqlRequest)
 
-        db.run(sqlRequest, function (err) {
+		db.run(sqlRequest, 
+			   id, req.body.name, true, req.body.admin_pass, req.body.event_settings, req.body.image, req.body.timezones, req.body.dates, req.body.description, req.body.location, req.body.time, req.body.details_confirmed, req.body.password,
+		function (err) {
             if (err !== null)
                 console.log(err);
             else
@@ -215,21 +204,20 @@ router.post('/user/:id/secret', function (req, res) {
 
 router.post('/user', function (req, res) {
     var secret;
-    console.log(secret)
-    if(req.body.secret)
-        secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
-    else
-        secret = null;
-    
-    var name = encapsulate(req.body.name);
-    var event_id = encapsulate(req.body.event_id);
-    var brush_id = req.body.brushes_id || null;
-    var email = encapsulate(req.body.email);
 
-    sqlRequest = "INSERT INTO 'users' values (null, " + name + ", " + event_id + ", " + brush_id + "," + secret + "," + email + ")";
+    if(req.body.secret)
+        secret = crypto.createHash('sha1', key).update(req.body.secret).digest('hex');
+    else
+		secret = null;
+
+    var brush_id = req.body.brushes_id || null;
+
+    sqlRequest = "INSERT INTO 'users' values (null, (?), (?), (?), (?), (?))";
     console.log(sqlRequest)
 
-    db.run(sqlRequest, function (err, row) {
+	db.run(sqlRequest, 
+		   req.body.name, req.body.event_id, brush_id, secret, req.body.email,
+		function (err, row) {
         if (err !== null)
             console.log(err);
         else {
@@ -255,13 +243,10 @@ router.get('/user/:id', function (req, res) {
 
 router.put('/user/:id', function (req, res) {
     var secret;
-    console.log(req.body.secret)
     if(req.body.secret)
-        secret = encapsulate(crypto.createHash('sha1', key).update(req.body.secret).digest('hex'));
+        secret = crypto.createHash('sha1', key).update(req.body.secret).digest('hex');
     else
         secret = null;
-
-    console.log(secret)
 
     var id = req.params.id;
 
@@ -270,6 +255,8 @@ router.put('/user/:id', function (req, res) {
         var value = isNaN(req.body[key]) ? "'" + req.body[key] + "'" : req.body[key];
         if(key == 'secret')
             updateQuery += 'secret= ' + secret + ',';
+		else if(key == 'name')
+			updateQuery += key + " = (?),";
         else if (key != 'id')
             updateQuery += key + " = " + value + ",";
     }
@@ -277,12 +264,12 @@ router.put('/user/:id', function (req, res) {
     sqlUpdate = "UPDATE users SET " + updateQuery.substring(0, updateQuery.length - 1) + " WHERE id = '" + id + "'";
     console.log(sqlUpdate);
 
-    db.run(sqlUpdate, function (err, row) {
+    db.run(sqlUpdate, req.body.name, function (err, row) {
         if (row === undefined)
             res.json({message: 'Something went wrong!'});
         else
             res.json(row);
-    });
+	});
 
 });
 
